@@ -7,6 +7,7 @@ import Mine from "@/pages/Mine";
 import Payouts from "@/pages/Payouts";
 import Stake from "@/pages/Stake";
 import NotFound from "@/pages/NotFound";
+import BuyAndBurn from "@/pages/BuyAndBurn";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/" element={<Mine />} />
                     <Route path="payouts" element={<Payouts />} />
                     <Route path="stake" element={<Stake />} />
+                    <Route path="buyandburn" element={<BuyAndBurn />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </HomeLayout>

@@ -17,7 +17,9 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                 </div>
             </div>
             <div className="flex-1 p-4">{children}</div>
-            <div className="h-[100px] bg-blue-50 flex-center">footer</div>
+            <div className="h-[100px] bg-blue-50 flex-center">
+                Copyright © 2023, All Rights Reserved
+            </div>
         </div>
     );
 }
