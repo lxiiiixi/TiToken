@@ -16,7 +16,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                     <WalletConnect />
                 </div>
             </div>
-            <div>{children}</div>
+            <div className="flex-1 p-4">{children}</div>
             <div className="h-[100px] bg-blue-50 flex-center">footer</div>
         </div>
     );
