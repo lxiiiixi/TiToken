@@ -11,8 +11,8 @@ function WalletConnect() {
     const { chains, switchChain } = useSwitchChain();
     const { disconnect } = useDisconnect();
 
-    console.log(balanceData, chainId);
-    console.log(chains, SUPPORTED_CHAINS.includes(chainId));
+    // console.log(balanceData, chainId);
+    // console.log(chains, SUPPORTED_CHAINS.includes(chainId));
 
     if (!chainId) {
         return connectors.map(connector => (

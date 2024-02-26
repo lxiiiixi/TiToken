@@ -1,8 +1,17 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import Card from "@/components/Card";
 import { Button } from "antd";
+import { useReadContract } from "wagmi";
+import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
 
-function index() {
+function Index() {
+    const { data: name } = useReadContract({
+        ...TOKEN_CONTRACT_CONFIT,
+        functionName: "name",
+    });
+
+    console.log(name);
+
     return (
         <ContentWrapper
             title="Staker Payouts + Buy & Burn"
@@ -45,4 +54,4 @@ function index() {
     );
 }
 
-export default index;
+export default Index;

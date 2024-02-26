@@ -1,76 +1,67 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import type { TabsProps } from "antd";
-import { Tabs, InputNumber, Button } from "antd";
+import { Tabs } from "antd";
 import InfoCard from "@/components/InfoCard";
+import CreateMiner from "./CreateMiner";
+import type { MineData } from "./CreateMiner";
+import { useWriteContract, useAccount } from "wagmi";
+import { TOKEN_CONTRACT_CONFIT, MAX_MINT_POWER_CAP } from "@/configs/constants";
+import { useGetCurrentMintCost } from "@/hooks/useReadTokenContract";
 
-function index() {
-    const SingleMiner = () => {
-        return (
-            <div className="p-6">
-                <h2 className="text-xl">Create TITAN X Miner</h2>
-                <div>
-                    <div className="flex-between my-2">
-                        <span>Miner Length</span>
-                        <span>
-                            <InputNumber min={1} max={10} defaultValue={3} onChange={() => {}} />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
-                    <div className="flex-between my-2">
-                        <span>Miner Power</span>
-                        <span>
-                            <InputNumber min={1} max={10} defaultValue={3} onChange={() => {}} />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
-                </div>
-                <Button block>Create Miner</Button>
-            </div>
-        );
-    };
+function Index() {
+    const { writeContractAsync } = useWriteContract();
+    const { address } = useAccount();
+    const { currentMintCost } = useGetCurrentMintCost();
 
-    const BatchCreateMiners = () => {
-        return (
-            <div className="p-6">
-                <h2 className="text-xl"> Batch Create Miners</h2>
-                <div>
-                    <div className="flex-between my-2">
-                        <span>Number of Miners</span>
-                        <span>
-                            <InputNumber min={1} max={10} defaultValue={3} onChange={() => {}} />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
-                    <div className="flex-between my-2">
-                        <span>Miner Length</span>
-                        <span>
-                            <InputNumber min={1} max={10} defaultValue={3} onChange={() => {}} />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
-                    <div className="flex-between my-2">
-                        <span>Miner Power</span>
-                        <span>
-                            <InputNumber min={1} max={10} defaultValue={3} onChange={() => {}} />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
-                </div>
-                <Button block>Batch Create Miners</Button>
-            </div>
-        );
+    const handleSubmitMiner = async (type: "single" | "batch", data: MineData) => {
+        // getCurrentMintCost
+        if (!currentMintCost) return;
+
+        // getBatchMintCost in contract
+        // (mintCost * mintPower * count) / MAX_MINT_POWER_CAP
+        const neededValue =
+            (BigInt(currentMintCost as number) * BigInt(data.power)) / BigInt(MAX_MINT_POWER_CAP);
+
+        if (type === "single" && address) {
+            console.log(1, data, neededValue);
+            try {
+                await writeContractAsync({
+                    ...TOKEN_CONTRACT_CONFIT,
+                    address,
+                    functionName: "startMint",
+                    args: [data.power, data.length],
+                    value: BigInt(neededValue),
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        if (type === "batch" && address) {
+            const value = neededValue * BigInt(data.length);
+            try {
+                await writeContractAsync({
+                    ...TOKEN_CONTRACT_CONFIT,
+                    address,
+                    functionName: "startMint",
+                    args: [data.power, data.length, data.number],
+                    value: BigInt(value),
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }
     };
 
     const items: TabsProps["items"] = [
         {
             key: "1",
             label: "Single Miner",
-            children: <SingleMiner />,
+            children: <CreateMiner type="single" onSubmit={handleSubmitMiner} />,
         },
         {
             key: "2",
             label: "Batch Create Miners",
-            children: <BatchCreateMiners />,
+            children: <CreateMiner type="batch" onSubmit={handleSubmitMiner} />,
         },
     ];
 
@@ -171,4 +162,4 @@ function index() {
     );
 }
 
-export default index;
+export default Index;
