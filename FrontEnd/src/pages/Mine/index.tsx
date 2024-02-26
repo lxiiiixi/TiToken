@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import ContentWrapper from "@/sections/ContentWrapper";
 import type { TabsProps } from "antd";
 import { Tabs } from "antd";
@@ -5,46 +6,65 @@ import InfoCard from "@/components/InfoCard";
 import CreateMiner from "./CreateMiner";
 import type { MineData } from "./CreateMiner";
 import { useWriteContract, useAccount } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT, MAX_MINT_POWER_CAP } from "@/configs/constants";
+import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
 import { useGetCurrentMintCost } from "@/hooks/useReadTokenContract";
+import useMineInfoData from "@/hooks/useMineInfoData";
+import { calculateMintCost } from "@/configs/calculate";
+import { formatEther } from "viem";
 
 function Index() {
+    const [minerData, setMinerData] = useState<MineData>({
+        length: 280,
+        power: 100,
+        number: 10,
+    });
+    const { currentMintCost } = useGetCurrentMintCost();
+    const [ethCost, setEthCost] = useState(calculateMintCost(currentMintCost, minerData.power));
+    const [ifSingleMiner, setIfSingleMiner] = useState(true);
+
     const { writeContractAsync } = useWriteContract();
     const { address } = useAccount();
-    const { currentMintCost } = useGetCurrentMintCost();
+
+    const { displayData } = useMineInfoData(formatEther(ethCost));
+
+    useEffect(() => {
+        if (ifSingleMiner) {
+            const newValue = calculateMintCost(currentMintCost, minerData.power);
+            setEthCost(newValue);
+            console.log(newValue);
+            console.log(formatEther(newValue));
+        } else {
+            const newValue = calculateMintCost(currentMintCost, minerData.power, minerData.number);
+            setEthCost(newValue);
+            console.log(newValue);
+            console.log(formatEther(newValue));
+        }
+    }, [ifSingleMiner, currentMintCost, minerData.number, minerData.power]);
 
     const handleSubmitMiner = async (type: "single" | "batch", data: MineData) => {
-        // getCurrentMintCost
         if (!currentMintCost) return;
 
-        // getBatchMintCost in contract
-        // (mintCost * mintPower * count) / MAX_MINT_POWER_CAP
-        const neededValue =
-            (BigInt(currentMintCost as number) * BigInt(data.power)) / BigInt(MAX_MINT_POWER_CAP);
-
         if (type === "single" && address) {
-            console.log(1, data, neededValue);
             try {
                 await writeContractAsync({
                     ...TOKEN_CONTRACT_CONFIT,
                     address,
                     functionName: "startMint",
                     args: [data.power, data.length],
-                    value: BigInt(neededValue),
+                    value: ethCost,
                 });
             } catch (err) {
                 console.log(err);
             }
         }
         if (type === "batch" && address) {
-            const value = neededValue * BigInt(data.length);
             try {
                 await writeContractAsync({
                     ...TOKEN_CONTRACT_CONFIT,
                     address,
                     functionName: "startMint",
                     args: [data.power, data.length, data.number],
-                    value: BigInt(value),
+                    value: ethCost,
                 });
             } catch (err) {
                 console.log(err);
@@ -52,97 +72,34 @@ function Index() {
         }
     };
 
+    const changeMinerData = (data: MineData) => {
+        setMinerData(data);
+    };
+
     const items: TabsProps["items"] = [
         {
             key: "1",
             label: "Single Miner",
-            children: <CreateMiner type="single" onSubmit={handleSubmitMiner} />,
+            children: (
+                <CreateMiner
+                    type="single"
+                    minerData={minerData}
+                    changeMinerData={changeMinerData}
+                    onSubmit={handleSubmitMiner}
+                />
+            ),
         },
         {
             key: "2",
             label: "Batch Create Miners",
-            children: <CreateMiner type="batch" onSubmit={handleSubmitMiner} />,
-        },
-    ];
-
-    const infoData = [
-        {
-            key: "1",
-            label: "Summary & Estimated ROI",
-            content: [
-                {
-                    key: "1.1",
-                    label: "Est. TITAN X at End of Miner",
-                    value: "0",
-                    tips: "Est. TITAN X at End of Miner",
-                },
-                {
-                    key: "1.2",
-                    label: "ETH to Start Miner",
-                    value: "3",
-                    tips: "ETH to Start Miner",
-                },
-                {
-                    key: "1.3",
-                    label: "$ Market Value of Miner",
-                    value: "3",
-                    tips: "Market Value of Miner",
-                },
-                {
-                    key: "1.4",
-                    label: "Est. ROI % at End of Miner",
-                    value: "3",
-                    tips: "Est. ROI % at End of Miner",
-                },
-            ],
-        },
-        {
-            key: "2",
-            label: "TITAN X Details",
-            content: [
-                {
-                    key: "2.1",
-                    label: "TITAN X Market Price",
-                    value: "$0.000000744",
-                    tips: "TITAN X Market Price",
-                },
-            ],
-        },
-        {
-            key: "3",
-            label: "TITAN X Miner Details",
-            content: [
-                {
-                    key: "3.1",
-                    label: "Global TRank",
-                    value: "$0.000000744",
-                    tips: "Global TRank",
-                },
-                {
-                    key: "3.2",
-                    label: "Current Titan Per Day of Mining",
-                    value: "$0.000000744",
-                    tips: "Current Titan Per Day of Mining",
-                },
-                {
-                    key: "3.3",
-                    label: "🚀 Early Adoption Amplifier",
-                    value: "$0.000000744",
-                    tips: "🚀 Early Adoption Amplifier",
-                },
-                {
-                    key: "3.4",
-                    label: "🔥 Burn Bonus Amplifier",
-                    value: "$0.000000744",
-                    tips: "🔥 Burn Bonus Amplifier",
-                },
-                {
-                    key: "4.5",
-                    label: "Next Difficulty Increase",
-                    value: "$0.000000744",
-                    tips: "Next Difficulty Increase",
-                },
-            ],
+            children: (
+                <CreateMiner
+                    type="batch"
+                    minerData={minerData}
+                    changeMinerData={changeMinerData}
+                    onSubmit={handleSubmitMiner}
+                />
+            ),
         },
     ];
 
@@ -151,10 +108,20 @@ function Index() {
             <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
                 <div className="flex gap-4">
                     <div className="w-1/2">
-                        <Tabs defaultActiveKey="1" items={items} onChange={() => {}} />
+                        <Tabs
+                            defaultActiveKey="1"
+                            items={items}
+                            onChange={key => {
+                                if (key === "1") {
+                                    setIfSingleMiner(true);
+                                } else {
+                                    setIfSingleMiner(false);
+                                }
+                            }}
+                        />
                     </div>
                     <div className="w-1/2">
-                        <InfoCard data={infoData} />
+                        <InfoCard data={displayData || []} />
                     </div>
                 </div>
             </ContentWrapper>

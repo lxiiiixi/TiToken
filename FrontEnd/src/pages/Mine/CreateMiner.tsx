@@ -1,4 +1,3 @@
-import { useState, useCallback } from "react";
 import { InputNumber, Button } from "antd";
 
 export type MineData = {
@@ -9,23 +8,21 @@ export type MineData = {
 
 function CreateMiner({
     type,
+    minerData,
+    changeMinerData,
     onSubmit,
 }: {
     type: "single" | "batch";
+    minerData: MineData;
+    changeMinerData: (data: MineData) => void;
     onSubmit: (type: "single" | "batch", data: MineData) => void;
 }) {
-    const [minerData, setMinerData] = useState<MineData>({
-        length: 280,
-        power: 100,
-        number: 10,
-    });
-
-    const handleInput = useCallback((key: keyof MineData, value: number) => {
-        setMinerData(prev => ({
-            ...prev,
+    const handleInput = (key: keyof MineData, value: number) => {
+        changeMinerData({
+            ...minerData,
             [key]: value,
-        }));
-    }, []);
+        });
+    };
 
     const renderInput = (label: string, key: keyof MineData, min: number, max: number) => (
         <div className="flex-between my-2">
