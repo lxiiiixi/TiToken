@@ -7,25 +7,54 @@ import CreateMiner from "./CreateMiner";
 import type { MineData } from "./CreateMiner";
 import { useWriteContract, useAccount } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
-import { useGetCurrentMintCost } from "@/hooks/useReadTokenContract";
-import useMineInfoData from "@/hooks/useMineInfoData";
-import { calculateMintCost } from "@/configs/calculate";
+import {
+    useGetCurrentMintCost,
+    useGetCurrentMintableTitan,
+    useGetUserBurnAmplifierBonus,
+    useGetCurrentEAABonus,
+    useGetGlobalTRank,
+    useGetCurrentMintPowerBonus,
+} from "@/hooks/useReadTokenContract";
+import { calculateMintCost, calculateMintReward } from "@/configs/calculate";
 import { formatEther } from "viem";
+import getMineInfoDisplay from "./getMineInfoDisplay";
 
 function Index() {
+    const { currentMintCost } = useGetCurrentMintCost();
+    const { currentMintableTitan } = useGetCurrentMintableTitan();
+    const { userBurnAmplifierBonus } = useGetUserBurnAmplifierBonus();
+    const { currentEAABonus } = useGetCurrentEAABonus();
+    const { globalTRank } = useGetGlobalTRank();
+    const { currentMintPowerBonus } = useGetCurrentMintPowerBonus();
+
     const [minerData, setMinerData] = useState<MineData>({
         length: 280,
         power: 100,
         number: 10,
     });
-    const { currentMintCost } = useGetCurrentMintCost();
     const [ethCost, setEthCost] = useState(calculateMintCost(currentMintCost, minerData.power));
     const [ifSingleMiner, setIfSingleMiner] = useState(true);
 
     const { writeContractAsync } = useWriteContract();
     const { address } = useAccount();
 
-    const { displayData } = useMineInfoData(formatEther(ethCost));
+    const mintReward = calculateMintReward(
+        minerData.power,
+        minerData.length,
+        currentMintableTitan,
+        userBurnAmplifierBonus,
+        currentEAABonus
+    );
+
+    const mineInfoDisplay = getMineInfoDisplay(
+        mintReward,
+        ethCost,
+        globalTRank,
+        currentMintableTitan,
+        currentMintPowerBonus,
+        userBurnAmplifierBonus,
+        currentEAABonus
+    );
 
     useEffect(() => {
         if (ifSingleMiner) {
@@ -121,7 +150,7 @@ function Index() {
                         />
                     </div>
                     <div className="w-1/2">
-                        <InfoCard data={displayData || []} />
+                        <InfoCard data={mineInfoDisplay} />
                     </div>
                 </div>
             </ContentWrapper>

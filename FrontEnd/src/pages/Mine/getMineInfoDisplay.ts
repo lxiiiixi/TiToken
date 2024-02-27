@@ -1,29 +1,15 @@
-import {
-    useGetCurrentMintCost,
-    useGetCurrentMintableTitan,
-    useGetCurrentMintPowerBonus,
-    useGetUserBurnAmplifierBonus,
-    useGetCurrentEAABonus,
-    useGetGlobalTRank,
-} from "@/hooks/useReadTokenContract";
 import { formatEther } from "viem";
 
-function useMineInfoData(ethCost: string) {
-    const { currentMintCost } = useGetCurrentMintCost();
-    const { currentMintableTitan } = useGetCurrentMintableTitan();
-    const { currentMintPowerBonus } = useGetCurrentMintPowerBonus();
-    const { userBurnAmplifierBonus } = useGetUserBurnAmplifierBonus();
-    const { currentEAABonus } = useGetCurrentEAABonus();
-    const { globalTRank } = useGetGlobalTRank();
-
-    console.log(currentMintCost);
-    console.log(currentMintableTitan);
-    console.log(currentMintPowerBonus);
-    console.log(userBurnAmplifierBonus);
-
-    // console.log(currentMintCost);
-
-    const displayData = [
+export default function getMineInfoDisplay(
+    mintReward: bigint,
+    ethCost: bigint,
+    globalTRank: bigint,
+    currentMintableTitan: bigint,
+    currentMintPowerBonus: bigint,
+    userBurnAmplifierBonus: bigint,
+    currentEAABonus: bigint
+) {
+    return [
         {
             key: "1",
             label: "Summary & Estimated ROI",
@@ -31,13 +17,13 @@ function useMineInfoData(ethCost: string) {
                 {
                     key: "1.1",
                     label: "Est. TITAN X at End of Miner",
-                    value: "0",
+                    value: `${formatEther(mintReward)}`,
                     tips: "Est. TITAN X at End of Miner",
                 },
                 {
                     key: "1.2",
                     label: "ETH to Start Miner",
-                    value: `${ethCost} ETH`,
+                    value: `${formatEther(ethCost)} ETH`,
                     tips: "ETH to Start Miner",
                 },
                 {
@@ -103,8 +89,4 @@ function useMineInfoData(ethCost: string) {
             ],
         },
     ];
-
-    return { displayData };
 }
-
-export default useMineInfoData;
