@@ -98,7 +98,7 @@ function index() {
                     tips: "Effective Share Rate (incl. Bonuses)",
                 },
                 {
-                    key: "2.1",
+                    key: "2.5",
                     label: "Effective Shares (incl. Bonuses)",
                     value: "0",
                     tips: "Effective Shares (incl. Bonuses)",

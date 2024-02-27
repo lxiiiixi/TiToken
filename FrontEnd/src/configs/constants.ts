@@ -1,6 +1,9 @@
 import buyandburn from "@/abis/buyandburn.json";
 import token from "@/abis/titanx.json";
 
+export const TOKEN_PRICE = 1;
+export const TOKEN_PRICE_PRECESION = 10000000000000000000000000;
+
 export const SUPPORTED_CHAINS = [168587773];
 
 export const BUYANDBURN_CONTRACT_CONFIG = {

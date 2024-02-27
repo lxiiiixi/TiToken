@@ -6,7 +6,7 @@ import InfoCard from "@/components/InfoCard";
 import CreateMiner from "./CreateMiner";
 import type { MineData } from "./CreateMiner";
 import { useWriteContract, useAccount } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import { TOKEN_CONTRACT_CONFIT, TOKEN_PRICE, TOKEN_PRICE_PRECESION } from "@/configs/constants";
 import {
     useGetCurrentMintCost,
     useGetCurrentMintableTitan,
@@ -18,6 +18,7 @@ import {
 import { calculateMintCost, calculateMintReward } from "@/configs/calculate";
 import { formatEther } from "viem";
 import getMineInfoDisplay from "./getMineInfoDisplay";
+import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 
 function Index() {
     const { currentMintCost } = useGetCurrentMintCost();
@@ -46,9 +47,12 @@ function Index() {
         currentEAABonus
     );
 
+    const marketValue = (mintReward * BigInt(TOKEN_PRICE)) / BigInt(TOKEN_PRICE_PRECESION);
+
     const mineInfoDisplay = getMineInfoDisplay(
         mintReward,
         ethCost,
+        marketValue,
         globalTRank,
         currentMintableTitan,
         currentMintPowerBonus,
@@ -151,6 +155,7 @@ function Index() {
                     </div>
                     <div className="w-1/2">
                         <InfoCard data={mineInfoDisplay} />
+                        <NextDifficultIncrease />
                     </div>
                 </div>
             </ContentWrapper>

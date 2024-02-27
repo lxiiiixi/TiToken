@@ -1,8 +1,10 @@
 import { formatEther } from "viem";
+import { TOKEN_PRICE } from "@/configs/constants";
 
 export default function getMineInfoDisplay(
     mintReward: bigint,
     ethCost: bigint,
+    marketValue: bigint,
     globalTRank: bigint,
     currentMintableTitan: bigint,
     currentMintPowerBonus: bigint,
@@ -29,7 +31,7 @@ export default function getMineInfoDisplay(
                 {
                     key: "1.3",
                     label: "$ Market Value of Miner",
-                    value: "3",
+                    value: `$${marketValue}`,
                     tips: "Market Value of Miner",
                 },
                 {
@@ -47,7 +49,7 @@ export default function getMineInfoDisplay(
                 {
                     key: "2.1",
                     label: "TITAN X Market Price",
-                    value: "$0.000000744",
+                    value: `$${TOKEN_PRICE / 1000}`,
                     tips: "TITAN X Market Price",
                 },
             ],
@@ -79,12 +81,6 @@ export default function getMineInfoDisplay(
                     label: "🔥 Burn Bonus Amplifier",
                     value: `${userBurnAmplifierBonus}`,
                     tips: "🔥 Burn Bonus Amplifier",
-                },
-                {
-                    key: "4.5",
-                    label: "Next Difficulty Increase",
-                    value: "$0.000000744",
-                    tips: "Next Difficulty Increase",
                 },
             ],
         },
