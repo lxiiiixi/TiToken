@@ -1,9 +1,9 @@
-import { useContractTimeData } from "@/hooks/useReadTokenContract";
+import { useGlobalInfoData } from "@/hooks/useReadTokenContract";
 import { useManualDailyUpdate } from "@/hooks/useWriteTokenContract";
 import GlobalCountdown from "../GlobalCountdown";
 
 export default function CountDownButton() {
-    const { currentContractDay } = useContractTimeData();
+    const { currentContractDay } = useGlobalInfoData();
     const { manualDailyUpdate } = useManualDailyUpdate();
 
     const handleOnClick = () => {

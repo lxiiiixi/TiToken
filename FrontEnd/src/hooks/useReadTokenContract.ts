@@ -1,5 +1,6 @@
 import { useReadContract, useReadContracts, useAccount } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import type { UserStakesInfo } from "@/pages/Stake";
 
 export function useGetCurrentMintCost() {
     const { data: currentMintCost } = useReadContract({
@@ -75,7 +76,7 @@ export function useGetGlobalTRank() {
     return { globalTRank: 0n };
 }
 
-export function useContractTimeData() {
+export function useGlobalInfoData() {
     const result = useReadContracts({
         contracts: [
             {
@@ -86,6 +87,10 @@ export function useContractTimeData() {
                 ...TOKEN_CONTRACT_CONFIT,
                 functionName: "genesisTs", // contract deployment block timestamp (in seconds)
             },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentShareRate", // current share rate
+            },
         ],
     });
 
@@ -95,6 +100,8 @@ export function useContractTimeData() {
         currentContractDay:
             result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
         genesisTs: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
+        currentShareRate:
+            result.data[2].status === "success" ? (result.data[2].result as bigint) : 0n,
     };
 }
 
@@ -119,4 +126,27 @@ export function useErc20MetaData() {
         totalSupply: result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
         balanceOf: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
     };
+}
+
+export function useGetUserCurrentActiveShares() {
+    const { data: userCurrentActiveShares } = useReadContract({
+        ...TOKEN_CONTRACT_CONFIT,
+        functionName: "getUserCurrentActiveShares",
+    });
+
+    if (typeof userCurrentActiveShares === "bigint") {
+        return { userCurrentActiveShares };
+    }
+
+    return { userCurrentActiveShares: 0n };
+}
+
+export function useGetUserStakes() {
+    const { data: userStakes } = useReadContract({
+        ...TOKEN_CONTRACT_CONFIT,
+        functionName: "getUserStakes",
+        args: [useAccount()?.address],
+    });
+
+    return { userStakes: userStakes as UserStakesInfo[] };
 }

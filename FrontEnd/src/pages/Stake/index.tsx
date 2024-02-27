@@ -2,12 +2,28 @@ import ContentWrapper from "@/sections/ContentWrapper";
 import { InputNumber, Button } from "antd";
 import InfoCard from "@/components/InfoCard";
 import { useState } from "react";
-import { useErc20MetaData } from "@/hooks/useReadTokenContract";
+import {
+    useErc20MetaData,
+    useGetUserCurrentActiveShares,
+    useGetUserStakes,
+    useGlobalInfoData,
+} from "@/hooks/useReadTokenContract";
 import { useStartStake } from "@/hooks/useWriteTokenContract";
+import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
+import { SCALING_FACTOR_1e18 } from "@/configs/constants";
 
-type StakeData = {
+export type StakeData = {
     amount: number;
     length: number;
+};
+
+export type UserStakesInfo = {
+    titanAmount: bigint;
+    shares: bigint;
+    numOfDays: bigint;
+    stakeStartTs: bigint;
+    maturityTs: bigint;
+    // StakeStatus status;
 };
 
 function Index() {
@@ -17,7 +33,13 @@ function Index() {
     });
 
     const { balanceOf } = useErc20MetaData();
+    const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake } = useStartStake();
+    const { userStakes } = useGetUserStakes();
+    const { currentShareRate } = useGlobalInfoData();
+
+    const stakeAmount = userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0);
+    console.log(currentShareRate);
 
     const SingleMiner = () => {
         const handleOnclickStake = () => {
@@ -78,26 +100,14 @@ function Index() {
                 {
                     key: "1.1",
                     label: "TITAN X in Stake",
-                    value: "0",
+                    value: `${stakeAmount}`,
                     tips: "TITAN X in Stake",
                 },
                 {
                     key: "1.2",
                     label: "# of Shares",
-                    value: "3",
+                    value: `${userCurrentActiveShares}`,
                     tips: "# of Shares",
-                },
-                {
-                    key: "1.3",
-                    label: "$ Market Value of Miner",
-                    value: "3",
-                    tips: "Market Value of Miner",
-                },
-                {
-                    key: "1.4",
-                    label: "Est. ROI % at End of Miner",
-                    value: "3",
-                    tips: "Est. ROI % at End of Miner",
                 },
             ],
         },
@@ -108,7 +118,9 @@ function Index() {
                 {
                     key: "2.1",
                     label: "Current Share Rate (excl. Bonuses)",
-                    value: "828.57",
+                    value: `${
+                        currentShareRate ? currentShareRate / BigInt(SCALING_FACTOR_1e18) : 0
+                    }`,
                     tips: "Current Share Rate (excl. Bonuses)",
                 },
                 {
@@ -151,6 +163,7 @@ function Index() {
                     </div>
                     <div className="w-1/2">
                         <InfoCard data={infoData} />
+                        <NextDifficultIncrease />
                     </div>
                 </div>
             </ContentWrapper>
