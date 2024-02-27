@@ -1,34 +1,66 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { InputNumber, Button } from "antd";
 import InfoCard from "@/components/InfoCard";
+import { useState } from "react";
+import { useErc20MetaData } from "@/hooks/useReadTokenContract";
+import { useStartStake } from "@/hooks/useWriteTokenContract";
 
-function index() {
+type StakeData = {
+    amount: number;
+    length: number;
+};
+
+function Index() {
+    const [stakeData, setStakeData] = useState<StakeData>({
+        amount: 0,
+        length: 280,
+    });
+
+    const { balanceOf } = useErc20MetaData();
+    const { startStake } = useStartStake();
+
     const SingleMiner = () => {
+        const handleOnclickStake = () => {
+            if (startStake && stakeData.amount && stakeData.length)
+                startStake(stakeData.amount, stakeData.length);
+        };
+
+        const handleInput = (key: keyof StakeData, value: number) => {
+            setStakeData(old => ({
+                ...old,
+                [key]: value,
+            }));
+        };
+
+        const renderInput = (label: string, key: keyof StakeData, min: number, max: number) => (
+            <div className="flex-between my-2">
+                <span>{label}</span>
+                <span>
+                    <InputNumber
+                        min={min}
+                        max={max}
+                        value={stakeData[key]}
+                        onChange={value => value && handleInput(key, value)}
+                    />
+                    <Button
+                        className="ml-2"
+                        onClick={() => handleInput(key, max)}
+                        disabled={max === 0}
+                    >
+                        MAX
+                    </Button>
+                </span>
+            </div>
+        );
+
         return (
             <div className="p-6">
-                <h2 className="text-xl">Create TITAN X Miner</h2>
+                <h2 className="text-xl">Create TITAN X Staker</h2>
                 <div>
-                    <div className="flex-between my-2">
-                        <span>Stake Amount</span>
-                        <span>
-                            <InputNumber min={1} max={10} defaultValue={3} onChange={() => {}} />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
-                    <div className="flex-between my-2">
-                        <span>Stake Length</span>
-                        <span>
-                            <InputNumber
-                                min={1}
-                                max={3500}
-                                defaultValue={3500}
-                                onChange={() => {}}
-                            />
-                            <Button className="ml-2">MAX</Button>
-                        </span>
-                    </div>
+                    {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
+                    {renderInput("Stake Length", "length", 0, 280)}
                 </div>
-                <Button block className="my-4">
+                <Button block className="my-4" onClick={handleOnclickStake}>
                     Start Stake
                 </Button>
                 <p className="text-gray-500 text-sm text-center my-2">
@@ -126,4 +158,4 @@ function index() {
     );
 }
 
-export default index;
+export default Index;

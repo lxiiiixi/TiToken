@@ -16,3 +16,26 @@ export function useManualDailyUpdate() {
     };
     return { manualDailyUpdate };
 }
+
+/**
+ * start a new stake
+ * @param amount
+ * @param numOfDays
+ * @returns
+ */
+export function useStartStake() {
+    const { writeContract } = useWriteContract();
+    const { address } = useAccount();
+
+    if (!address) return {};
+
+    const startStake = (amount: number, numOfDays: number) => {
+        writeContract({
+            ...TOKEN_CONTRACT_CONFIT,
+            address,
+            functionName: "startStake",
+            args: [amount, numOfDays],
+        });
+    };
+    return { startStake };
+}
