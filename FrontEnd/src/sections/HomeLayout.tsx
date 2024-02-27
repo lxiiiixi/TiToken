@@ -3,6 +3,7 @@ import React from "react";
 import WalletConnect from "@/sections/Header/WalletConnect";
 import Logo from "@/sections/Header/Logo";
 import NavMenu from "@/sections/Header/NavMenu";
+import CountDown from "@/sections/Header/CountDown";
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -12,7 +13,8 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                     <Logo />
                     <NavMenu />
                 </div>
-                <div>
+                <div className="flex-center gap-4">
+                    <CountDown />
                     <WalletConnect />
                 </div>
             </div>

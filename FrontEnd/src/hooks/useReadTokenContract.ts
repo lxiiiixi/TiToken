@@ -1,4 +1,4 @@
-import { useReadContract, useAccount } from "wagmi";
+import { useReadContract, useReadContracts, useAccount } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
 
 export function useGetCurrentMintCost() {
@@ -73,4 +73,27 @@ export function useGetGlobalTRank() {
         return { globalTRank };
     }
     return { globalTRank: 0n };
+}
+
+export function useContractTimeData() {
+    const result = useReadContracts({
+        contracts: [
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentContractDay", // current contract day
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "genesisTs", // contract deployment block timestamp (in seconds)
+            },
+        ],
+    });
+
+    if (!result.data) return {};
+
+    return {
+        currentContractDay:
+            result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
+        genesisTs: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
+    };
 }
