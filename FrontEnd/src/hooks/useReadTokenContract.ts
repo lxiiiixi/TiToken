@@ -246,3 +246,16 @@ export function useGetPayoutCyclesData() {
         ),
     };
 }
+
+export function useGetUndistributedEth() {
+    const { data: undistributedEth } = useReadContract({
+        ...TOKEN_CONTRACT_CONFIT,
+        functionName: "getUndistributedEth",
+    });
+
+    if (typeof undistributedEth === "bigint") {
+        return { undistributedEth: undistributedEth as bigint };
+    }
+
+    return { undistributedEth: 0n };
+}

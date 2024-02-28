@@ -1,16 +1,19 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import Card from "@/components/Card";
 import { Button } from "antd";
-import { useReadContract } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import { useWethBalance } from "@/hooks/useReadBuyAndBurnContract";
+import { useETHPrice } from "@/hooks/useTokenPrice";
+import EthAndUsdDisplay from "@/sections/EthAndUsdDisplay";
+import { useGetUndistributedEth } from "@/hooks/useReadTokenContract";
+import { useDistributeETH } from "@/hooks/useWriteTokenContract";
+import { useBuynBurn } from "@/hooks/useWriteBuyAndBurnContract";
 
 function Index() {
-    const { data: name } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
-        functionName: "name",
-    });
-
-    console.log(name);
+    const { wethBalance } = useWethBalance();
+    const ethUsdPrice = useETHPrice();
+    const { undistributedEth } = useGetUndistributedEth();
+    const { distributeETH } = useDistributeETH();
+    const { buynBurn } = useBuynBurn();
 
     return (
         <ContentWrapper
@@ -22,26 +25,39 @@ function Index() {
                     <Card title="Distribute into Payouts + Buy & Burn">
                         <div className="flex-between my-2">
                             <span>To Be Distributed</span>
-                            <span>$26,795.04</span>
+                            <EthAndUsdDisplay
+                                ethAmount={undistributedEth}
+                                ethUsdPrice={ethUsdPrice}
+                            />
                         </div>
                         <div className="flex-between my-2">
                             <span>User Reward</span>
-                            <span>$5.04</span>
+                            <EthAndUsdDisplay
+                                ethAmount={(undistributedEth * 33n) / 10000n}
+                                ethUsdPrice={ethUsdPrice}
+                            />
                         </div>
-                        <Button block>Distribute ETH</Button>
+                        <Button block onClick={distributeETH}>
+                            Distribute ETH
+                        </Button>
                     </Card>
                 </div>
                 <div className="w-1/2">
                     <Card title="Buy & Burn V2">
                         <div className="flex-between my-2">
                             <span>Buy & Burn Balance</span>
-                            <span>$26,795.04</span>
+                            <EthAndUsdDisplay ethAmount={wethBalance} ethUsdPrice={ethUsdPrice} />
                         </div>
                         <div className="flex-between my-2">
                             <span>User Reward</span>
-                            <span>$5.04</span>
+                            <EthAndUsdDisplay
+                                ethAmount={(wethBalance * 33n) / 10000n}
+                                ethUsdPrice={ethUsdPrice}
+                            />
                         </div>
-                        <Button block>Trigger Buy And Burn</Button>
+                        <Button block onClick={buynBurn}>
+                            Trigger Buy And Burn
+                        </Button>
                         <p className=" text-sm text-gray-400 p-4 text-center">
                             current cap per swap is 3.33 ETH & is callable every 60 minute(s), no
                             global cap. Total TITANX buy & burned so far: 19,728,025,995,103.56

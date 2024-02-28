@@ -39,3 +39,15 @@ export function useStartStake() {
     };
     return { startStake };
 }
+
+export function useDistributeETH() {
+    const { writeContract } = useWriteContract();
+
+    const distributeETH = () => {
+        writeContract({
+            ...TOKEN_CONTRACT_CONFIT,
+            functionName: "distributeETH",
+        });
+    };
+    return { distributeETH };
+}
