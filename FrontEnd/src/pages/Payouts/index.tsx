@@ -1,13 +1,20 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { Button, Divider, Progress } from "antd";
 import Card from "@/components/Card";
-import { useGetUserETHClaimableTotal, useGetPayoutCyclesData } from "@/hooks/useReadTokenContract";
+import {
+    useGetUserETHClaimableTotal,
+    useGetPayoutCyclesData,
+    useGlobalInfoData,
+} from "@/hooks/useReadTokenContract";
 import { formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
+import { useETHPrice } from "@/hooks/useTokenPrice";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
     const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
+    const { currentContractDay } = useGlobalInfoData();
+    const ethUsdPrice = useETHPrice();
 
     console.log(currentCycleIndex);
 
@@ -18,12 +25,30 @@ function Index() {
         dayNum: number;
         globalCyclePayout: bigint;
     }) => {
+        const payoutValue = ethUsdPrice * parseFloat(formatEther(globalCyclePayout));
+
+        // 这里不是很确定的是，这个天数是从项目部署开始计算的，还是质押开始的
+
+        const cycleDays = [8, 28, 90, 369, 888];
+        const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
+            acc[day] = (currentCycleIndex && (currentCycleIndex[day] + 1n) * BigInt(day)) || 0n;
+            return acc;
+        }, {});
+        const countdownPercent = cycleDays.reduce((acc: { [key: number]: number }, day) => {
+            acc[day] =
+                (currentCycleIndex &&
+                    currentContractDay &&
+                    Math.round(((day - Number(nextDay[day] - currentContractDay)) / day) * 100)) ||
+                100;
+            return acc;
+        }, {});
+
         return (
             <Card title={`${dayNum}-Day Payout Cycles`}>
                 <div className="flex-between my-2">
                     <span>Global Cycle Payout</span>
                     <span className="flex flex-col">
-                        <span>$</span>
+                        <span>${formatPrice(payoutValue)}</span>
                         <span className="text-gray-500 text-xs">
                             ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
                         </span>
@@ -36,8 +61,8 @@ function Index() {
                 <Divider />
                 <div>
                     <p>Countdown</p>
-                    <Progress percent={30} />
-                    <p>— Next Payout Day: 120</p>
+                    <Progress percent={countdownPercent[dayNum]} />
+                    <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
                 </div>
             </Card>
         );

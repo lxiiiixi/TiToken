@@ -235,11 +235,11 @@ export function useGetPayoutCyclesData() {
             {}
         ),
         currentCycleIndex: [8, 28, 90, 369, 888].reduce(
-            (acc: { [key: number]: number }, day, index) => {
+            (acc: { [key: number]: bigint }, day, index) => {
                 acc[day] =
                     result.data[index + 5].status === "success"
-                        ? (result.data[index + 5].result as number)
-                        : 0;
+                        ? (result.data[index + 5].result as bigint)
+                        : 0n;
                 return acc;
             },
             {}
