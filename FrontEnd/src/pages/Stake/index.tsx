@@ -38,7 +38,8 @@ function Index() {
     const { userStakes } = useGetUserStakes();
     const { currentShareRate } = useGlobalInfoData();
 
-    const stakeAmount = userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0);
+    const stakeAmount =
+        userStakes && userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0);
     console.log(currentShareRate);
 
     const SingleMiner = () => {

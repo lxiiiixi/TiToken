@@ -1,14 +1,26 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { Button, Divider, Progress } from "antd";
 import Card from "@/components/Card";
+import { useGetUserETHClaimableTotal, useGetPayoutCyclesData } from "@/hooks/useReadTokenContract";
 
-function index() {
-    const PayoutCycleCard = ({ dayNum }: { dayNum: number }) => {
+function Index() {
+    const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
+    const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
+
+    console.log(currentCycleIndex);
+
+    const PayoutCycleCard = ({
+        dayNum,
+        globalCyclePayout,
+    }: {
+        dayNum: number;
+        globalCyclePayout: bigint;
+    }) => {
         return (
             <Card title={`${dayNum}-Day Payout Cycles`}>
                 <div className="flex-between my-2">
                     <span>Global Cycle Payout</span>
-                    <span>$26,795.04</span>
+                    <span>${globalCyclePayout.toString()}</span>
                 </div>
                 <div className="flex-between my-2">
                     <span>Your Est. Payout</span>
@@ -35,37 +47,58 @@ function index() {
                 </div>
                 <div className="flex-between my-2">
                     <span>ETH Claimable</span>
-                    <span>$0</span>
+                    <span>${userETHClaimableTotal.toString()}</span>
                 </div>
-                <Button block className="my-2">
-                    No Payout Claimable Yet
-                </Button>
+                {userETHClaimableTotal > 0 ? (
+                    <Button block className="my-2">
+                        Claim Payout
+                    </Button>
+                ) : (
+                    <Button block className="my-2" disabled>
+                        No Payout Claimable Yet
+                    </Button>
+                )}
                 <p className="text-gray-500 text-sm text-center my-2">
                     don't have any active shares? stake your TITAN X tokens to earn ETH passive
                     income.
                 </p>
             </Card>
-            <div className="h-1 bg-black/30 rounded-sm my-6"></div>
+            <div className="h-[2px] bg-black/20 rounded-sm my-6"></div>
             <Button block>Triggle Avaliable Cycle payouts</Button>
             <div className="flex flex-wrap my-4">
                 <div className="w-full md:w-1/2 p-2">
-                    <PayoutCycleCard dayNum={8} />
+                    <PayoutCycleCard
+                        dayNum={8}
+                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[8] : 0n}
+                    />
                 </div>
                 <div className="w-full md:w-1/2 p-2">
-                    <PayoutCycleCard dayNum={28} />
+                    <PayoutCycleCard
+                        dayNum={28}
+                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[28] : 0n}
+                    />
                 </div>
                 <div className="w-full md:w-1/2 p-2">
-                    <PayoutCycleCard dayNum={90} />
+                    <PayoutCycleCard
+                        dayNum={90}
+                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[90] : 0n}
+                    />
                 </div>
                 <div className="w-full md:w-1/2 p-2">
-                    <PayoutCycleCard dayNum={369} />
+                    <PayoutCycleCard
+                        dayNum={369}
+                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[369] : 0n}
+                    />
                 </div>
                 <div className="w-full p-2">
-                    <PayoutCycleCard dayNum={888} />
+                    <PayoutCycleCard
+                        dayNum={888}
+                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[888] : 0n}
+                    />
                 </div>
             </div>
         </ContentWrapper>
     );
 }
 
-export default index;
+export default Index;

@@ -150,3 +150,99 @@ export function useGetUserStakes() {
 
     return { userStakes: userStakes as UserStakesInfo[] };
 }
+
+export function useGetUserETHClaimableTotal() {
+    const { data: userETHClaimableTotal } = useReadContract({
+        ...TOKEN_CONTRACT_CONFIT,
+        functionName: "getUserETHClaimableTotal",
+        args: [useAccount()?.address],
+    });
+
+    if (typeof userETHClaimableTotal === "bigint") {
+        return { userETHClaimableTotal: userETHClaimableTotal as bigint };
+    }
+
+    return { userETHClaimableTotal: 0n };
+}
+
+export function useGetPayoutCyclesData() {
+    const result = useReadContracts({
+        contracts: [
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCyclePayoutPool", // 获取不同周期的奖金池中ETH的数量
+                args: [8],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCyclePayoutPool",
+                args: [28],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCyclePayoutPool",
+                args: [90],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCyclePayoutPool",
+                args: [369],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCyclePayoutPool",
+                args: [888],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentCycleIndex", // 获取当前周期是第几轮
+                args: [8],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentCycleIndex",
+                args: [28],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentCycleIndex",
+                args: [90],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentCycleIndex",
+                args: [369],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getCurrentCycleIndex",
+                args: [888],
+            },
+        ],
+    });
+
+    if (!result.data || !result.isSuccess) return {};
+
+    return {
+        globalCyclePayout: [8, 28, 90, 369, 888].reduce(
+            (acc: { [key: number]: bigint }, day, index) => {
+                acc[day] =
+                    result.data[index].status === "success"
+                        ? (result.data[index].result as bigint)
+                        : 0n;
+                return acc;
+            },
+            {}
+        ),
+        currentCycleIndex: [8, 28, 90, 369, 888].reduce(
+            (acc: { [key: number]: number }, day, index) => {
+                acc[day] =
+                    result.data[index + 5].status === "success"
+                        ? (result.data[index + 5].result as number)
+                        : 0;
+                return acc;
+            },
+            {}
+        ),
+    };
+}

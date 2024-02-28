@@ -23,7 +23,7 @@ function WalletConnect() {
     }
 
     if (!SUPPORTED_CHAINS.includes(chainId)) {
-        console.log(!SUPPORTED_CHAINS.includes(chainId));
+        // console.log(!SUPPORTED_CHAINS.includes(chainId));
 
         return (
             <div>
