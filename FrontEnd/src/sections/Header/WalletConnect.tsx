@@ -37,8 +37,6 @@ function WalletConnect() {
         );
     }
 
-    console.log(isConnected && address);
-
     if (isConnected && address) {
         return (
             <div className="flex-center gap-3">

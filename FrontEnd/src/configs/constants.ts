@@ -4,15 +4,17 @@ import token from "@/abis/titanx.json";
 export const TOKEN_PRICE = 1;
 export const TOKEN_PRICE_PRECESION = 10000000000000000000000000;
 
-export const SUPPORTED_CHAINS = [168587773];
+export const SUPPORTED_CHAINS = [1, 168587773];
 
 export const BUYANDBURN_CONTRACT_CONFIG = {
-    address: "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8" as `0x${string}`,
+    // address: "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8" as `0x${string}`,
+    address: "0x410e10C33a49279f78CB99c8d816F18D5e7D5404" as `0x${string}`,
     abi: buyandburn,
 } as const;
 
 export const TOKEN_CONTRACT_CONFIT = {
-    address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
+    // address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
+    address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,
     abi: token,
 } as const;
 

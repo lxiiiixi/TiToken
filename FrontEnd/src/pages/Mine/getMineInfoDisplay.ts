@@ -1,5 +1,6 @@
 import { formatEther } from "viem";
 import { TOKEN_PRICE } from "@/configs/constants";
+import { formatPrice, formatPercentage } from "@/configs/utils";
 
 export default function getMineInfoDisplay(
     mintReward: bigint,
@@ -19,13 +20,13 @@ export default function getMineInfoDisplay(
                 {
                     key: "1.1",
                     label: "Est. TITAN X at End of Miner",
-                    value: `${formatEther(mintReward)}`,
+                    value: `${formatPrice(formatEther(mintReward))}`,
                     tips: "Est. TITAN X at End of Miner",
                 },
                 {
                     key: "1.2",
                     label: "ETH to Start Miner",
-                    value: `${formatEther(ethCost)} ETH`,
+                    value: `${formatPrice(formatEther(ethCost), 4)} ETH`,
                     tips: "ETH to Start Miner",
                 },
                 {
@@ -61,25 +62,25 @@ export default function getMineInfoDisplay(
                 {
                     key: "3.1",
                     label: "Global TRank",
-                    value: `${globalTRank}`,
+                    value: `${formatPrice(globalTRank)}`,
                     tips: "Global TRank",
                 },
                 {
                     key: "3.2",
                     label: "Current Titan Per Day of Mining",
-                    value: `${formatEther(currentMintableTitan)}`,
+                    value: `${formatPrice(formatEther(currentMintableTitan))}`,
                     tips: "Current Titan Per Day of Mining",
                 },
                 {
                     key: "3.3",
                     label: "🚀 Early Adoption Amplifier",
-                    value: `${currentEAABonus}`,
+                    value: `+${formatPercentage(currentEAABonus)}`,
                     tips: "🚀 Early Adoption Amplifier",
                 },
                 {
                     key: "3.4",
                     label: "🔥 Burn Bonus Amplifier",
-                    value: `${userBurnAmplifierBonus}`,
+                    value: `+${formatPercentage(userBurnAmplifierBonus)}`,
                     tips: "🔥 Burn Bonus Amplifier",
                 },
             ],
