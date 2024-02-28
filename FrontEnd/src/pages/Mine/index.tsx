@@ -6,7 +6,7 @@ import InfoCard from "@/components/InfoCard";
 import CreateMiner from "./CreateMiner";
 import type { MineData } from "./CreateMiner";
 import { useWriteContract, useAccount } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT, TOKEN_PRICE, TOKEN_PRICE_PRECESION } from "@/configs/constants";
+import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
 import {
     useGetCurrentMintCost,
     useGetCurrentMintableTitan,
@@ -19,6 +19,7 @@ import { calculateMintCost, calculateMintReward } from "@/configs/calculate";
 import { formatEther } from "viem";
 import getMineInfoDisplay from "./getMineInfoDisplay";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
+import { useETHPrice, useTokenPrice } from "@/hooks/useTokenPrice";
 
 function Index() {
     const { currentMintCost } = useGetCurrentMintCost();
@@ -27,6 +28,10 @@ function Index() {
     const { currentEAABonus } = useGetCurrentEAABonus();
     const { globalTRank } = useGetGlobalTRank();
     const { currentMintPowerBonus } = useGetCurrentMintPowerBonus();
+    const ethUsdPrice = useETHPrice();
+    const tokenPrice = useTokenPrice();
+
+    console.log(ethUsdPrice, tokenPrice);
 
     const [minerData, setMinerData] = useState<MineData>({
         length: 280,
@@ -47,12 +52,14 @@ function Index() {
         currentEAABonus
     );
 
-    const marketValue = (mintReward * BigInt(TOKEN_PRICE)) / BigInt(TOKEN_PRICE_PRECESION);
+    const marketValue = tokenPrice && formatEther(tokenPrice) * formatEther(mintReward);
 
     const mineInfoDisplay = getMineInfoDisplay(
         mintReward,
         ethCost,
-        marketValue,
+        ethUsdPrice,
+        tokenPrice || 0n,
+        marketValue || 0,
         globalTRank,
         currentMintableTitan,
         currentMintPowerBonus,

@@ -11,8 +11,7 @@ function GlobalCountdown() {
     const CountDownDisplay = () => {
         if (!genesisTs) return <>00h:00m:00s</>;
 
-        const deadline =
-            genesisTs + currentContractDay * BigInt(SECONDS_IN_DAY) + BigInt(SECONDS_IN_DAY);
+        const deadline = genesisTs + currentContractDay * BigInt(SECONDS_IN_DAY);
 
         const onFinish: CountdownProps["onFinish"] = () => {
             console.log("finished!");

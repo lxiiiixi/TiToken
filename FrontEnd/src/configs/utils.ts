@@ -32,7 +32,8 @@ export function formatPrice(price: number | bigint | string, decimalPlaces: numb
         // 分割整数部分和小数部分
         const parts = price.split(".");
         const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        const decimalPart = parts[1].substring(0, decimalPlaces);
+        if (!parts[1]) return integerPart;
+        const decimalPart = parts[1]?.substring(0, decimalPlaces);
         return integerPart + "." + decimalPart;
     }
 

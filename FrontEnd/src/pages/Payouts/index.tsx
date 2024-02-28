@@ -2,6 +2,8 @@ import ContentWrapper from "@/sections/ContentWrapper";
 import { Button, Divider, Progress } from "antd";
 import Card from "@/components/Card";
 import { useGetUserETHClaimableTotal, useGetPayoutCyclesData } from "@/hooks/useReadTokenContract";
+import { formatPrice } from "@/configs/utils";
+import { formatEther } from "viem";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
@@ -20,7 +22,12 @@ function Index() {
             <Card title={`${dayNum}-Day Payout Cycles`}>
                 <div className="flex-between my-2">
                     <span>Global Cycle Payout</span>
-                    <span>${globalCyclePayout.toString()}</span>
+                    <span className="flex flex-col">
+                        <span>$</span>
+                        <span className="text-gray-500 text-xs">
+                            ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
+                        </span>
+                    </span>
                 </div>
                 <div className="flex-between my-2">
                     <span>Your Est. Payout</span>

@@ -29,7 +29,7 @@ export type UserStakesInfo = {
 function Index() {
     const [stakeData, setStakeData] = useState<StakeData>({
         amount: 0,
-        length: 280,
+        length: 3500,
     });
 
     const { balanceOf } = useErc20MetaData();
@@ -81,7 +81,7 @@ function Index() {
                 <h2 className="text-xl">Create TITAN X Staker</h2>
                 <div>
                     {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
-                    {renderInput("Stake Length", "length", 0, 280)}
+                    {renderInput("Stake Length", "length", 0, 3500)}
                 </div>
                 <Button block className="my-4" onClick={handleOnclickStake}>
                     Start Stake
@@ -92,6 +92,8 @@ function Index() {
             </div>
         );
     };
+
+    console.log(currentShareRate);
 
     const infoData = [
         {
@@ -120,7 +122,11 @@ function Index() {
                     key: "2.1",
                     label: "Current Share Rate (excl. Bonuses)",
                     value: `${
-                        currentShareRate ? currentShareRate / BigInt(SCALING_FACTOR_1e18) : 0
+                        currentShareRate
+                            ? (
+                                  Number(currentShareRate / BigInt(SCALING_FACTOR_1e18 / 100)) / 100
+                              ).toFixed(2)
+                            : 0
                     }`,
                     tips: "Current Share Rate (excl. Bonuses)",
                 },

@@ -59,3 +59,14 @@ export const calculateMintReward = (
 
     return reward;
 };
+
+/**
+ * calculate ROI
+ * @param marketValue 矿工结束时的 TITAN X 市场价值
+ * @param minterCostValue 启动挖矿时需要的成本
+ * @returns
+ */
+export const calculateROI = (marketValue: number, minterCostValue: number) => {
+    // （矿工结束时的 TITAN X 市场价值 - 挖矿成本）/ 挖矿成本 × 100%
+    return (marketValue - minterCostValue) / minterCostValue;
+};
