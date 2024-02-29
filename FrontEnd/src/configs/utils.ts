@@ -70,6 +70,5 @@ export function formatPercentage(value: number | bigint) {
     // 将值转换为基本的百分比形式
     const percentage = numericValue / (PERCENT_BPS * 100);
 
-    // 格式化为字符串，保留两位小数，并添加 '%' 符号
     return `${percentage.toFixed(2)}%`;
 }

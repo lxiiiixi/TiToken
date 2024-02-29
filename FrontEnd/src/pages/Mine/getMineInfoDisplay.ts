@@ -1,4 +1,4 @@
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import { PERCENT_BPS } from "@/configs/constants";
 import { formatPrice, formatPercentage } from "@/configs/utils";
 import { calculateROI } from "@/configs/calculate";
@@ -8,23 +8,23 @@ export default function getMineInfoDisplay(
     ethCost: bigint,
     ethUsdPrice: number,
     tokenPrice: bigint,
-    marketValue: number,
+    marketValue: bigint,
     globalTRank: bigint,
     currentMintableTitan: bigint,
     currentMintPowerBonus: bigint,
     userBurnAmplifierBonus: bigint,
     currentEAABonus: bigint
 ) {
-    const ethUsdValue = (ethCost * BigInt(ethUsdPrice * 1e18)) / BigInt(1e18);
-
+    const ethUsdValue = (ethCost * parseEther(ethUsdPrice.toString())) / BigInt(1e18);
     // console.log(currentEAABonus / BigInt(PERCENT_BPS));
 
     const mintRewardWithBonus =
         mintReward + (mintReward * currentEAABonus) / BigInt(PERCENT_BPS) / 10000n;
 
-    const roi = calculateROI(marketValue, parseFloat(ethUsdValue.toString()));
-
-    console.log(roi);
+    const roi = calculateROI(
+        parseFloat(formatPrice(marketValue, 4)),
+        parseFloat(formatPrice(ethUsdValue, 4))
+    );
 
     return [
         {
@@ -48,7 +48,7 @@ export default function getMineInfoDisplay(
                 {
                     key: "1.3",
                     label: "$ Market Value of Miner",
-                    value: `$${formatPrice(marketValue, 4)}`,
+                    value: `$${formatPrice(formatEther(marketValue), 4)}`,
                     tips: "Market Value of Miner",
                 },
                 {

@@ -31,8 +31,6 @@ function Index() {
     const ethUsdPrice = useETHPrice();
     const tokenPrice = useTokenPrice();
 
-    console.log(ethUsdPrice, tokenPrice);
-
     const [minerData, setMinerData] = useState<MineData>({
         length: 280,
         power: 100,
@@ -44,7 +42,7 @@ function Index() {
     const { writeContractAsync } = useWriteContract();
     const { address } = useAccount();
 
-    const mintReward = calculateMintReward(
+    let mintReward = calculateMintReward(
         minerData.power,
         minerData.length,
         currentMintableTitan,
@@ -52,14 +50,16 @@ function Index() {
         currentEAABonus
     );
 
-    const marketValue = tokenPrice && formatEther(tokenPrice) * formatEther(mintReward);
+    if (!ifSingleMiner && minerData.number) mintReward = mintReward * BigInt(minerData.number);
+
+    const marketValue = tokenPrice && (tokenPrice * mintReward) / BigInt(1e18);
 
     const mineInfoDisplay = getMineInfoDisplay(
         mintReward,
         ethCost,
         ethUsdPrice,
         tokenPrice || 0n,
-        marketValue || 0,
+        marketValue || 0n,
         globalTRank,
         currentMintableTitan,
         currentMintPowerBonus,

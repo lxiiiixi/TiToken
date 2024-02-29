@@ -1,4 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-verify");
+require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -9,7 +11,7 @@ module.exports = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
+            runs: 20
           }
         }
       },
@@ -31,7 +33,31 @@ module.exports = {
           }
         }
       },
-
     ]
   },
+  networks: {
+    "blast-sepolia": {
+      url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
+      accounts: [`0x${process.env.PRIVATE_KEY}`], // 0x19759366933CaF4f4A0A6AEc01A4D6bFf3e520FE
+      gasPrice: 1000000000,
+    }
+  },
+  etherscan: {
+    apiKey: process.env.PRIVATE_KEY,
+    customChains: [
+      {
+        network: "blast-sepolia",
+        chainId: 168587773,
+        urls: {
+          apiURL: "https://sepolia.blast.io",
+          browserURL: "https://testnet.blastscan.io/"
+        }
+      }
+    ]
+  },
+  sourcify: {
+    // Disabled by default
+    // Doesn't need an API key
+    enabled: true
+  }
 };
