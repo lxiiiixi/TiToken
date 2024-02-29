@@ -44,7 +44,7 @@ function CreateMiner({
     return (
         <div className="p-6">
             <h2 className="text-xl">
-                {type === "batch" ? "Create TITAN X Miner" : "Batch Create Miners"}
+                {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
             </h2>
             <div>
                 {type === "batch" && renderInput("Number of Miners", "number", 1, 100)}

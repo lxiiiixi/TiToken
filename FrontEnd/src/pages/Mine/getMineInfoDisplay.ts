@@ -17,12 +17,14 @@ export default function getMineInfoDisplay(
 ) {
     const ethUsdValue = (ethCost * BigInt(ethUsdPrice * 1e18)) / BigInt(1e18);
 
-    console.log(currentEAABonus / BigInt(PERCENT_BPS));
+    // console.log(currentEAABonus / BigInt(PERCENT_BPS));
 
     const mintRewardWithBonus =
         mintReward + (mintReward * currentEAABonus) / BigInt(PERCENT_BPS) / 10000n;
 
-    const roi = calculateROI(marketValue, parseFloat(formatEther(ethUsdValue)));
+    const roi = calculateROI(marketValue, parseFloat(ethUsdValue.toString()));
+
+    console.log(roi);
 
     return [
         {

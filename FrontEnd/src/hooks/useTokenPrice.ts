@@ -1,6 +1,7 @@
 import { useReadContract } from "wagmi";
 import unipoolv3 from "@/abis/unipoolv3.json";
 import { useQuery } from "@tanstack/react-query";
+import { parseEther } from "viem";
 
 export function useETHPrice() {
     const fetchData = async () => {
@@ -16,19 +17,21 @@ export function useETHPrice() {
 }
 
 export function useTokenPrice() {
-    const { data: slot0Data } = useReadContract({
+    const { data: slot0Data }: { data: { [key: number]: bigint } | undefined } = useReadContract({
         address: "0xc45a81bc23a64ea556ab4cdf08a86b61cdceea8b",
         abi: unipoolv3,
         functionName: "slot0",
     });
 
-    const ethUsdPrice = useETHPrice(); // 类似于 3231.98 这样的一个字符串
+    const ethUsdPrice = useETHPrice();
 
     if (!slot0Data || !ethUsdPrice) return;
 
     const sqrtPriceX96 = slot0Data[0];
-    const priceRatio = sqrtPriceX96 ** 2n / 2n ** 192n;
-    const tokenValueInUSD = (priceRatio * BigInt(ethUsdPrice * 1e18)) / BigInt(1e18);
+    const priceRatio = sqrtPriceX96 ** 2n / 2n ** 192n; // P = (sqrtPriceX96 / 2^96) ** 2
+
+    const ethUsdPriceBigint = parseEther(ethUsdPrice.toString());
+    const tokenValueInUSD = ethUsdPriceBigint / priceRatio;
 
     return tokenValueInUSD;
 }
