@@ -48,3 +48,17 @@ export const MAX_MINT_PER_WALLET = 1000;
 // export const MAX_BURN_AMP_BASE = 80 * 1e9 * 1 ether;
 // export const MAX_BURN_AMP_PERCENT = 8 ether;
 export const MINT_DAILY_REDUCTION = 11;
+
+// ===================== stakeInfo ==========================================
+export const MAX_STAKE_PER_WALLET = 1000;
+export const MIN_STAKE_LENGTH = 28;
+export const MAX_STAKE_LENGTH = 3500;
+export const END_STAKE_GRACE_PERIOD = 7;
+
+/* Stake Longer Pays Better bonus */
+export const LPB_MAX_DAYS = 2888;
+export const LPB_PER_PERCENT = 825;
+
+/* Stake Bigger Pays Better bonus */
+export const BPB_MAX_TITAN = 100 * 1e9 * SCALING_FACTOR_1e18; //100 billion
+export const BPB_PER_PERCENT = 1_250_000_000_000 * SCALING_FACTOR_1e18;

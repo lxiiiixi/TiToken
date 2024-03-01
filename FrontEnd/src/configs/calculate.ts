@@ -4,6 +4,11 @@ import {
     PERCENT_BPS,
     SCALING_FACTOR_1e6,
     SCALING_FACTOR_1e18,
+    LPB_MAX_DAYS,
+    BPB_MAX_TITAN,
+    SCALING_FACTOR_1e11,
+    LPB_PER_PERCENT,
+    BPB_PER_PERCENT,
 } from "@/configs/constants";
 
 /**
@@ -71,4 +76,33 @@ export const calculateROI = (marketValue: number, minterCostValue: number) => {
     //     return -((minterCostValue - marketValue) / minterCostValue);
     // （矿工结束时的 TITAN X 市场价值 - 挖矿成本）/ 挖矿成本 × 100%
     return (marketValue - minterCostValue) / minterCostValue;
+};
+
+/**
+ * calculate share bonus
+ * @param amount
+ * @param noOfDays
+ * @returns
+ */
+export const calculateShareBonus = (amount: bigint, noOfDays: bigint): bigint => {
+    const cappedExtraDays = noOfDays <= BigInt(LPB_MAX_DAYS) ? noOfDays : BigInt(LPB_MAX_DAYS);
+    const cappedStakedTitan = amount <= BigInt(BPB_MAX_TITAN) ? amount : BigInt(BPB_MAX_TITAN);
+    const shareBonus =
+        (cappedExtraDays * BigInt(SCALING_FACTOR_1e11)) / BigInt(LPB_PER_PERCENT) +
+        (cappedStakedTitan * BigInt(SCALING_FACTOR_1e11)) / BigInt(BPB_PER_PERCENT);
+    return shareBonus;
+};
+
+/**
+ * calculate shares
+ * @param amount
+ * @param noOfDays
+ * @param shareRate
+ * @returns
+ */
+export const calculateShares = (amount: bigint, noOfDays: bigint, shareRate: bigint): bigint => {
+    let shares = amount;
+    shares += (shares * calculateShareBonus(amount, noOfDays)) / BigInt(SCALING_FACTOR_1e11);
+    shares /= shareRate / BigInt(SCALING_FACTOR_1e18);
+    return shares;
 };
