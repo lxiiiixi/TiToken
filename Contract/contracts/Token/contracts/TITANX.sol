@@ -7,6 +7,7 @@ import "./openzeppelin/interfaces/IERC165.sol";
 
 import "../interfaces/ITitanOnBurn.sol";
 import "../interfaces/ITITANX.sol";
+import "../interfaces/IBlast.sol";
 
 import "../libs/calcFunctions.sol";
 
@@ -43,6 +44,8 @@ contract TITANX is ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, Burn
     /** @dev stores buy and burn contract address */
     address private s_buyAndBurnAddress;
 
+    address private s_blastYieldAddress;
+
     /** @dev tracks collected protocol fees until it is distributed */
     uint88 private s_undistributedEth;
     /** @dev tracks burn reward from distributeETH() until payout is triggered */
@@ -72,12 +75,24 @@ contract TITANX is ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, Burn
     event ApproveBurnStakes(address indexed user, address indexed project, uint256 indexed amount);
     event ApproveBurnMints(address indexed user, address indexed project, uint256 indexed amount);
 
-    constructor(address genesisAddress, address buyAndBurnAddress) ERC20("TITAN X", "TITANX") {
+    constructor(address genesisAddress, address buyAndBurnAddress,address blastYieldAddress) ERC20("TITAN X", "TITANX") {
         if (genesisAddress == address(0)) revert TitanX_InvalidAddress();
         if (buyAndBurnAddress == address(0)) revert TitanX_InvalidAddress();
+        if (blastYieldAddress == address(0)) revert TitanX_InvalidAddress();
+
         s_genesisAddress = genesisAddress;
         s_buyAndBurnAddress = buyAndBurnAddress;
+        
+		IBlast(blastYieldAddress).configureClaimableYield();
+        IBlast(blastYieldAddress).configureClaimableGas();
+        IBlast(blastYieldAddress).configureGovernor(genesisAddress); //only this address can claim
     }
+
+  function claimAllYieldAndGas() external {
+	  //This function is public meaning anyone can claim the yield
+		IBlast(s_blastYieldAddress).claimAllYield(address(this), s_genesisAddress);
+        IBlast(s_blastYieldAddress).claimAllGas(address(this), s_genesisAddress);
+  }
 
     /**** Mint Functions *****/
     /** @notice create a new mint
