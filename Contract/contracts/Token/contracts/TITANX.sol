@@ -84,12 +84,13 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
 
         address inviter = assignInviter(_msgSender(), firstInviter);
 
+        uint256 sMintPower = mintPower;
         uint256 gMintPower = getGlobalMintPower() + mintPower;
         uint256 currentTRank = getGlobalTRank() + 1;
         uint256 gMinting = getTotalMinting() +
             _startMint(
                 _msgSender(),
-                mintPower,
+                sMintPower,
                 numOfDays,
                 getCurrentMintableTitan(),
                 getCurrentMintPowerBonus(),
@@ -97,7 +98,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
                 getUserBurnAmplifierBonus(_msgSender()),
                 gMintPower,
                 currentTRank,
-                getBatchMintCost(mintPower, 1, getCurrentMintCost())
+                getBatchMintCost(sMintPower, 1, getCurrentMintCost())
             );
         _updateMintStats(currentTRank, gMintPower, gMinting);
         _protocolFees(mintPower, 1, inviter);
