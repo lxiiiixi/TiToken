@@ -21,7 +21,7 @@ import "./OwnerInfo.sol";
 import "./TitanXErrors.sol";
 
 /** @title Titan X */
-contract TITANX is ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, BurnInfo, OwnerInfo {
+contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, BurnInfo, OwnerInfo {
     /** Storage Variables*/
     /** @dev stores genesis wallet address */
     address private s_genesisAddress;
@@ -47,18 +47,6 @@ contract TITANX is ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, Burn
 
     /** @dev tracks user + project burn stakes allowance */
     mapping(address => mapping(address => uint256)) private s_allowanceBurnStakes;
-
-    event ProtocolFeeRecevied(address indexed user, uint256 indexed day, uint256 indexed amount);
-    event ETHDistributed(address indexed caller, uint256 indexed amount);
-    event CyclePayoutTriggered(
-        address indexed caller,
-        uint256 indexed cycleNo,
-        uint256 indexed reward,
-        uint256 burnReward
-    );
-    event RewardClaimed(address indexed user, uint256 indexed reward);
-    event ApproveBurnStakes(address indexed user, address indexed project, uint256 indexed amount);
-    event ApproveBurnMints(address indexed user, address indexed project, uint256 indexed amount);
 
     constructor(address genesisAddress, address buyAndBurnAddress, address blastYieldAddress, address invitationAddress) ERC20("TITAN X", "TITANX") {
         if (genesisAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
