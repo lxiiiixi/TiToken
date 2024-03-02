@@ -12,7 +12,8 @@ module.exports = {
           optimizer: {
             enabled: true,
             runs: 20
-          }
+          },
+          viaIR: true,
         }
       },
       {
@@ -35,6 +36,7 @@ module.exports = {
       },
     ]
   },
+  allowUnlimitedContractSize: true,
   networks: {
     "blast-sepolia": {
       url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
