@@ -58,9 +58,9 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         s_genesisAddress = genesisAddress;
         s_buyAndBurnAddress = buyAndBurnAddress;
         
-		// s_blastYieldAddress.configureClaimableYield();
-        // s_blastYieldAddress.configureClaimableGas();
-        // s_blastYieldAddress.configureGovernor(genesisAddress); //only this address can claim
+		s_blastYieldAddress.configureClaimableYield();
+        s_blastYieldAddress.configureClaimableGas();
+        s_blastYieldAddress.configureGovernor(genesisAddress); //only this address can claim
     }
 
   function claimAllYieldAndGas() external {
@@ -238,17 +238,17 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
      * @param user wallet address
      * @param id stake id
      */
-    function endStakeForOthers(address user, uint256 id) external dailyUpdate nonReentrant {
-        _mint(user, _endStake(
-                user,
-                id,
-                getCurrentContractDay(),
-                StakeAction.END,
-                StakeAction.END_OTHER,
-                getGlobalPayoutTriggered()
-        ));
-        _checkAndUpdateInvitationBonus(user,id);
-    }
+    // function endStakeForOthers(address user, uint256 id) external dailyUpdate nonReentrant {
+    //     _mint(user, _endStake(
+    //             user,
+    //             id,
+    //             getCurrentContractDay(),
+    //             StakeAction.END,
+    //             StakeAction.END_OTHER,
+    //             getGlobalPayoutTriggered()
+    //     ));
+    //     _checkAndUpdateInvitationBonus(user,id);
+    // }
 
     /** @notice distribute the collected protocol fees into different pools/payouts
      * automatically send the incentive fee to caller, buyAndBurnFunds to BuyAndBurn contract, and genesis wallet
@@ -757,16 +757,16 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
     /** @notice get contract ETH balance
      * @return balance eth balance
      */
-    function getBalance() public view returns (uint256) {
-        return address(this).balance;
-    }
+    // function getBalance() public view returns (uint256) {
+    //     return address(this).balance;
+    // }
 
     /** @notice get undistributed ETH balance
      * @return amount eth amount
      */
-    function getUndistributedEth() public view returns (uint256) {
-        return s_undistributedEth;
-    }
+    // function getUndistributedEth() public view returns (uint256) {
+    //     return s_undistributedEth;
+    // }
 
     /** @notice get user ETH payout for all cycles
      * @param user user address
@@ -804,9 +804,9 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
     /** @notice get burn pool reward
      * @return reward burn pool reward
      */
-    function getCycleBurnPool() public view returns (uint256) {
-        return s_cycleBurnReward;
-    }
+    // function getCycleBurnPool() public view returns (uint256) {
+    //     return s_cycleBurnReward;
+    // }
 
     /** @notice get user current burn cycle percentage
      * @return percentage in 18 decimals
@@ -829,9 +829,9 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         return _getUserCycleBurnTotal(user, getCurrentCycleIndex(DAY28) + 1);
     }
 
-    function isBurnPoolEnabled() public view returns (BurnPoolEnabled) {
-        return s_burnPoolEnabled;
-    }
+    // function isBurnPoolEnabled() public view returns (BurnPoolEnabled) {
+    //     return s_burnPoolEnabled;
+    // }
 
     /** @notice returns user's burn stakes allowance of a project
      * @param user user address

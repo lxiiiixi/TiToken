@@ -17,7 +17,7 @@ interface ITITANX {
 
     // —————— Erc20 function ——————
     // function balanceOf(address account) external returns (uint256);
-    function getBalance() external view returns (uint256);
+    // function getBalance() external view returns (uint256);
     function mintLPTokens() external;
     function burnLPTokens() external;
 }
