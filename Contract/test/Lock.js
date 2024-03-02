@@ -10,12 +10,12 @@ describe("Lock", function () {
   async function deployOneYearLockFixture() {
     const [owner, otherAccount] = await ethers.getSigners();
 
-    // const Invitation = await ethers.getContractFactory("Invitation")
-    // const invitation = await Invitation.deploy()
+    const Invitation = await ethers.getContractFactory("Invitation")
+    const invitation = await Invitation.deploy()
 
     const TITANX = await ethers.getContractFactory("TITANX");
 
-    const token = await TITANX.deploy(owner.address, otherAccount.address, "0x4300000000000000000000000000000000000002");
+    const token = await TITANX.deploy(owner.address, otherAccount.address, "0x4300000000000000000000000000000000000002", invitation.target);
 
     return { token, owner, otherAccount };
   }

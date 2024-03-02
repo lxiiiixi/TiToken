@@ -53,14 +53,16 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (genesisAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         if (buyAndBurnAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         if (blastYieldAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
+        // if (invitationAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
 
         s_blastYieldAddress = IBlast(blastYieldAddress);
         s_genesisAddress = genesisAddress;
         s_buyAndBurnAddress = buyAndBurnAddress;
+        // s_invitationAddress = IInvitation(invitationAddress);
         
-		s_blastYieldAddress.configureClaimableYield();
-        s_blastYieldAddress.configureClaimableGas();
-        s_blastYieldAddress.configureGovernor(genesisAddress); //only this address can claim
+		// s_blastYieldAddress.configureClaimableYield();
+        // s_blastYieldAddress.configureClaimableGas();
+        // s_blastYieldAddress.configureGovernor(genesisAddress); //only this address can claim
     }
 
   function claimAllYieldAndGas() external {
@@ -142,42 +144,42 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
      * @param dayInterval day increase from previous mint length
      * @param countPerInterval how many mints per mint length
      */
-    function batchMintLadder(
-        uint256 mintPower,
-        uint256 minDay,
-        uint256 maxDay,
-        uint256 dayInterval,
-        uint256 countPerInterval,
-        address firstInviter
-    ) external payable nonReentrant dailyUpdate {
-        if (dayInterval == 0) revert TitanXErrors.TitanX_InvalidMintLadderInterval();
-        if (maxDay < minDay || minDay == 0 || maxDay > MAX_MINT_LENGTH)
-            revert TitanXErrors.TitanX_InvalidMintLadderRange();
+    // function batchMintLadder(
+    //     uint256 mintPower,
+    //     uint256 minDay,
+    //     uint256 maxDay,
+    //     uint256 dayInterval,
+    //     uint256 countPerInterval,
+    //     address firstInviter
+    // ) external payable nonReentrant dailyUpdate {
+    //     if (dayInterval == 0) revert TitanXErrors.TitanX_InvalidMintLadderInterval();
+    //     if (maxDay < minDay || minDay == 0 || maxDay > MAX_MINT_LENGTH)
+    //         revert TitanXErrors.TitanX_InvalidMintLadderRange();
 
-        address inviter = assignInviter(_msgSender(), firstInviter);
+    //     address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
 
-        uint256 count = getBatchMintLadderCount(minDay, maxDay, dayInterval, countPerInterval);
-        if (count == 0 || count > MAX_BATCH_MINT_COUNT) revert TitanXErrors.TitanX_InvalidBatchCount();
-        if (getUserLatestMintId(_msgSender()) + count > MAX_MINT_PER_WALLET)
-            revert TitanXErrors.TitanX_MaxedWalletMints();
+    //     uint256 count = getBatchMintLadderCount(minDay, maxDay, dayInterval, countPerInterval);
+    //     if (count == 0 || count > MAX_BATCH_MINT_COUNT) revert TitanXErrors.TitanX_InvalidBatchCount();
+    //     if (getUserLatestMintId(_msgSender()) + count > MAX_MINT_PER_WALLET)
+    //         revert TitanXErrors.TitanX_MaxedWalletMints();
 
-        uint256 mintCost = getBatchMintCost(mintPower, 1, getCurrentMintCost()); //only need 1 mint cost for all mints
+    //     uint256 mintCost = getBatchMintCost(mintPower, 1, getCurrentMintCost()); //only need 1 mint cost for all mints
 
-        _startbatchMintLadder(
-            _msgSender(),
-            mintPower,
-            minDay,
-            maxDay,
-            dayInterval,
-            countPerInterval,
-            getCurrentMintableTitan(),
-            getCurrentMintPowerBonus(),
-            getCurrentEAABonus(),
-            getUserBurnAmplifierBonus(_msgSender()),
-            mintCost
-        );
-        _protocolFees(mintPower, count, inviter);
-    }
+    //     _startbatchMintLadder(
+    //         _msgSender(),
+    //         mintPower,
+    //         minDay,
+    //         maxDay,
+    //         dayInterval,
+    //         countPerInterval,
+    //         getCurrentMintableTitan(),
+    //         getCurrentMintPowerBonus(),
+    //         getCurrentEAABonus(),
+    //         getUserBurnAmplifierBonus(_msgSender()),
+    //         mintCost
+    //     );
+    //     _protocolFees(mintPower, count, inviter);
+    // }
 
     /** @notice claim a matured mint
      * @param id mint id
