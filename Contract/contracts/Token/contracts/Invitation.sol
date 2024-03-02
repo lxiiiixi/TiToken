@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 import "./OwnerInfo.sol";
+import "../interfaces/IInvitation.sol";
 
-contract Invitation is OwnerInfo {
+contract Invitation is IInvitation,OwnerInfo {
     // address private owner;
     address private tokenAddress;
     mapping(address => address) private user_inviter;
@@ -39,6 +40,16 @@ contract Invitation is OwnerInfo {
 
         emit InviterBonusPercentSet( _inviter, _percent);
     }
+
+    function assignInviter(address user, address firstInviter) public onlyToken returns(address){
+        address inviter = user_inviter[user];
+        if (inviter == address(0) && firstInviter != address(0)) {
+            // 如果此时调用的时候传入了邀请者，并且这个用户之前没有过邀请者，就设置记录新的邀请者
+            setUserInviter(user, firstInviter);
+            inviter = firstInviter;
+        }
+        return inviter;
+    }   
 
      function getUserInviter(address _user) public view returns (address) {
         return user_inviter[_user];

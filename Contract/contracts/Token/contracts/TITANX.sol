@@ -83,14 +83,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (getUserLatestMintId(_msgSender()) + 1 > MAX_MINT_PER_WALLET)
             revert TitanXErrors.TitanX_MaxedWalletMints();
 
-        // ++++
-       address inviter = s_invitationAddress.getUserInviter(_msgSender());
-        if (inviter == address(0) && firstInviter != address(0)){
-            // 如果此时调用的时候传入了邀请者，并且这个用户之前没有过邀请者，就设置记录新的邀请者
-            s_invitationAddress.setUserInviter(_msgSender(), firstInviter);
-            inviter = firstInviter;
-        }
-        // ++++
+        address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
 
         uint256 gMintPower = getGlobalMintPower() + mintPower;
         uint256 currentTRank = getGlobalTRank() + 1;
@@ -126,14 +119,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (getUserLatestMintId(_msgSender()) + count > MAX_MINT_PER_WALLET)
             revert TitanXErrors.TitanX_MaxedWalletMints();
 
-        // ++++
-        address inviter = s_invitationAddress.getUserInviter(_msgSender());
-        if (inviter == address(0) && firstInviter != address(0)){
-            // 如果此时调用的时候传入了邀请者，并且这个用户之前没有过邀请者，就设置记录新的邀请者
-            s_invitationAddress.setUserInviter(_msgSender(), firstInviter);
-            inviter = firstInviter;
-        }
-        // ++++
+        address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
 
         _startBatchMint(
             _msgSender(),
@@ -168,14 +154,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (maxDay < minDay || minDay == 0 || maxDay > MAX_MINT_LENGTH)
             revert TitanXErrors.TitanX_InvalidMintLadderRange();
 
-        // ++++
-        address inviter = s_invitationAddress.getUserInviter(_msgSender());
-        if (inviter == address(0) && firstInviter != address(0)){
-            // 如果此时调用的时候传入了邀请者，并且这个用户之前没有过邀请者，就设置记录新的邀请者
-            s_invitationAddress.setUserInviter(_msgSender(), firstInviter);
-            inviter = firstInviter;
-        }
-        // ++++
+        address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
 
         uint256 count = getBatchMintLadderCount(minDay, maxDay, dayInterval, countPerInterval);
         if (count == 0 || count > MAX_BATCH_MINT_COUNT) revert TitanXErrors.TitanX_InvalidBatchCount();

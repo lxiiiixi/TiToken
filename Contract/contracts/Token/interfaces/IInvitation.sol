@@ -6,4 +6,5 @@ interface IInvitation {
     function setInviterBonusPercent(address _inviter, uint8 _percent) external;
     function getUserInviter(address _user) external view returns (address);
     function getInviterBonusPercent(address _inviter) external view returns (uint8);
+    function assignInviter(address user, address firstInviter) external returns(address);
 }
