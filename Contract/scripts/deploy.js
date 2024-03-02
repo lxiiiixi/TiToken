@@ -17,7 +17,7 @@ async function main() {
   const buyAndBurnAddress = "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8"
 
   const genesisAddress = "0x19759366933CaF4f4A0A6AEc01A4D6bFf3e520FE"
-  const token = await hre.ethers.deployContract("TITANX", [genesisAddress, buyAndBurnAddress]);
+  const token = await hre.ethers.deployContract("TITANX", [genesisAddress, buyAndBurnAddress, "0x4300000000000000000000000000000000000002"]);
   await token.waitForDeployment();
 
   console.log(`TITANX was deployed to ${token.target}`);

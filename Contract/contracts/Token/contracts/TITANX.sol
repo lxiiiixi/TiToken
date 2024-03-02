@@ -17,18 +17,19 @@ import "./MintInfo.sol";
 import "./StakeInfo.sol";
 import "./BurnInfo.sol";
 import "./OwnerInfo.sol";
+import "./Invitation.sol";
 
 import "./TitanXErrors.sol";
 
 /** @title Titan X */
-contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, BurnInfo, OwnerInfo {
+contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeInfo, BurnInfo, Invitation, OwnerInfo {
     /** Storage Variables*/
     /** @dev stores genesis wallet address */
     address private s_genesisAddress;
     /** @dev stores buy and burn contract address */
     address private s_buyAndBurnAddress;
 
-    IInvitation private s_invitationAddress;
+    // IInvitation private s_invitationAddress;
     IBlast private s_blastYieldAddress;
 
     /** @dev tracks collected protocol fees until it is distributed */
@@ -48,20 +49,18 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
     /** @dev tracks user + project burn stakes allowance */
     mapping(address => mapping(address => uint256)) private s_allowanceBurnStakes;
 
-    constructor(address genesisAddress, address buyAndBurnAddress, address blastYieldAddress, address invitationAddress) ERC20("TITAN X", "TITANX") {
+    constructor(address genesisAddress, address buyAndBurnAddress, address blastYieldAddress) ERC20("TITAN X", "TITANX") {
         if (genesisAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         if (buyAndBurnAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         if (blastYieldAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
-        if (invitationAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
 
         s_blastYieldAddress = IBlast(blastYieldAddress);
         s_genesisAddress = genesisAddress;
-        s_invitationAddress = IInvitation(invitationAddress);
         s_buyAndBurnAddress = buyAndBurnAddress;
         
-		s_blastYieldAddress.configureClaimableYield();
-        s_blastYieldAddress.configureClaimableGas();
-        s_blastYieldAddress.configureGovernor(genesisAddress); //only this address can claim
+		// s_blastYieldAddress.configureClaimableYield();
+        // s_blastYieldAddress.configureClaimableGas();
+        // s_blastYieldAddress.configureGovernor(genesisAddress); //only this address can claim
     }
 
   function claimAllYieldAndGas() external {
@@ -83,7 +82,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (getUserLatestMintId(_msgSender()) + 1 > MAX_MINT_PER_WALLET)
             revert TitanXErrors.TitanX_MaxedWalletMints();
 
-        address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
+        address inviter = assignInviter(_msgSender(), firstInviter);
 
         uint256 gMintPower = getGlobalMintPower() + mintPower;
         uint256 currentTRank = getGlobalTRank() + 1;
@@ -119,7 +118,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (getUserLatestMintId(_msgSender()) + count > MAX_MINT_PER_WALLET)
             revert TitanXErrors.TitanX_MaxedWalletMints();
 
-        address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
+        address inviter = assignInviter(_msgSender(), firstInviter);
 
         _startBatchMint(
             _msgSender(),
@@ -154,7 +153,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         if (maxDay < minDay || minDay == 0 || maxDay > MAX_MINT_LENGTH)
             revert TitanXErrors.TitanX_InvalidMintLadderRange();
 
-        address inviter = s_invitationAddress.assignInviter(_msgSender(), firstInviter);
+        address inviter = assignInviter(_msgSender(), firstInviter);
 
         uint256 count = getBatchMintLadderCount(minDay, maxDay, dayInterval, countPerInterval);
         if (count == 0 || count > MAX_BATCH_MINT_COUNT) revert TitanXErrors.TitanX_InvalidBatchCount();
@@ -176,7 +175,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
             getUserBurnAmplifierBonus(_msgSender()),
             mintCost
         );
-        _protocolFees(mintPower, count,inviter);
+        _protocolFees(mintPower, count, inviter);
     }
 
     /** @notice claim a matured mint
@@ -202,18 +201,21 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
 
         _burn(_msgSender(), amount);
 
-        _initFirstSharesCycleIndex(
-            _msgSender(),
-            _startStake(
+        (uint256 isFirstShares, uint256 sId) =  _startStake(
                 _msgSender(),
                 amount,
                 numOfDays,
                 getCurrentShareRate(),
                 getCurrentContractDay(),
-                s_invitationAddress,
                 getGlobalPayoutTriggered()
-            )
+            );
+
+        _initFirstSharesCycleIndex(
+            _msgSender(),
+           isFirstShares
         );
+
+        _checkAndUpdateInvitationBonus(_msgSender(),sId);
     }
 
     /** @notice end a stake
@@ -224,28 +226,28 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
                 _msgSender(),
                 id,
                 getCurrentContractDay(),
-                s_invitationAddress,
                 StakeAction.END,
                 StakeAction.END_OWN,
                 getGlobalPayoutTriggered()
             ));
+        _checkAndUpdateInvitationBonus(_msgSender(),id);
     }
 
     /** @notice end a stake for others
      * @param user wallet address
      * @param id stake id
      */
-    // function endStakeForOthers(address user, uint256 id) external dailyUpdate nonReentrant {
-    //     _mint(user, _endStake(
-    //             user,
-    //             id,
-    //             getCurrentContractDay(),
-    //             s_invitationAddress,
-    //             StakeAction.END,
-    //             StakeAction.END_OTHER,
-    //             getGlobalPayoutTriggered()
-    //     ));
-    // }
+    function endStakeForOthers(address user, uint256 id) external dailyUpdate nonReentrant {
+        _mint(user, _endStake(
+                user,
+                id,
+                getCurrentContractDay(),
+                StakeAction.END,
+                StakeAction.END_OTHER,
+                getGlobalPayoutTriggered()
+        ));
+        _checkAndUpdateInvitationBonus(user,id);
+    }
 
     /** @notice distribute the collected protocol fees into different pools/payouts
      * automatically send the incentive fee to caller, buyAndBurnFunds to BuyAndBurn contract, and genesis wallet
@@ -436,10 +438,10 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         // +++
         // 在这里开始判断是否有邀请者，以及如果有邀请者，就减去并发送给邀请者奖励
         if(inviter != address(0)){
-            uint8 bonus = s_invitationAddress.getInviterBonusPercent(inviter);
+            uint8 bonus = getInviterBonusPercent(inviter);
             uint256 bonusFee = (protocolFee * bonus) / 100;
-            _sendViaCall(payable(_msgSender()), bonusFee);
             protocolFee -= bonusFee;
+            _sendViaCall(payable(inviter), bonusFee);
         }
         // +++
        
@@ -572,7 +574,6 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
                 user,
                 id,
                 getCurrentContractDay(),
-                s_invitationAddress,
                 StakeAction.BURN,
                 StakeAction.END_OWN,
                 getGlobalPayoutTriggered()
@@ -582,6 +583,7 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
             rewardPaybackAddress,
             BurnSource.STAKE
         );
+        _checkAndUpdateInvitationBonus(user,id);
     }
 
     /** @dev burn mint through other project.
@@ -947,7 +949,6 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
                 _msgSender(),
                 id,
                 getCurrentContractDay(),
-                s_invitationAddress,
                 StakeAction.BURN,
                 StakeAction.END_OWN,
                 getGlobalPayoutTriggered()
@@ -955,6 +956,23 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
             getCurrentCycleIndex(DAY28) + 1,
             BurnSource.STAKE
         );
+
+        _checkAndUpdateInvitationBonus(_msgSender(),id);
+    }
+
+
+    function _checkAndUpdateInvitationBonus(address user, uint256 id) private {
+        // 获取当前用户的质押信息
+        // 并且查看天数和质押股份比例
+        // 根据上面整个数据判断是否要更新当前用户的邀请奖励值
+        UserStakeInfo memory userStakeInfo = getUserStakeInfo(user,id);
+        uint8 inviterBonus = 5;
+        uint256 share =  userStakeInfo.shares / getGlobalShares();
+        if(userStakeInfo.numOfDays < 90 || share < 1) inviterBonus = 2;
+
+        if(inviterBonus != getInviterBonusPercent(user)){
+            setInviterBonusPercent(user, inviterBonus);
+        }
     }
 
     /** @notice Burn mint and creates Proof-Of-Burn record to be used by connected DeFi.

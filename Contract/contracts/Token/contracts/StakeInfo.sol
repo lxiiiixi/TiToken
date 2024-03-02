@@ -100,10 +100,9 @@ abstract contract StakeInfo {
         uint256 numOfDays,
         uint256 shareRate,
         uint256 day,
-        IInvitation invitation,
         PayoutTriggered isPayoutTriggered
-    ) internal returns (uint256 isFirstShares) {
-        uint256 sId = ++s_addressSId[user];
+    ) internal returns (uint256 isFirstShares, uint256 sId) {
+        sId = ++s_addressSId[user];
         if (sId > MAX_STAKE_PER_WALLET) revert TitanX_MaxedWalletStakes();
         if (numOfDays < MIN_STAKE_LENGTH || numOfDays > MAX_STAKE_LENGTH)
             revert TitanX_InvalidStakeLength();
@@ -143,8 +142,6 @@ abstract contract StakeInfo {
             StakeAction.START
         );
 
-        checkAndUpdateInvitationBonus(userStakeInfo.numOfDays, userStakeInfo.shares, user, invitation);
-
         emit StakeStarted(user, currentGStakeId, numOfDays, userStakeInfo);
     }
 
@@ -161,7 +158,6 @@ abstract contract StakeInfo {
         address user,
         uint256 id,
         uint256 day,
-        IInvitation invitation,
         StakeAction action,
         StakeAction payOther,
         PayoutTriggered isPayoutTriggered
@@ -182,7 +178,7 @@ abstract contract StakeInfo {
 
         // +++
         // 这里是判断所有的还是说只判断当前这一笔的（如果只判断当前这一笔的话前面的就算有满足条件的也会被覆盖）
-       checkAndUpdateInvitationBonus(userStakeInfo.numOfDays, userStakeInfo.shares,user,invitation);
+    //    checkAndUpdateInvitationBonus(userStakeInfo.numOfDays, userStakeInfo.shares,user,invitation);
 
         if (action == StakeAction.END) {
             ++s_globalStakeEnd;
@@ -195,18 +191,18 @@ abstract contract StakeInfo {
         titan = _calculatePrinciple(user, globalStakeId, userStakeInfo, action);
     }
 
-    function checkAndUpdateInvitationBonus(uint16 numOfDays, uint128 shares, address user, IInvitation invitation) internal {
-        // 获取当前用户的质押信息
-        // 并且查看天数和质押股份比例
-        // 根据上面整个数据判断是否要更新当前用户的邀请奖励值
-        uint8 inviterBonus = 5;
-        uint256 share = shares / s_globalShares;
-        if(numOfDays < 90 || share < 1) inviterBonus = 2;
+    // function checkAndUpdateInvitationBonus(uint16 numOfDays, uint128 shares, address user, IInvitation invitation) internal {
+    //     // 获取当前用户的质押信息
+    //     // 并且查看天数和质押股份比例
+    //     // 根据上面整个数据判断是否要更新当前用户的邀请奖励值
+    //     uint8 inviterBonus = 5;
+    //     uint256 share = shares / s_globalShares;
+    //     if(numOfDays < 90 || share < 1) inviterBonus = 2;
 
-        if(inviterBonus != invitation.getInviterBonusPercent(user)){
-            invitation.setInviterBonusPercent(user, inviterBonus);
-        }
-    }
+    //     if(inviterBonus != getInviterBonusPercent(user)){
+    //         setInviterBonusPercent(user, inviterBonus);
+    //     }
+    // }
 
     /** @dev update shares changes to track when user shares has changed, this affect the payout calculation
      * @param user user address
