@@ -3,16 +3,7 @@ pragma solidity ^0.8.10;
 
 import "../libs/calcFunctions.sol";
 import "../interfaces/IInvitation.sol";
-
-//custom errors
-error TitanX_InvalidStakeLength();
-error TitanX_RequireOneMinimumShare();
-error TitanX_ExceedMaxAmountPerStake();
-error TitanX_NoStakeExists();
-error TitanX_StakeHasEnded();
-error TitanX_StakeNotMatured();
-error TitanX_StakeHasBurned();
-error TitanX_MaxedWalletStakes();
+import "./TitanXErrors.sol";
 
 abstract contract StakeInfo {
     //Variables
@@ -103,13 +94,13 @@ abstract contract StakeInfo {
         PayoutTriggered isPayoutTriggered
     ) internal returns (uint256 isFirstShares, uint256 sId) {
         sId = ++s_addressSId[user];
-        if (sId > MAX_STAKE_PER_WALLET) revert TitanX_MaxedWalletStakes();
+        if (sId > MAX_STAKE_PER_WALLET) revert TitanXErrors.TitanX_MaxedWalletStakes();
         if (numOfDays < MIN_STAKE_LENGTH || numOfDays > MAX_STAKE_LENGTH)
-            revert TitanX_InvalidStakeLength();
+            revert TitanXErrors.TitanX_InvalidStakeLength();
 
         //calculate shares
         uint256 shares = calculateShares(amount, numOfDays, shareRate);
-        if (shares / SCALING_FACTOR_1e18 < 1) revert TitanX_RequireOneMinimumShare();
+        if (shares / SCALING_FACTOR_1e18 < 1) revert TitanXErrors.TitanX_RequireOneMinimumShare();
 
         uint256 currentGStakeId = ++s_globalStakeId;
         uint256 maturityTs;
@@ -163,14 +154,14 @@ abstract contract StakeInfo {
         PayoutTriggered isPayoutTriggered
     ) internal returns (uint256 titan) {
         uint256 globalStakeId = s_addressSIdToGlobalStakeId[user][id];
-        if (globalStakeId == 0) revert TitanX_NoStakeExists();
+        if (globalStakeId == 0) revert TitanXErrors.TitanX_NoStakeExists();
 
         UserStakeInfo memory userStakeInfo = s_globalStakeIdToStakeInfo[globalStakeId];
-        if (userStakeInfo.status == StakeStatus.ENDED) revert TitanX_StakeHasEnded();
-        if (userStakeInfo.status == StakeStatus.BURNED) revert TitanX_StakeHasBurned();
+        if (userStakeInfo.status == StakeStatus.ENDED) revert TitanXErrors.TitanX_StakeHasEnded();
+        if (userStakeInfo.status == StakeStatus.BURNED) revert TitanXErrors.TitanX_StakeHasBurned();
         //end stake for others requires matured stake to prevent EES for others
         if (payOther == StakeAction.END_OTHER && block.timestamp < userStakeInfo.maturityTs)
-            revert TitanX_StakeNotMatured();
+            revert TitanXErrors.TitanX_StakeNotMatured();
 
         //update shares changes
         uint256 shares = userStakeInfo.shares;

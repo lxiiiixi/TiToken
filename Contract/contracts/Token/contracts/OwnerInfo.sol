@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
-import "./openzeppelin/utils/Context.sol";
+// import "./openzeppelin/utils/Context.sol";
 
 error TitanX_NotOnwer();
 
-abstract contract OwnerInfo is Context {
+abstract contract OwnerInfo {
     address private s_owner;
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
     constructor() {
-        s_owner = _msgSender();
+        s_owner = msg.sender;
     }
 
     /**
@@ -27,7 +27,7 @@ abstract contract OwnerInfo is Context {
      * @dev Throws if the sender is not the owner.
      */
     function _checkOwner() internal view virtual {
-        if (s_owner != _msgSender()) revert TitanX_NotOnwer();
+        if (s_owner != msg.sender) revert TitanX_NotOnwer();
     }
 
     /**

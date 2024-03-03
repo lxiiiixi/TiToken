@@ -2,14 +2,7 @@
 pragma solidity ^0.8.10;
 
 import "../libs/calcFunctions.sol";
-
-//custom errors
-error TitanX_InvalidMintLength();
-error TitanX_InvalidMintPower();
-error TitanX_NoMintExists();
-error TitanX_MintHasClaimed();
-error TitanX_MintNotMature();
-error TitanX_MintHasBurned();
+import "./TitanXErrors.sol";
 
 abstract contract MintInfo {
     //variables
@@ -101,8 +94,8 @@ abstract contract MintInfo {
         uint256 currentTRank,
         uint256 mintCost
     ) internal returns (uint256 mintable) {
-        if (numOfDays == 0 || numOfDays > MAX_MINT_LENGTH) revert TitanX_InvalidMintLength();
-        if (mintPower == 0 || mintPower > MAX_MINT_POWER_CAP) revert TitanX_InvalidMintPower();
+        if (numOfDays == 0 || numOfDays > MAX_MINT_LENGTH) revert TitanXErrors.TitanX_InvalidMintLength();
+        if (mintPower == 0 || mintPower > MAX_MINT_POWER_CAP) revert TitanXErrors.TitanX_InvalidMintPower();
 
         //calculate mint reward up front with the provided params
         mintable = calculateMintReward(mintPower, numOfDays, mintableTitan, EAABonus, burnAmpBonus);
@@ -259,15 +252,15 @@ abstract contract MintInfo {
     ) internal returns (uint256 reward) {
         uint256 tRank = s_addressMIdToTRankInfo[user][id].tRank;
         uint256 gMintPower = s_addressMIdToTRankInfo[user][id].gMintPower;
-        if (tRank == 0) revert TitanX_NoMintExists();
+        if (tRank == 0) revert TitanXErrors.TitanX_NoMintExists();
 
         UserMintInfo memory mint = s_tRankToMintInfo[tRank];
-        if (mint.status == MintStatus.CLAIMED) revert TitanX_MintHasClaimed();
-        if (mint.status == MintStatus.BURNED) revert TitanX_MintHasBurned();
+        if (mint.status == MintStatus.CLAIMED) revert TitanXErrors.TitanX_MintHasClaimed();
+        if (mint.status == MintStatus.BURNED) revert TitanXErrors.TitanX_MintHasBurned();
 
         //Only check maturity for claim mint action, burn mint bypass this check
         if (mint.maturityTs > block.timestamp && action == MintAction.CLAIM)
-            revert TitanX_MintNotMature();
+            revert TitanXErrors.TitanX_MintNotMature();
 
         s_globalTitanMinting -= mint.mintableTitan;
         reward = _calculateClaimReward(user, tRank, gMintPower, mint, action);
