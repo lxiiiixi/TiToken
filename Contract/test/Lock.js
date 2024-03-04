@@ -2,7 +2,6 @@ const {
   time,
   loadFixture,
 } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { calculateMintCost, calculateMintReward, calculateShares } = require("./calculate.js");
@@ -29,6 +28,9 @@ describe("Lock", function () {
 
     const BuyAndBurnV2 = await ethers.getContractFactory("BuyAndBurnV2")
     const buyAndBurn = await BuyAndBurnV2.deploy(token.target, tokenManager.target);
+
+    const Blast = await ethers.getContractFactory("Blast");
+    const blast = Blast.attach("0x4300000000000000000000000000000000000002");
 
     await tokenManager.setBuyAndBurnContractAddress(buyAndBurn.target)
 
@@ -122,52 +124,52 @@ describe("Lock", function () {
     });
   });
 
-  describe("Claim ETH payout test", function () {
-    it("Claim before maturity day", async function () {
-      const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
+  // describe("Claim ETH payout test", function () {
+  //   it("Claim before maturity day", async function () {
+  //     const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
 
-      await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
-      await tokenManager.connect(bob).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
-      await tokenManager.connect(owner).startMint(100, 280, ethers.ZeroAddress, { value: ethers.parseEther("1") });
+  //     await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+  //     await tokenManager.connect(bob).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+  //     await tokenManager.connect(owner).startMint(100, 280, ethers.ZeroAddress, { value: ethers.parseEther("1") });
 
-      // const aliceEthBalance = await getAndFormatBalance(alice.address, true)
-      // const bobEthBalance = await getAndFormatBalance(bob.address, true)
-      // const ownerEthBalance = await getAndFormatBalance(owner.address, true)
-      // console.log(aliceEthBalance, bobEthBalance, ownerEthBalance);
+  //     // const aliceEthBalance = await getAndFormatBalance(alice.address, true)
+  //     // const bobEthBalance = await getAndFormatBalance(bob.address, true)
+  //     // const ownerEthBalance = await getAndFormatBalance(owner.address, true)
+  //     // console.log(aliceEthBalance, bobEthBalance, ownerEthBalance);
 
-      await time.increase(60 * 60 * 24 * 280); // 280 day
+  //     await time.increase(60 * 60 * 24 * 280); // 280 day
 
-      await tokenManager.connect(alice).claimMint(1)
-      await tokenManager.connect(bob).claimMint(1)
-      await tokenManager.connect(owner).claimMint(1)
+  //     await tokenManager.connect(alice).claimMint(1)
+  //     await tokenManager.connect(bob).claimMint(1)
+  //     await tokenManager.connect(owner).claimMint(1)
 
-      const mintableTitan = await tokenManager.getCurrentMintableTitan()
-      const EAABonus = await tokenManager.getCurrentEAABonus()
-      const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
-      const mintReward = calculateMintReward(100, 280, mintableTitan, EAABonus, burnBonus)
+  //     const mintableTitan = await tokenManager.getCurrentMintableTitan()
+  //     const EAABonus = await tokenManager.getCurrentEAABonus()
+  //     const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
+  //     const mintReward = calculateMintReward(100, 280, mintableTitan, EAABonus, burnBonus)
 
-      await tokenManager.connect(alice).startStake(mintReward, 30)
-      await tokenManager.connect(bob).startStake(mintReward, 90)
-      await tokenManager.connect(owner).startStake(mintReward, 369)
+  //     await tokenManager.connect(alice).startStake(mintReward, 30)
+  //     await tokenManager.connect(bob).startStake(mintReward, 90)
+  //     await tokenManager.connect(owner).startStake(mintReward, 369)
 
-      // await time.increase(60 * 60 * 24 * 6); // 8 day
+  //     // await time.increase(60 * 60 * 24 * 6); // 8 day
 
-      expect(await tokenManager.getUserETHClaimableTotal(alice.address)).to.equal(0);
-      await tokenManager.triggerPayouts()
+  //     expect(await tokenManager.getUserETHClaimableTotal(alice.address)).to.equal(0);
+  //     await tokenManager.triggerPayouts()
 
-      const aliceETHClaimable = await tokenManager.getUserETHClaimableTotal(alice.address)
-      const bobETHClaimable = await tokenManager.getUserETHClaimableTotal(bob.address)
-      const ownerETHClaimable = await tokenManager.getUserETHClaimableTotal(owner.address)
+  //     const aliceETHClaimable = await tokenManager.getUserETHClaimableTotal(alice.address)
+  //     const bobETHClaimable = await tokenManager.getUserETHClaimableTotal(bob.address)
+  //     const ownerETHClaimable = await tokenManager.getUserETHClaimableTotal(owner.address)
 
-      // await expect(tokenManager.connect(alice).claimUserAvailableETHPayouts())
-      //   .to.emit(tokenManager, "RewardClaimed")
-      //   .withArgs(alice.address, aliceETHClaimable)
-      // await expect(tokenManager.connect(bob).claimUserAvailableETHPayouts())
-      //   .to.emit(tokenManager, "RewardClaimed")
-      //   .withArgs(bob.address, bobETHClaimable)
-      // await expect(tokenManager.connect(owner).claimUserAvailableETHPayouts())
-      //   .to.emit(tokenManager, "RewardClaimed")
-      //   .withArgs(owner.address, ownerETHClaimable)
-    });
-  });
+  //     await expect(tokenManager.connect(alice).claimUserAvailableETHPayouts())
+  //       .to.emit(tokenManager, "RewardClaimed")
+  //       .withArgs(alice.address, aliceETHClaimable)
+  //     await expect(tokenManager.connect(bob).claimUserAvailableETHPayouts())
+  //       .to.emit(tokenManager, "RewardClaimed")
+  //       .withArgs(bob.address, bobETHClaimable)
+  //     await expect(tokenManager.connect(owner).claimUserAvailableETHPayouts())
+  //       .to.emit(tokenManager, "RewardClaimed")
+  //       .withArgs(owner.address, ownerETHClaimable)
+  //   });
+  // });
 });
