@@ -182,50 +182,50 @@ abstract contract MintInfo {
      * @param burnAmpBonus burn amplifier bonus
      * @param mintCost actual mint cost paid for a mint
      */
-    function _startbatchMintLadder(
-        address user,
-        uint256 mintPower,
-        uint256 minDay,
-        uint256 maxDay,
-        uint256 dayInterval,
-        uint256 countPerInterval,
-        uint256 mintableTitan,
-        uint256 mintPowerBonus,
-        uint256 EAABonus,
-        uint256 burnAmpBonus,
-        uint256 mintCost
-    ) internal {
-        uint256 gMintPower = s_globalMintPower;
-        uint256 currentTRank = s_globalTRank;
-        uint256 gMinting = s_globalTitanMinting;
+    // function _startbatchMintLadder(
+    //     address user,
+    //     uint256 mintPower,
+    //     uint256 minDay,
+    //     uint256 maxDay,
+    //     uint256 dayInterval,
+    //     uint256 countPerInterval,
+    //     uint256 mintableTitan,
+    //     uint256 mintPowerBonus,
+    //     uint256 EAABonus,
+    //     uint256 burnAmpBonus,
+    //     uint256 mintCost
+    // ) internal {
+    //     uint256 gMintPower = s_globalMintPower;
+    //     uint256 currentTRank = s_globalTRank;
+    //     uint256 gMinting = s_globalTitanMinting;
 
-        /**first for loop is used to determine mint length
-         * minDay is the starting mint length
-         * maxDay is the max mint length where it stops
-         * dayInterval increases the minDay for the next mint
-         */
-        for (; minDay <= maxDay; minDay += dayInterval) {
-            /**first for loop is used to determine mint length
-             * second for loop is to create number mints per mint length
-             */
-            for (uint256 j = 0; j < countPerInterval; j++) {
-                gMintPower += mintPower;
-                gMinting += _startMint(
-                    user,
-                    mintPower,
-                    minDay,
-                    mintableTitan,
-                    mintPowerBonus,
-                    EAABonus,
-                    burnAmpBonus,
-                    gMintPower,
-                    ++currentTRank,
-                    mintCost
-                );
-            }
-        }
-        _updateMintStats(currentTRank, gMintPower, gMinting);
-    }
+    //     /**first for loop is used to determine mint length
+    //      * minDay is the starting mint length
+    //      * maxDay is the max mint length where it stops
+    //      * dayInterval increases the minDay for the next mint
+    //      */
+    //     for (; minDay <= maxDay; minDay += dayInterval) {
+    //         /**first for loop is used to determine mint length
+    //          * second for loop is to create number mints per mint length
+    //          */
+    //         for (uint256 j = 0; j < countPerInterval; j++) {
+    //             gMintPower += mintPower;
+    //             gMinting += _startMint(
+    //                 user,
+    //                 mintPower,
+    //                 minDay,
+    //                 mintableTitan,
+    //                 mintPowerBonus,
+    //                 EAABonus,
+    //                 burnAmpBonus,
+    //                 gMintPower,
+    //                 ++currentTRank,
+    //                 mintCost
+    //             );
+    //         }
+    //     }
+    //     _updateMintStats(currentTRank, gMintPower, gMinting);
+    // }
 
     /** @dev update variables
      * @param currentTRank current tRank

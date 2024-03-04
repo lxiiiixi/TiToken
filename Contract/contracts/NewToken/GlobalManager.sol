@@ -62,11 +62,9 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
     event ApproveBurnMints(address indexed user, address indexed project, uint256 indexed amount);
 
 
-    constructor(address genesisAddress, address buyAndBurnAddress, address initialOwner) Ownable(initialOwner){
+    constructor(address genesisAddress, address initialOwner) Ownable(initialOwner){
         if (genesisAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
-        if (buyAndBurnAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         s_genesisAddress = genesisAddress;
-        s_buyAndBurnAddress = buyAndBurnAddress;
 
         token = new TITANX();
         

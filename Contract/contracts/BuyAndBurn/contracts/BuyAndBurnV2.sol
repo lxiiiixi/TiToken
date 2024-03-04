@@ -3,6 +3,7 @@ pragma solidity ^0.7.6;
 pragma abicoder v2;
 
 import "./openzeppelin/security/ReentrancyGuard.sol";
+import "./openzeppelin/token/ERC20/IERC20.sol";
 
 import "../libs/Constant.sol";
 import "../libs/PoolAddress.sol";
@@ -12,9 +13,12 @@ import "../libs/FullMath.sol";
 
 import "../interfaces/IUniswapV3Pool.sol";
 import "../interfaces/IWETH9.sol";
-import "../interfaces/ITITANX.sol";
+import "../interfaces/ITokenManager.sol";
 
 contract BuyAndBurnV2 is ReentrancyGuard {
+    ITokenManager public tokenManager;
+    IERC20 public token;
+
     /** @dev genesis timestamp */
     uint256 private immutable i_genesisTs;
 
@@ -50,12 +54,15 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         address indexed caller
     );
 
-    constructor() {
+    constructor(address _token, address _tokenManager) {
         i_genesisTs = block.timestamp;
         s_ownerAddress = msg.sender;
         s_capPerSwap = 1 ether;
         s_slippage = 5;
         s_interval = 60;
+
+        token = IERC20(_token);
+        tokenManager = ITokenManager(_tokenManager);
     }
 
     /** @notice receive eth and convert all eth into weth */
@@ -113,7 +120,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
 
     /** @notice burn all Titan in BuyAndBurn address */
     function burnLPTitan() public {
-        ITITANX(TITANX).burnLPTokens();
+       tokenManager.burnLPTokens();
     }
 
     /** @notice buy and burn Titan from uniswap pool */
@@ -149,7 +156,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         IUniswapV3Pool pool = CallbackValidation.verifyCallback(
             UNISWAPV3FACTORY,
             WETH9,
-            TITANX,
+            address(token),
             POOLFEE1PERCENT
         );
         require(address(pool) == TITANX_WETH_POOL, "WrongPool");
@@ -179,12 +186,12 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         (int256 amount0, int256 amount1) = IUniswapV3Pool(TITANX_WETH_POOL)
             .swap(
                 address(this),
-                WETH9 < TITANX,
+                WETH9 < address(token),
                 int256(amountWETH),
-                WETH9 < TITANX ? MIN_SQRT_RATIO + 1 : MAX_SQRT_RATIO - 1,
+                WETH9 < address(token) ? MIN_SQRT_RATIO + 1 : MAX_SQRT_RATIO - 1,
                 ""
             );
-        uint256 titan = WETH9 < TITANX
+        uint256 titan = WETH9 < address(token)
             ? uint256(amount1 >= 0 ? amount1 : -amount1)
             : uint256(amount0 >= 0 ? amount0 : -amount0);
 
@@ -223,7 +230,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
      * @param account address
      */
     function getTitanBalance(address account) public view returns (uint256) {
-        return ITITANX(TITANX).balanceOf(account);
+        return IERC20(token).balanceOf(account);
     }
 
     /** @notice get buy and burn current contract day
@@ -251,7 +258,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         uint256 numerator1 = sqrtPriceX96 * sqrtPriceX96;
         uint256 numerator2 = 10 ** 18;
         uint256 price = FullMath.mulDiv(numerator1, numerator2, 1 << 192);
-        price = WETH9 < TITANX ? (1 ether * 1 ether) / price : price;
+        price = WETH9 < address(token) ? (1 ether * 1 ether) / price : price;
         return price;
     }
 
@@ -281,7 +288,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
      * @return return the actual total supply
      */
     function totalTitanXLiquidSupply() public view returns (uint256) {
-        return ITITANX(TITANX).totalSupply() - getTitanBalance(BUYANDBURNV1);
+        return IERC20(token).totalSupply() - getTitanBalance(BUYANDBURNV1);
     }
 
     // ==================== BuyAndBurnV2 Getters =======================================

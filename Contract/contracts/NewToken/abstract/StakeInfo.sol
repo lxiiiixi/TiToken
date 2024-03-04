@@ -167,10 +167,6 @@ abstract contract StakeInfo {
         uint256 shares = userStakeInfo.shares;
         _updateSharesStats(user, shares, userStakeInfo.titanAmount, day, isPayoutTriggered, action);
 
-        // +++
-        // 这里是判断所有的还是说只判断当前这一笔的（如果只判断当前这一笔的话前面的就算有满足条件的也会被覆盖）
-    //    checkAndUpdateInvitationBonus(userStakeInfo.numOfDays, userStakeInfo.shares,user,invitation);
-
         if (action == StakeAction.END) {
             ++s_globalStakeEnd;
             s_globalStakeIdToStakeInfo[globalStakeId].status = StakeStatus.ENDED;
@@ -181,19 +177,6 @@ abstract contract StakeInfo {
 
         titan = _calculatePrinciple(user, globalStakeId, userStakeInfo, action);
     }
-
-    // function checkAndUpdateInvitationBonus(uint16 numOfDays, uint128 shares, address user, IInvitation invitation) internal {
-    //     // 获取当前用户的质押信息
-    //     // 并且查看天数和质押股份比例
-    //     // 根据上面整个数据判断是否要更新当前用户的邀请奖励值
-    //     uint8 inviterBonus = 5;
-    //     uint256 share = shares / s_globalShares;
-    //     if(numOfDays < 90 || share < 1) inviterBonus = 2;
-
-    //     if(inviterBonus != getInviterBonusPercent(user)){
-    //         setInviterBonusPercent(user, inviterBonus);
-    //     }
-    // }
 
     /** @dev update shares changes to track when user shares has changed, this affect the payout calculation
      * @param user user address
