@@ -97,20 +97,6 @@ function calculateMintPowerBonus(
         MAX_MINT_POWER_CAP);
 }
 
-/** @notice Return max mint length
- * @return maxMintLength max mint length
- */
-function getMaxMintDays() pure returns (uint256) {
-    return MAX_MINT_LENGTH;
-}
-
-/** @notice Return max mints per wallet
- * @return maxMintPerWallet max mints per wallet
- */
-function getMaxMintsPerWallet() pure returns (uint256) {
-    return MAX_MINT_PER_WALLET;
-}
-
 /**
  * @dev Return penalty percentage based on number of days late after the grace period of 7 days
  * @param secsLate seconds late (block timestamp - maturity timestamp)
@@ -130,13 +116,6 @@ function calculateClaimMintPenalty(uint256 secsLate) pure returns (uint256 penal
 //StakeInfo
 
 error TitanX_AtLeastHalfMaturity();
-
-/** @notice get max stake length
- * @return maxStakeLength max stake length
- */
-function getMaxStakeLength() pure returns (uint256) {
-    return MAX_STAKE_LENGTH;
-}
 
 /** @notice calculate shares and shares bonus
  * @param amount titan amount
