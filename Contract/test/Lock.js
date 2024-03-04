@@ -5,32 +5,120 @@ const {
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const { calculateMintCost, calculateMintReward, calculateShares } = require("./calculate.js");
+
+const getAndFormatBalance = async (address, ifFormat) => {
+  if (ifFormat) {
+    return ethers.formatEther(await ethers.provider.getBalance(address));
+  } else {
+    return await ethers.provider.getBalance(address);
+  }
+}
 
 describe("Lock", function () {
+  let owner, alice, bob;
   async function deployOneYearLockFixture() {
-    const [owner, otherAccount] = await ethers.getSigners();
+    [owner, alice, bob] = await ethers.getSigners();
 
-    const GlobalTITANX = await ethers.getContractFactory("GlobalTITANX");
-    const token = await GlobalTITANX.deploy(owner.address, otherAccount.address, owner.address);
+    const GlobalTITANX = await ethers.getContractFactory("GlobalManager");
+    const tokenManager = await GlobalTITANX.deploy(owner.address, alice.address, owner.address);
 
-    return { token, owner, otherAccount };
+    const TITANX = await ethers.getContractFactory("TITANX");
+    const token = TITANX.attach(await tokenManager.token());
+
+    return { tokenManager, token };
   }
 
-  describe("Deployment", function () {
-    it("Should set the right unlockTime", async function () {
-      const { token, owner } = await loadFixture(deployOneYearLockFixture);
+  describe("Invitation test", function () {
+    it("If no inviter", async function () {
+      const { tokenManager } = await loadFixture(deployOneYearLockFixture);
+      const currentMintCost = await tokenManager.getCurrentMintCost()
 
-      console.log(await token.token());
-      const TITANX = await ethers.getContractFactory("TITANX");
-      const contract = TITANX.attach(await token.token());
-      console.log(await contract.symbol());
-
-      await contract.mint(owner.address, 100);
-
-
-      // expect(await lock.unlockTime()).to.equal(unlockTime);
+      await tokenManager.startMint(100, 280, ethers.ZeroAddress, { value: ethers.parseEther("1") });
+      const mintCost = calculateMintCost(100, currentMintCost, 1)
+      const undistributedEth = await tokenManager.getUndistributedEth()
+      expect(undistributedEth).to.equal(mintCost);
     });
 
+    it("Inviter will get bonus", async function () {
+      const { tokenManager } = await loadFixture(deployOneYearLockFixture);
+      const currentMintCost = await tokenManager.getCurrentMintCost()
+
+      const balance1 = await getAndFormatBalance(owner.address);
+      const balance3 = await getAndFormatBalance(alice.address);
+      await tokenManager.startMint(100, 280, alice.address, { value: ethers.parseEther("1") });
+      const balance2 = await getAndFormatBalance(owner.address);
+      const balance4 = await getAndFormatBalance(alice.address);
+      const undistributedEth = await tokenManager.getUndistributedEth()
+
+      const mintCost = calculateMintCost(100, currentMintCost, 1)
+      const inviterBonus = mintCost * 2n / 100n
+      expect(balance1 - balance2).to.lt(mintCost); // cost some gas
+      expect(balance4 - balance3).to.equal(inviterBonus);
+      expect(undistributedEth).to.equal(mintCost - inviterBonus);
+    });
+
+    it("Inviter bonus will update if user stake more and longer", async function () {
+      const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
+      const mintableTitan = await tokenManager.getCurrentMintableTitan()
+      const EAABonus = await tokenManager.getCurrentEAABonus()
+      const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
+      const mintReward = calculateMintReward(100, 280, mintableTitan, EAABonus, burnBonus)
+      await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+      await time.increase(60 * 60 * 24 * 280); // 280 day
+      // claim
+      await tokenManager.connect(alice).batchClaimMint()
+      expect(await token.balanceOf(alice.address)).to.equal(mintReward);
+      expect(await token.balanceOf(owner.address)).to.equal(mintReward * 800n / 10000n);
+
+      // stake
+      await tokenManager.connect(alice).startStake(mintReward, 100)
+      await tokenManager.startStake(mintReward * 800n / 10000n, 100)
+
+      const shareRate = await tokenManager.getCurrentShareRate()
+      const aliceStakingInfo = await tokenManager.getUserStakeInfo(alice.address, 1)
+      const ownerStakingInfo = await tokenManager.getUserStakeInfo(owner.address, 1)
+
+      expect(aliceStakingInfo[1]).to.equal(calculateShares((mintReward), 100n, shareRate));
+      expect(ownerStakingInfo[1]).to.equal(calculateShares(mintReward * 800n / 10000n, 100n, shareRate));
+      expect(await tokenManager.getInviterBonusPercent(owner.address)).to.equal(2);
+      expect(await tokenManager.getInviterBonusPercent(alice.address)).to.equal(5);
+
+      const aliceEthBalance = await getAndFormatBalance(alice.address)
+      // bob mint 
+      await tokenManager.connect(bob).startMint(100, 280, alice.address, { value: ethers.parseEther("1") });
+      await time.increase(60 * 60 * 24 * 280); // 280 day
+      const aliceEthBalanceNew = await getAndFormatBalance(alice.address)
+      const currentMintCost = await tokenManager.getCurrentMintCost()
+      const mintCost = calculateMintCost(100, currentMintCost, 1)
+      expect(aliceEthBalanceNew - aliceEthBalance).to.equal(mintCost * 500n / 10000n);
+    });
   });
 
+  describe("Mint and claim test", function () {
+    it("Claim before maturity day", async function () {
+      const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
+      const mintableTitan = await tokenManager.getCurrentMintableTitan()
+      const EAABonus = await tokenManager.getCurrentEAABonus()
+      const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
+      const mintReward = calculateMintReward(100, 280, mintableTitan, EAABonus, burnBonus)
+      await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+      await time.increase(60 * 60 * 24 * 100); // 100 day
+
+      const mintId = await tokenManager.getUserLatestMintId(alice.address)
+      await expect(tokenManager.connect(alice).claimMint(mintId))
+        .to.be.revertedWithCustomError(tokenManager, "TitanX_MintNotMature()")
+
+      await time.increase(60 * 60 * 24 * 180); // 180 day
+      await tokenManager.connect(alice).claimMint(mintId)
+      expect(await token.balanceOf(alice.address)).to.equal(mintReward);
+      expect(await token.balanceOf(owner.address)).to.equal(mintReward * 800n / 10000n);
+    });
+  });
+
+  describe("TriggerPayouts test", function () {
+    it("Claim before maturity day", async function () {
+
+    });
+  });
 });

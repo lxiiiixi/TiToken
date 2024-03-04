@@ -18,7 +18,7 @@ import "./TITANX.sol";
 import "hardhat/console.sol";
 
 /** @title Titan X */
-contract GlobalTITANX is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeInfo, BurnInfo, Invitation {
+contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeInfo, BurnInfo, Invitation {
     /** Storage Variables*/
 
     /** @dev stores genesis wallet address */
@@ -65,11 +65,10 @@ contract GlobalTITANX is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeIn
     constructor(address genesisAddress, address buyAndBurnAddress, address initialOwner) Ownable(initialOwner){
         if (genesisAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         if (buyAndBurnAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
-
-        token = new TITANX();
-
         s_genesisAddress = genesisAddress;
         s_buyAndBurnAddress = buyAndBurnAddress;
+
+        token = new TITANX();
         
 		// s_blastYieldAddress.configureClaimableYield();
         // s_blastYieldAddress.configureClaimableGas();
@@ -448,15 +447,13 @@ contract GlobalTITANX is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeIn
         protocolFee = getBatchMintCost(mintPower, count, getCurrentMintCost());
         if (msg.value < protocolFee) revert TitanXErrors.TitanX_InsufficientProtocolFees();
 
-        // +++
-        // 在这里开始判断是否有邀请者，以及如果有邀请者，就减去并发送给邀请者奖励
+        // if inviter is not 0, then send bonusFee to inviter
         if(inviter != address(0)){
             uint8 bonus = getInviterBonusPercent(inviter);
             uint256 bonusFee = (protocolFee * bonus) / 100;
             protocolFee -= bonusFee;
             _sendViaCall(payable(inviter), bonusFee);
         }
-        // +++
        
         uint256 feeBalance;
         s_undistributedEth += uint88(protocolFee);
@@ -975,14 +972,11 @@ contract GlobalTITANX is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeIn
 
 
     function _checkAndUpdateInvitationBonus(address user, uint256 id) private {
-        // 获取当前用户的质押信息
-        // 并且查看天数和质押股份比例
-        // 根据上面整个数据判断是否要更新当前用户的邀请奖励值
         UserStakeInfo memory userStakeInfo = getUserStakeInfo(user,id);
-        uint8 inviterBonus = 5;
-        uint256 share =  userStakeInfo.shares / getGlobalShares();
-        if(userStakeInfo.numOfDays < 90 || share < 1) inviterBonus = 2;
-
+        uint8 inviterBonus = 2;
+        uint256 share = userStakeInfo.shares;
+        uint256 onePercentGlobalShares = getGlobalShares() * 90 / 100; // 90% of global shares
+        if(userStakeInfo.numOfDays >= 90 && share > onePercentGlobalShares) inviterBonus = 5;
         if(inviterBonus != getInviterBonusPercent(user)){
             setInviterBonusPercent(user, inviterBonus);
         }
