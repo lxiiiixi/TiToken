@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 contract TitanXErrors {
-    // TitanX
+// TitanX
 error TitanX_InvalidAmount();
 error TitanX_InsufficientBalance();
 error TitanX_NotSupportedContract();

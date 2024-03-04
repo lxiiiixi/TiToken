@@ -2,6 +2,7 @@
   "name": "Contract",
   "packageManager": "yarn@3.6.3",
   "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
     "dotenv": "^16.4.5",
     "hardhat": "^2.20.1"
   },

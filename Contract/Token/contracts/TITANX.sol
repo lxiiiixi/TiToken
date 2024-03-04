@@ -3,12 +3,12 @@ pragma solidity ^0.8.10;
 
 import "./openzeppelin/security/ReentrancyGuard.sol";
 import "./openzeppelin/token/ERC20/ERC20.sol";
-import "./openzeppelin/interfaces/IERC165.sol";
 
 import "../interfaces/ITitanOnBurn.sol";
 import "../interfaces/ITITANX.sol";
 import "../interfaces/IBlast.sol";
 import "../interfaces/IInvitation.sol";
+import "../interfaces/IERC165.sol";
 
 import "../libs/calcFunctions.sol";
 
@@ -806,9 +806,9 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
     /** @notice get burn pool reward
      * @return reward burn pool reward
      */
-    // function getCycleBurnPool() public view returns (uint256) {
-    //     return s_cycleBurnReward;
-    // }
+    function getCycleBurnPool() public view returns (uint256) {
+        return s_cycleBurnReward;
+    }
 
     /** @notice get user current burn cycle percentage
      * @return percentage in 18 decimals
@@ -831,9 +831,9 @@ contract TITANX is ITITANX, ERC20, ReentrancyGuard, GlobalInfo, MintInfo, StakeI
         return _getUserCycleBurnTotal(user, getCurrentCycleIndex(DAY28) + 1);
     }
 
-    // function isBurnPoolEnabled() public view returns (BurnPoolEnabled) {
-    //     return s_burnPoolEnabled;
-    // }
+    function isBurnPoolEnabled() public view returns (BurnPoolEnabled) {
+        return s_burnPoolEnabled;
+    }
 
     /** @notice returns user's burn stakes allowance of a project
      * @param user user address

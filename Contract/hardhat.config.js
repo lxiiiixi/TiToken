@@ -41,6 +41,12 @@ module.exports = {
       url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
       accounts: [`0x${process.env.PRIVATE_KEY}`], // 0x19759366933CaF4f4A0A6AEc01A4D6bFf3e520FE
       gasPrice: 1000000000,
+    },
+    hardhat: {
+      forking: {
+        enabled: true,
+        url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
+      },
     }
   },
   etherscan: {

@@ -10,21 +10,23 @@ describe("Lock", function () {
   async function deployOneYearLockFixture() {
     const [owner, otherAccount] = await ethers.getSigners();
 
-    const Invitation = await ethers.getContractFactory("Invitation")
-    const invitation = await Invitation.deploy()
-
-    const TITANX = await ethers.getContractFactory("TITANX");
-
-    const token = await TITANX.deploy(owner.address, otherAccount.address, "0x4300000000000000000000000000000000000002", invitation.target);
+    const GlobalTITANX = await ethers.getContractFactory("GlobalTITANX");
+    const token = await GlobalTITANX.deploy(owner.address, otherAccount.address, owner.address);
 
     return { token, owner, otherAccount };
   }
 
   describe("Deployment", function () {
     it("Should set the right unlockTime", async function () {
-      const { token } = await loadFixture(deployOneYearLockFixture);
+      const { token, owner } = await loadFixture(deployOneYearLockFixture);
 
-      console.log(token);
+      console.log(await token.token());
+      const TITANX = await ethers.getContractFactory("TITANX");
+      const contract = TITANX.attach(await token.token());
+      console.log(await contract.symbol());
+
+      await contract.mint(owner.address, 100);
+
 
       // expect(await lock.unlockTime()).to.equal(unlockTime);
     });
