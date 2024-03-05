@@ -9,6 +9,7 @@ import Stake from "@/pages/Stake";
 import NotFound from "@/pages/NotFound";
 import BuyAndBurn from "@/pages/BuyAndBurn";
 import Stats from "@/pages/Stats";
+import Calculator from "@/pages/Calculator";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                     <Route path="stake" element={<Stake />} />
                     <Route path="buyandburn" element={<BuyAndBurn />} />
                     <Route path="stats" element={<Stats />} />
+                    <Route path="calculator" element={<Calculator />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </HomeLayout>
