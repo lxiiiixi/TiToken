@@ -1,62 +1,46 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ContentWrapper from "@/sections/ContentWrapper";
 import type { TabsProps } from "antd";
 import { Tabs } from "antd";
 import InfoCard from "@/components/InfoCard";
 import CreateMiner from "./CreateMiner";
-import type { MineData } from "./CreateMiner";
+import type { MinerInputData } from "@/hooks/useMiningCalculator";
 import { useWriteContract, useAccount } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
-import {
-    useGetCurrentMintCost,
-    useGetCurrentMintableTitan,
-    useGetUserBurnAmplifierBonus,
-    useGetCurrentEAABonus,
-    useGetGlobalTRank,
-    useGetCurrentMintPowerBonus,
-} from "@/hooks/useReadTokenContract";
-import { calculateMintCost, calculateMintReward } from "@/configs/calculate";
-import { formatEther } from "viem";
+import { useGetCurrentMintCost, useGetGlobalTRank } from "@/hooks/useReadTokenContract";
 import getMineInfoDisplay from "./getMineInfoDisplay";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
-import { useETHPrice, useTokenPrice } from "@/hooks/useTokenPrice";
 import MinerTable from "@/sections/Table/MinerTable";
+import useMiningCalculator from "@/hooks/useMiningCalculator";
 
 function Index() {
-    const { currentMintCost } = useGetCurrentMintCost();
-    const { currentMintableTitan } = useGetCurrentMintableTitan();
-    const { userBurnAmplifierBonus } = useGetUserBurnAmplifierBonus();
-    const { currentEAABonus } = useGetCurrentEAABonus();
-    const { globalTRank } = useGetGlobalTRank();
-    const { currentMintPowerBonus } = useGetCurrentMintPowerBonus();
-    const ethUsdPrice = useETHPrice();
-    const tokenPrice = useTokenPrice();
-
-    const [minerData, setMinerData] = useState<MineData>({
+    const [minerData, setMinerData] = useState<MinerInputData>({
         length: 280,
         power: 100,
-        number: 10,
+        number: 1,
     });
-    const [ethCost, setEthCost] = useState(calculateMintCost(currentMintCost, minerData.power));
-    const [ifSingleMiner, setIfSingleMiner] = useState(true);
+    const {
+        mintRewardWithBonus,
+        ethCost,
+        ethUsdValue,
+        ethUsdPrice,
+        tokenPrice,
+        marketValue,
+        roi,
+        currentMintableTitan,
+        currentMintPowerBonus,
+        userBurnAmplifierBonus,
+        currentEAABonus,
+    } = useMiningCalculator(minerData);
+
+    const { currentMintCost } = useGetCurrentMintCost();
+    const { globalTRank } = useGetGlobalTRank();
 
     const { writeContractAsync } = useWriteContract();
     const { address } = useAccount();
 
-    let mintReward = calculateMintReward(
-        minerData.power,
-        minerData.length,
-        currentMintableTitan,
-        userBurnAmplifierBonus,
-        currentEAABonus
-    );
-
-    if (!ifSingleMiner && minerData.number) mintReward = mintReward * BigInt(minerData.number);
-
-    const marketValue = tokenPrice && (tokenPrice * mintReward) / BigInt(1e18);
-
     const mineInfoDisplay = getMineInfoDisplay(
-        mintReward,
+        mintRewardWithBonus,
         ethCost,
         ethUsdPrice,
         tokenPrice || 0n,
@@ -65,24 +49,12 @@ function Index() {
         currentMintableTitan,
         currentMintPowerBonus,
         userBurnAmplifierBonus,
-        currentEAABonus
+        currentEAABonus,
+        roi,
+        ethUsdValue
     );
 
-    useEffect(() => {
-        if (ifSingleMiner) {
-            const newValue = calculateMintCost(currentMintCost, minerData.power);
-            setEthCost(newValue);
-            console.log(newValue);
-            console.log(formatEther(newValue));
-        } else {
-            const newValue = calculateMintCost(currentMintCost, minerData.power, minerData.number);
-            setEthCost(newValue);
-            console.log(newValue);
-            console.log(formatEther(newValue));
-        }
-    }, [ifSingleMiner, currentMintCost, minerData.number, minerData.power]);
-
-    const handleSubmitMiner = async (type: "single" | "batch", data: MineData) => {
+    const handleSubmitMiner = async (type: "single" | "batch", data: MinerInputData) => {
         if (!currentMintCost) return;
 
         if (type === "single" && address) {
@@ -113,7 +85,7 @@ function Index() {
         }
     };
 
-    const changeMinerData = (data: MineData) => {
+    const changeMinerData = (data: MinerInputData) => {
         setMinerData(data);
     };
 
@@ -154,9 +126,15 @@ function Index() {
                             items={items}
                             onChange={key => {
                                 if (key === "1") {
-                                    setIfSingleMiner(true);
+                                    setMinerData({
+                                        ...minerData,
+                                        number: 1,
+                                    });
                                 } else {
-                                    setIfSingleMiner(false);
+                                    setMinerData({
+                                        ...minerData,
+                                        number: 10,
+                                    });
                                 }
                             }}
                         />

@@ -1,10 +1,5 @@
 import { InputNumber, Button } from "antd";
-
-export type MineData = {
-    length: number;
-    power: number;
-    number?: number;
-};
+import type { MinerInputData } from "@/hooks/useMiningCalculator";
 
 function CreateMiner({
     type,
@@ -13,18 +8,18 @@ function CreateMiner({
     onSubmit,
 }: {
     type: "single" | "batch";
-    minerData: MineData;
-    changeMinerData: (data: MineData) => void;
-    onSubmit: (type: "single" | "batch", data: MineData) => void;
+    minerData: MinerInputData;
+    changeMinerData: (data: MinerInputData) => void;
+    onSubmit: (type: "single" | "batch", data: MinerInputData) => void;
 }) {
-    const handleInput = (key: keyof MineData, value: number) => {
+    const handleInput = (key: keyof MinerInputData, value: number) => {
         changeMinerData({
             ...minerData,
             [key]: value,
         });
     };
 
-    const renderInput = (label: string, key: keyof MineData, min: number, max: number) => (
+    const renderInput = (label: string, key: keyof MinerInputData, min: number, max: number) => (
         <div className="flex-between my-2">
             <span>{label}</span>
             <span>
