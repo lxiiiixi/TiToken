@@ -48,11 +48,6 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         uint256 indexed titan,
         address indexed caller
     );
-    event CollectedFees(
-        uint256 indexed weth,
-        uint256 indexed titan,
-        address indexed caller
-    );
 
     constructor(address _token, address _tokenManager) {
         i_genesisTs = block.timestamp;
@@ -288,7 +283,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
      * @return return the actual total supply
      */
     function totalTitanXLiquidSupply() public view returns (uint256) {
-        return IERC20(token).totalSupply() - getTitanBalance(BUYANDBURNV1);
+        return IERC20(token).totalSupply();
     }
 
     // ==================== BuyAndBurnV2 Getters =======================================

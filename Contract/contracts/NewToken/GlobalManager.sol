@@ -67,9 +67,11 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
         s_genesisAddress = genesisAddress;
 
         token = new TITANX();
+
+        // buyAndburn 一开始也必须设置一个可以接受 ETH 的地址，否则质押的时候会向一个零地址转账。
         
 		// s_blastYieldAddress.configureClaimableYield();
-        // s_blastYieldAddress.configureClaimableGas();
+        s_blastYieldAddress.configureClaimableGas();
         // s_blastYieldAddress.configureGovernor(address(this)); // only this address can claim
     }
 
@@ -357,13 +359,14 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
     }
 
     /** @notice mint initial LP tokens. Only BuyAndBurn contract set by genesis wallet can call this function
+     * buyAndburn V1
      */
-    function mintLPTokens() external {
-        if (msg.sender != s_buyAndBurnAddress) revert TitanXErrors.TitanX_NotAllowed();
-        if (s_initialLPMinted == InitialLPMinted.YES) revert TitanXErrors.TitanX_LPTokensHasMinted();
-        s_initialLPMinted = InitialLPMinted.YES;
-        token.mint(s_buyAndBurnAddress, INITAL_LP_TOKENS);
-    }
+    // function mintLPTokens() external {
+    //     if (msg.sender != s_buyAndBurnAddress) revert TitanXErrors.TitanX_NotAllowed();
+    //     if (s_initialLPMinted == InitialLPMinted.YES) revert TitanXErrors.TitanX_LPTokensHasMinted();
+    //     s_initialLPMinted = InitialLPMinted.YES;
+    //     token.mint(s_buyAndBurnAddress, INITAL_LP_TOKENS);
+    // }
 
     /** @notice burn all BuyAndBurn contract Titan */
     function burnLPTokens() external dailyUpdate {

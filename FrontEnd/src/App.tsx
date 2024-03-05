@@ -8,6 +8,7 @@ import Payouts from "@/pages/Payouts";
 import Stake from "@/pages/Stake";
 import NotFound from "@/pages/NotFound";
 import BuyAndBurn from "@/pages/BuyAndBurn";
+import Stats from "@/pages/Stats";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     <Route path="payouts" element={<Payouts />} />
                     <Route path="stake" element={<Stake />} />
                     <Route path="buyandburn" element={<BuyAndBurn />} />
+                    <Route path="stats" element={<Stats />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </HomeLayout>

@@ -21,10 +21,11 @@ export default function getMineInfoDisplay(
     const mintRewardWithBonus =
         mintReward + (mintReward * currentEAABonus) / BigInt(PERCENT_BPS) / 10000n;
 
-    const roi = calculateROI(
-        parseFloat(formatPrice(marketValue, 4)),
-        parseFloat(formatPrice(ethUsdValue, 4))
-    );
+    console.log(parseFloat(formatPrice(marketValue, 4)), marketValue);
+    console.log(parseFloat(formatPrice(ethUsdValue, 4)), ethUsdValue);
+
+    const roi = calculateROI(marketValue, ethUsdValue);
+    const formatROI = `${Number(roi) / 100}%`;
 
     return [
         {
@@ -54,7 +55,7 @@ export default function getMineInfoDisplay(
                 {
                     key: "1.4",
                     label: "Est. ROI % at End of Miner",
-                    value: `${formatPercentage(roi * PERCENT_BPS)}`,
+                    value: `${formatROI}`,
                     tips: "Est. ROI % at End of Miner",
                 },
             ],
