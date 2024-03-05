@@ -101,6 +101,47 @@ describe("Lock", function () {
       const mintCost = calculateMintCost(100, currentMintCost, 1)
       expect(aliceEthBalanceNew - aliceEthBalance).to.equal(mintCost * 500n / 10000n);
     });
+
+    it("Check user active share and global active share", async function () {
+      const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
+      await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+      await time.increase(60 * 60 * 24 * 280); // 280 day
+      await tokenManager.connect(alice).batchClaimMint()
+      const tokenBalance = await token.balanceOf(alice.address);
+      await tokenManager.connect(alice).startStake(tokenBalance, 100)
+      const shareRate = await tokenManager.getCurrentShareRate()
+      const share = calculateShares((tokenBalance), 100n, shareRate)
+      expect(await tokenManager.getUserCurrentActiveShares(alice.address)).to.equal(share);
+      expect(await tokenManager.getGlobalActiveShares()).to.equal(share);
+
+      expect(await tokenManager.getInviterBonusPercent(alice.address)).to.equal(5);
+      await time.increase(60 * 60 * 24 * 100);
+      await tokenManager.connect(alice).endStake(1)
+      expect(await tokenManager.getInviterBonusPercent(alice.address)).to.equal(2);
+
+      expect(await tokenManager.getUserCurrentActiveShares(alice.address)).to.equal(0);
+      expect(await tokenManager.getGlobalActiveShares()).to.equal(0);
+
+      // stake again
+      await tokenManager.connect(alice).startStake(tokenBalance / 2n, 100)
+      const shareRateNew = await tokenManager.getCurrentShareRate()
+      const shareNew = calculateShares((tokenBalance / 2n), 100n, shareRateNew)
+      expect(await tokenManager.getUserCurrentActiveShares(alice.address)).to.equal(shareNew);
+      expect(await tokenManager.getGlobalActiveShares()).to.equal(shareNew);
+
+      time.increase(60 * 60 * 24 * 10);
+      await tokenManager.connect(alice).startStake(tokenBalance / 2n, 100)
+      const shareRateNew2 = await tokenManager.getCurrentShareRate()
+      const shareNew2 = calculateShares((tokenBalance / 2n), 100n, shareRateNew2)
+      expect(await tokenManager.getUserCurrentActiveShares(alice.address)).to.equal(shareNew + shareNew2);
+      expect(await tokenManager.getGlobalActiveShares()).to.equal(shareNew + shareNew2);
+
+      time.increase(60 * 60 * 24 * 100);
+      await tokenManager.connect(alice).endStake(2)
+      expect(await tokenManager.getUserCurrentActiveShares(alice.address)).to.equal(shareNew2);
+      expect(await tokenManager.getGlobalActiveShares()).to.equal(shareNew2);
+    });
+
   });
 
   describe("Mint and claim test", function () {

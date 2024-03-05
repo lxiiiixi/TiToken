@@ -20,6 +20,7 @@ import { formatEther } from "viem";
 import getMineInfoDisplay from "./getMineInfoDisplay";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import { useETHPrice, useTokenPrice } from "@/hooks/useTokenPrice";
+import MinerTable from "@/sections/Table/MinerTable";
 
 function Index() {
     const { currentMintCost } = useGetCurrentMintCost();
@@ -165,6 +166,7 @@ function Index() {
                         <NextDifficultIncrease />
                     </div>
                 </div>
+                <MinerTable />
             </ContentWrapper>
         </div>
     );

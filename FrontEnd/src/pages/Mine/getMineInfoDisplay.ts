@@ -21,8 +21,8 @@ export default function getMineInfoDisplay(
     const mintRewardWithBonus =
         mintReward + (mintReward * currentEAABonus) / BigInt(PERCENT_BPS) / 10000n;
 
-    console.log(parseFloat(formatPrice(marketValue, 4)), marketValue);
-    console.log(parseFloat(formatPrice(ethUsdValue, 4)), ethUsdValue);
+    // console.log(parseFloat(formatPrice(marketValue, 4)), marketValue);
+    // console.log(parseFloat(formatPrice(ethUsdValue, 4)), ethUsdValue);
 
     const roi = calculateROI(marketValue, ethUsdValue);
     const formatROI = `${Number(roi) / 100}%`;

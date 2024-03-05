@@ -68,7 +68,7 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
 
         token = new TITANX();
 
-        // buyAndburn 一开始也必须设置一个可以接受 ETH 的地址，否则质押的时候会向一个零地址转账。
+        // buyAndburn 一开始也必须设置一个可以接受 ETH 的地址，否则有人质押的时候会向一个零地址转账。
         
 		// s_blastYieldAddress.configureClaimableYield();
         s_blastYieldAddress.configureClaimableGas();
@@ -975,8 +975,10 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
     function _checkAndUpdateInvitationBonus(address user, uint256 id) private {
         UserStakeInfo memory userStakeInfo = getUserStakeInfo(user,id);
         uint8 inviterBonus = 2;
-        uint256 share = userStakeInfo.shares;
-        uint256 onePercentGlobalShares = getGlobalShares() * 90 / 100; // 90% of global shares
+        // uint256 share = userStakeInfo.shares;
+        uint256 share = getUserCurrentActiveShares(user); // latest stake active shares
+        uint256 onePercentGlobalShares = getGlobalActiveShares() * 50 / 100; // 50% of global shares
+        console.log(share, onePercentGlobalShares);
         if(userStakeInfo.numOfDays >= 90 && share > onePercentGlobalShares) inviterBonus = 5;
         if(inviterBonus != getInviterBonusPercent(user)){
             setInviterBonusPercent(user, inviterBonus);

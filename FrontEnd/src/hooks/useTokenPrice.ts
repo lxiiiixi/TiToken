@@ -6,7 +6,7 @@ import { parseEther } from "viem";
 export function useETHPrice() {
     const fetchData = async () => {
         const response = await fetch(
-            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&precision=18"
         );
         return response.json();
     };

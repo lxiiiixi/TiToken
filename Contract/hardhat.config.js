@@ -54,7 +54,8 @@ module.exports = {
     hardhat: {
       forking: {
         enabled: true,
-        url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
+        // url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
+        url: "https://rpc.ankr.com/blast"
       },
     }
   },

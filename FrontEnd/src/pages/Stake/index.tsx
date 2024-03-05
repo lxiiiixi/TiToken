@@ -4,13 +4,14 @@ import InfoCard from "@/components/InfoCard";
 import { useState } from "react";
 import {
     useErc20MetaData,
-    useGetUserCurrentActiveShares,
     useGetUserStakes,
     useGlobalInfoData,
 } from "@/hooks/useReadTokenContract";
 import { useStartStake } from "@/hooks/useWriteTokenContract";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import { SCALING_FACTOR_1e18 } from "@/configs/constants";
+import { calculateShares } from "@/configs/calculate";
+import StakeTable from "@/sections/Table/StakeTable";
 
 export type StakeData = {
     amount: number;
@@ -33,15 +34,19 @@ function Index() {
     });
 
     const { balanceOf } = useErc20MetaData();
-    const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
+    // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake } = useStartStake();
     const { userStakes } = useGetUserStakes();
     const { currentShareRate } = useGlobalInfoData();
 
+    const newShares = currentShareRate
+        ? calculateShares(BigInt(stakeData.amount), BigInt(stakeData.length), currentShareRate)
+        : 0n;
+
     const stakeAmount = userStakes
         ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)
         : 0n;
-    console.log(currentShareRate);
+    // console.log(currentShareRate);
 
     const SingleMiner = () => {
         const handleOnclickStake = () => {
@@ -94,8 +99,6 @@ function Index() {
         );
     };
 
-    console.log(currentShareRate);
-
     const infoData = [
         {
             key: "1",
@@ -110,7 +113,7 @@ function Index() {
                 {
                     key: "1.2",
                     label: "# of Shares",
-                    value: `${userCurrentActiveShares}`,
+                    value: `${newShares}`,
                     tips: "# of Shares",
                 },
             ],
@@ -174,6 +177,7 @@ function Index() {
                         <NextDifficultIncrease />
                     </div>
                 </div>
+                <StakeTable />
             </ContentWrapper>
         </div>
     );

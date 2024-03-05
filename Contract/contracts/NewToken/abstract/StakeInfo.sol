@@ -2,7 +2,6 @@
 pragma solidity ^0.8.10;
 
 import "../libs/calcFunctions.sol";
-import "../interfaces/IInvitation.sol";
 import "../libs/TitanXErrors.sol";
 
 abstract contract StakeInfo {
