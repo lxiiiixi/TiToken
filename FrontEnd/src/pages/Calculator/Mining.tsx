@@ -1,50 +1,21 @@
 import React from "react";
 import MaxInputRender from "@/components/MaxInputRender";
 import { Divider } from "antd";
-import { calculateMintCost, calculateMintReward } from "@/configs/calculate";
 import { formatPrice } from "@/configs/utils";
-import { formatEther, parseEther } from "viem";
-import { PERCENT_BPS } from "@/configs/constants";
-import {
-    useGetCurrentEAABonus,
-    useGetUserBurnAmplifierBonus,
-    useGetCurrentMintableTitan,
-    useGetCurrentMintCost,
-} from "@/hooks/useReadTokenContract";
-import { useETHPrice, useTokenPrice } from "@/hooks/useTokenPrice";
+import { formatEther } from "viem";
+import useMiningCalculator from "@/hooks/useMiningCalculator";
 
 export default function Mining() {
     const [miningData, setMiningData] = React.useState({
-        number: 0,
+        number: 1,
         length: 280,
         power: 100,
     });
 
-    const { currentEAABonus } = useGetCurrentEAABonus();
-    const { currentMintableTitan } = useGetCurrentMintableTitan();
-    const { userBurnAmplifierBonus } = useGetUserBurnAmplifierBonus();
-    const { currentMintCost } = useGetCurrentMintCost();
-    const ethUsdPrice = useETHPrice();
-    const tokenPrice = useTokenPrice();
-
+    const { mintRewardWithBonus, ethCost, ethUsdValue, marketValue, roi } =
+        useMiningCalculator(miningData);
     const handleChange = (key: keyof typeof miningData, value: number) =>
         setMiningData(old => ({ ...old, [key]: value }));
-
-    let mintReward = calculateMintReward(
-        miningData.power,
-        miningData.length,
-        currentMintableTitan,
-        userBurnAmplifierBonus,
-        currentEAABonus
-    );
-
-    const ethCost = calculateMintCost(currentMintCost, miningData.power);
-
-    if (miningData.number) mintReward = mintReward * BigInt(miningData.number);
-    const mintRewardWithBonus =
-        mintReward + (mintReward * currentEAABonus) / BigInt(PERCENT_BPS) / 10000n;
-    const ethUsdValue = (ethCost * parseEther(ethUsdPrice.toString())) / BigInt(1e18);
-    const marketValue = tokenPrice ? (tokenPrice * mintReward) / BigInt(1e18) : 0n;
 
     return (
         <div>
@@ -88,6 +59,11 @@ export default function Mining() {
                     <div>$ Market Value of Miner(s)</div>
                     <div>{`$${formatPrice(formatEther(marketValue), 4)}`}</div>
                 </div>
+            </div>
+            <Divider />
+            <div className="text-center">
+                Est. ROI % at End of Miner(s)
+                <div className="text-3xl">{`${Number(roi) / 100}%`}</div>
             </div>
         </div>
     );

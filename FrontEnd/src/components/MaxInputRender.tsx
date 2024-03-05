@@ -23,11 +23,10 @@ const MaxInputRender = ({
                 max={max}
                 value={value}
                 onChange={value => {
-                    console.log(value);
                     return value && handleChangeValue(index, value);
                 }}
             />
-            <Button className="ml-2" onClick={() => handleChangeValue(index, value)}>
+            <Button className="ml-2" onClick={() => handleChangeValue(index, max)}>
                 MAX
             </Button>
         </span>

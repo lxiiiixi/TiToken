@@ -33,7 +33,11 @@ export default function useMiningCalculator(miningData: MinerInputData) {
         currentEAABonus
     );
 
-    const ethCost = calculateMintCost(currentMintCost, miningData.power, miningData.number);
+    const ethCost = calculateMintCost(
+        currentMintCost,
+        miningData.power,
+        miningData.number ? miningData.number : 1
+    );
 
     if (miningData.number) mintReward = mintReward * BigInt(miningData.number);
 
