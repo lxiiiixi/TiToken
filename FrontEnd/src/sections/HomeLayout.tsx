@@ -8,7 +8,7 @@ import CountDownButton from "@/sections/Header/CountDownButton";
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="min-h-screen flex flex-col justify-between">
-            <div className="h-[80px] bg-red-50 dark:bg-black flex-between p-4">
+            <div className="h-[88px] flex-between px-4">
                 <div className="flex-center gap-4">
                     <Logo />
                     <NavMenu />

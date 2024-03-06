@@ -10,8 +10,8 @@ function ContentWrapper({
     children: ReactNode;
 }) {
     return (
-        <div>
-            <h1 className="text-3xl">{title}</h1>
+        <div className="prose">
+            <h1 className="text-4xl">{title}</h1>
             <p>{subTitle}</p>
             {children}
         </div>

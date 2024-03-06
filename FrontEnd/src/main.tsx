@@ -6,7 +6,7 @@ import { ConfigProvider } from "antd";
 import { config } from "@/configs/wagmi.ts";
 import antdTheme from "@/configs/antdTheme.ts";
 import App from "./App.tsx";
-import "./index.css";
+import "./index.scss";
 
 const queryClient = new QueryClient();
 

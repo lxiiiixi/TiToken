@@ -85,10 +85,13 @@ const menu: MenuItem[] = [
 ] as const;
 
 function NavMenu() {
-    // 类型守卫
     function renderMenuItem(item: MenuItem) {
         if ("route" in item) {
-            return <Link to={item.route}>{item.label}</Link>;
+            return (
+                <Link to={item.route}>
+                    <span className="text-nowrap"> {item.label}</span>
+                </Link>
+            );
         } else {
             return (
                 <Dropdown menu={{ items: item.subMenu }}>
@@ -104,7 +107,7 @@ function NavMenu() {
     }
 
     return (
-        <div className="flex gap-5">
+        <div className="flex gap-5 text-sm">
             {menu.map(item => (
                 <div key={item.key}>{renderMenuItem(item)}</div>
             ))}
