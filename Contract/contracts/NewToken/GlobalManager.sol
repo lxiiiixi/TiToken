@@ -15,8 +15,6 @@ import "./interfaces/ITitanOnBurn.sol";
 import "./interfaces/IERC165.sol";
 import "./TITANX.sol";
 
-import "hardhat/console.sol";
-
 /** @title Titan X */
 contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeInfo, BurnInfo, Invitation {
     /** Storage Variables*/
@@ -165,7 +163,7 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
     //     if (maxDay < minDay || minDay == 0 || maxDay > MAX_MINT_LENGTH)
     //         revert TitanXErrors.TitanX_InvalidMintLadderRange();
 
-    //     address inviter = s_invitationAddress.assignInviter(msg.sender, firstInviter);
+    //     address inviter = assignInviter(msg.sender, firstInviter);
 
     //     uint256 count = getBatchMintLadderCount(minDay, maxDay, dayInterval, countPerInterval);
     //     if (count == 0 || count > MAX_BATCH_MINT_COUNT) revert TitanXErrors.TitanX_InvalidBatchCount();
@@ -978,7 +976,6 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
         // uint256 share = userStakeInfo.shares;
         uint256 share = getUserCurrentActiveShares(user); // latest stake active shares
         uint256 onePercentGlobalShares = getGlobalActiveShares() * 50 / 100; // 50% of global shares
-        console.log(share, onePercentGlobalShares);
         if(userStakeInfo.numOfDays >= 90 && share > onePercentGlobalShares) inviterBonus = 5;
         if(inviterBonus != getInviterBonusPercent(user)){
             setInviterBonusPercent(user, inviterBonus);

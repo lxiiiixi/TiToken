@@ -8,10 +8,10 @@ const MaxInputRender = ({
     min,
     max,
 }: {
-    index: "number" | "length" | "power";
+    index: string;
     label: string;
     value: number;
-    handleChangeValue: (key: "number" | "length" | "power", value: number) => void;
+    handleChangeValue: (key: string, value: number) => void;
     min: number;
     max: number;
 }) => (

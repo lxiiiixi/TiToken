@@ -14,7 +14,7 @@ export default function Mining() {
 
     const { mintRewardWithBonus, ethCost, ethUsdValue, marketValue, roi } =
         useMiningCalculator(miningData);
-    const handleChange = (key: keyof typeof miningData, value: number) =>
+    const handleChange = (key: string, value: number) =>
         setMiningData(old => ({ ...old, [key]: value }));
 
     return (
