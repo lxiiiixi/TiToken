@@ -10,6 +10,7 @@ import NotFound from "@/pages/NotFound";
 import BuyAndBurn from "@/pages/BuyAndBurn";
 import Stats from "@/pages/Stats";
 import Calculator from "@/pages/Calculator";
+import Component from "@/pages/Component";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path="buyandburn" element={<BuyAndBurn />} />
                     <Route path="stats" element={<Stats />} />
                     <Route path="calculator" element={<Calculator />} />
+                    <Route path="component" element={<Component />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </HomeLayout>
