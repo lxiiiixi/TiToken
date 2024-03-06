@@ -1,4 +1,4 @@
-import { useConnect, useAccount, useDisconnect, useBalance, useSwitchChain } from "wagmi";
+import { useConnect, useAccount, useDisconnect, useSwitchChain } from "wagmi";
 import { shortAddress } from "@/configs/utils";
 import { Button } from "antd";
 // import { CHAIN_IDS } from "@/configs/configs";
@@ -6,7 +6,7 @@ import { SUPPORTED_CHAINS } from "@/configs/constants";
 
 function WalletConnect() {
     const { address, isConnected, chainId } = useAccount();
-    const { data: balanceData } = useBalance({ address });
+    // const { data: balanceData } = useBalance({ address });
     const { connectors, connect } = useConnect();
     const { chains, switchChain } = useSwitchChain();
     const { disconnect } = useDisconnect();

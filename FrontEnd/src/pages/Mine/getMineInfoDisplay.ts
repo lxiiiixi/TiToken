@@ -23,6 +23,8 @@ export default function getMineInfoDisplay(
     // const roi = calculateROI(marketValue, ethUsdValue);
     const formatROI = `${Number(roi) / 100}%`;
 
+    console.log(ethUsdPrice, currentMintPowerBonus);
+
     return [
         {
             key: "1",

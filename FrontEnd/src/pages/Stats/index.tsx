@@ -9,7 +9,7 @@ export default function Index() {
             { name: "Group D", value: 200 },
         ];
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-        const RADIAN = Math.PI / 180;
+        // const RADIAN = Math.PI / 180;
         // const renderCustomizedLabel = ({
         //     cx,
         //     cy,
@@ -49,7 +49,7 @@ export default function Index() {
                         fill="#8884d8"
                         dataKey="value"
                     >
-                        {data.map((entry, index) => (
+                        {data.map((_, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>

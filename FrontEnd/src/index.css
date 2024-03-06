@@ -15,13 +15,21 @@
     }
 }
 
+@font-face {
+    font-family: "PrintChar21";
+    src: url("./assets/fonts/PrintChar21.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: "PrintChar21";
+    /*  Inter, system-ui, Avenir, Helvetica, Arial, sans-serif */
+    letter-spacing: -2.4px; /* important */
     line-height: 1.5;
     font-weight: 400;
 
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
+    color: #fefefe;
     background-color: #242424;
 
     font-synthesis: none;
@@ -30,30 +38,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-}
-a:hover {
-    color: #535bf2;
-}
-
 body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-    a:hover {
-        color: #747bff;
-    }
-    button {
-        background-color: #f9f9f9;
-    }
 }
