@@ -63,9 +63,10 @@ a {
 
 /* background */
 .bg-card-1 {
-    background-image: url("./assets/svgs/BgCard1.svg");
-    background-size: 100%;
-    background-repeat: no-repeat;
+    // background-image: url("./assets/svgs/BgCard1.svg");
+    // background-size: contain;
+    // background-repeat: no-repeat;
+    background: url("./assets/svgs/BgCard1.svg") top/contain no-repeat;
 }
 .bg-card-2 {
     background-image: url("./assets/svgs/BgCard2.svg");

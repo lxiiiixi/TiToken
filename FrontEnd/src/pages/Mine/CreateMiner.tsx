@@ -1,5 +1,6 @@
 import { InputNumber, Button } from "antd";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
+import TCard from "@/components/TCard";
 
 function CreateMiner({
     type,
@@ -37,18 +38,21 @@ function CreateMiner({
     );
 
     return (
-        <div className="p-6">
-            <h2 className="text-xl">
-                {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
-            </h2>
-            <div>
-                {type === "batch" && renderInput("Number of Miners", "number", 1, 100)}
-                {renderInput("Miner Length", "length", 1, 280)}
-                {renderInput("Miner Power", "power", 1, 100)}
+        <div className="relative">
+            <TCard number={1} width="100%" className="absolute top-0 left-0 -z-10" />
+            <div className="px-8 py-12">
+                <h2 className="text-xl">
+                    {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
+                </h2>
+                <div>
+                    {type === "batch" && renderInput("Number of Miners", "number", 1, 100)}
+                    {renderInput("Miner Length", "length", 1, 280)}
+                    {renderInput("Miner Power", "power", 1, 100)}
+                </div>
+                <Button block onClick={() => onSubmit(type, minerData)}>
+                    {type === "batch" ? "Batch Create Miners" : "Create Miner"}
+                </Button>
             </div>
-            <Button block onClick={() => onSubmit(type, minerData)}>
-                {type === "batch" ? "Batch Create Miners" : "Create Miner"}
-            </Button>
         </div>
     );
 }

@@ -11,12 +11,8 @@ import { GradientBg } from "@/assets";
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="relative min-h-screen flex flex-col justify-between ">
-            <div className="absolute top-0 right-0">
-                <GradientBg />
-            </div>
-            <div className="absolute bottom-0 left-0 rotate-180">
-                <GradientBg />
-            </div>
+            <GradientBg className="absolute top-0 right-0 -z-20" />
+            <GradientBg className="absolute bottom-0 left-0 rotate-180 -z-20" />
             <div className="h-[88px] flex-between px-4">
                 <div className="flex-center gap-4">
                     <Logo />

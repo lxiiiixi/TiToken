@@ -12,6 +12,7 @@ import getMineInfoDisplay from "./getMineInfoDisplay";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import MinerTable from "@/sections/Table/MinerTable";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
+import TCard from "@/components/TCard";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -120,7 +121,7 @@ function Index() {
         <div>
             <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
                 <div className="flex gap-4">
-                    <div className="w-1/2">
+                    <div className="w-1/2 flex-1">
                         <Tabs
                             defaultActiveKey="1"
                             items={items}
@@ -139,12 +140,15 @@ function Index() {
                             }}
                         />
                     </div>
-                    <div className="w-1/2">
+                    <div className="w-1/2 flex-1 relative py-4 px-6">
+                        <TCard number={2} className="absolute top-0 right-0 w-full h-full" />
                         <InfoCard data={mineInfoDisplay} />
                         <NextDifficultIncrease />
                     </div>
                 </div>
-                <MinerTable />
+                <div className="mt-20">
+                    <MinerTable />
+                </div>
             </ContentWrapper>
         </div>
     );

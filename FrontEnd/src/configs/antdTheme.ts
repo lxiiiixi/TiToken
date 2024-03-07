@@ -12,6 +12,12 @@ const antdTheme = {
             defaultShadow: "",
             dangerShadow: "",
         },
+        Table: {
+            borderColor: "rgb(103, 106, 58)",
+            colorBgContainer: "rgba(78, 80, 68, 0.6)",
+            cellFontSize: 12,
+            padding: 14,
+        },
     },
 };
 
