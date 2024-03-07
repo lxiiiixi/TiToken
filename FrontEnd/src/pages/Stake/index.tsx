@@ -1,5 +1,5 @@
 import ContentWrapper from "@/sections/ContentWrapper";
-import { InputNumber, Button } from "antd";
+import { InputNumber, Button, Divider } from "antd";
 import { useState } from "react";
 import {
     useErc20MetaData,
@@ -188,9 +188,16 @@ function Index() {
                     </div>
                     <div className="w-full md:w-1/2 relative">
                         <TCard number={2} className="w-full" />
-                        <div className="absolute-top w-full">
+                        <div className="absolute-top w-full p-10">
                             {infoData.map(item => (
-                                <TInfoGroup key={item.key} data={item.content} title={item.label} />
+                                <>
+                                    <TInfoGroup
+                                        key={item.key}
+                                        data={item.content}
+                                        title={item.label}
+                                    />
+                                    <Divider />
+                                </>
                             ))}
                             <NextDifficultIncrease />
                         </div>

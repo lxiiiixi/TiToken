@@ -120,7 +120,7 @@ function Index() {
                     </div>
                     <div className="w-full lg:w-1/2 flex-1 relative">
                         <TCard number={2} className="w-full" />
-                        <div className="absolute-top w-full px-[4%] py-[5%]">
+                        <div className="absolute-top w-[88%] py-[5%]">
                             {mineInfoDisplay.map(item => (
                                 <>
                                     <TInfoGroup

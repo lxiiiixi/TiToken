@@ -42,8 +42,8 @@ export const TTabs: React.FC<TabsProps> = ({ children }) => {
                             }}
                             className={
                                 index === activeTab
-                                    ? "cursor-pointer py-1 px-2 text-sm rounded pr-10 bg-primary-400 text-black"
-                                    : "cursor-pointer py-1 px-2 text-sm rounded pr-10 bg-primary2"
+                                    ? "cursor-pointer py-2 px-2 text-sm rounded pr-10 bg-primary-400 text-black"
+                                    : "cursor-pointer py-2 px-2 text-sm rounded pr-10 bg-primary2"
                             }
                             onClick={() => setActiveTab(index)}
                         >

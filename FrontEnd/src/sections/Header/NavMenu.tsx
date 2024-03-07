@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import { Link, useLocation } from "react-router-dom";
 
 type RouteItem = {
     key: string;
@@ -85,17 +85,27 @@ const menu: MenuItem[] = [
 ] as const;
 
 function NavMenu() {
+    const location = useLocation();
+
     function renderMenuItem(item: MenuItem) {
+        const isActive = "route" in item && location.pathname === item.route;
+
         if ("route" in item) {
             return (
                 <Link to={item.route}>
-                    <span className="text-nowrap"> {item.label}</span>
+                    <span
+                        className={`text-nowrap p-2 rounded-md hover:bg-primary2 ${
+                            isActive ? "bg-primary2" : ""
+                        }`}
+                    >
+                        {item.label}
+                    </span>
                 </Link>
             );
         } else {
             return (
                 <Dropdown menu={{ items: item.subMenu }}>
-                    <a onClick={e => e.preventDefault()}>
+                    <a onClick={e => e.preventDefault()} className={isActive ? "active" : ""}>
                         <Space>
                             {item.label}
                             <DownOutlined />

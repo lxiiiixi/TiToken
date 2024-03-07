@@ -1,6 +1,5 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { Button, Divider, Progress } from "antd";
-import Card from "@/components/Card";
 import {
     useGetUserETHClaimableTotal,
     useGetPayoutCyclesData,
@@ -9,6 +8,9 @@ import {
 import { formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import { useETHPrice } from "@/hooks/useTokenPrice";
+import TCard from "@/components/TCard";
+import TInfoGroup from "@/components/TInfoGroup";
+import type { CardNumber } from "@/components/TCard";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
@@ -44,27 +46,31 @@ function Index() {
         }, {});
 
         return (
-            <Card title={`${dayNum}-Day Payout Cycles`}>
-                <div className="flex-between my-2">
-                    <span>Global Cycle Payout</span>
-                    <span className="flex flex-col">
-                        <span>${formatPrice(payoutValue)}</span>
-                        <span className="text-gray-500 text-xs">
-                            ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
+            <div className="relative">
+                <TCard number={`${dayNum}Day` as CardNumber} width="100%" />
+                <div className="absolute-center w-[88%]">
+                    <h2>{`${dayNum}-Day Payout Cycles`}</h2>
+                    <div className="flex-between my-2">
+                        <span>Global Cycle Payout</span>
+                        <span className="flex flex-col">
+                            <span>${formatPrice(payoutValue)}</span>
+                            <span className="text-gray-500 text-xs">
+                                ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
+                            </span>
                         </span>
-                    </span>
+                    </div>
+                    <div className="flex-between my-2">
+                        <span>Your Est. Payout</span>
+                        <span>No Stakes</span>
+                    </div>
+                    <Divider />
+                    <div>
+                        <p>Countdown</p>
+                        <Progress percent={countdownPercent[dayNum]} />
+                        <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
+                    </div>
                 </div>
-                <div className="flex-between my-2">
-                    <span>Your Est. Payout</span>
-                    <span>No Stakes</span>
-                </div>
-                <Divider />
-                <div>
-                    <p>Countdown</p>
-                    <Progress percent={countdownPercent[dayNum]} />
-                    <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
-                </div>
-            </Card>
+            </div>
         );
     };
     return (
@@ -72,29 +78,41 @@ function Index() {
             title="Rolling Payout Cycles"
             subTitle="Earn ETH passively based on your % of the TITAN X staking pool"
         >
-            <Card title="Your Claimable ETH Payouts">
-                <div className="flex-between my-2">
-                    <span>Your Active Shares</span>
-                    <span>0</span>
+            <div className="relative">
+                <TCard number={3} width="100%" />
+                <div className="absolute-center w-[90%]">
+                    <TInfoGroup
+                        data={[
+                            {
+                                key: "1",
+                                label: "Your Active Shares",
+                                value: "0",
+                                subValue: "0",
+                            },
+                            {
+                                key: "2",
+                                label: "ETH Claimable",
+                                value: `${userETHClaimableTotal.toString()}`,
+                                subValue: "0",
+                            },
+                        ]}
+                        title={<h2 className="text-white">Your Claimable ETH Payouts</h2>}
+                    />
+                    {userETHClaimableTotal > 0 ? (
+                        <Button block className="my-2">
+                            Claim Payout
+                        </Button>
+                    ) : (
+                        <Button block className="my-2" disabled>
+                            No Payout Claimable Yet
+                        </Button>
+                    )}
+                    <p className=" text-primary1 text-xs text-center my-2">
+                        don't have any active shares? stake your TITAN X tokens to earn ETH passive
+                        income.
+                    </p>
                 </div>
-                <div className="flex-between my-2">
-                    <span>ETH Claimable</span>
-                    <span>${userETHClaimableTotal.toString()}</span>
-                </div>
-                {userETHClaimableTotal > 0 ? (
-                    <Button block className="my-2">
-                        Claim Payout
-                    </Button>
-                ) : (
-                    <Button block className="my-2" disabled>
-                        No Payout Claimable Yet
-                    </Button>
-                )}
-                <p className="text-gray-500 text-sm text-center my-2">
-                    don't have any active shares? stake your TITAN X tokens to earn ETH passive
-                    income.
-                </p>
-            </Card>
+            </div>
             <div className="h-[2px] bg-black/20 rounded-sm my-6"></div>
             <Button block>Triggle Avaliable Cycle payouts</Button>
             <div className="flex flex-wrap my-4">

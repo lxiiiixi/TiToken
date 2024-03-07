@@ -24,7 +24,7 @@ function CreateMiner({
     };
 
     const renderInput = (label: string, key: keyof MinerInputData, min: number, max: number) => (
-        <div className="flex-between my-2">
+        <div className="flex-between my-4">
             <span>{label}</span>
             <span>
                 <InputNumber
@@ -43,11 +43,11 @@ function CreateMiner({
     return (
         <div className="relative">
             <TCard number={1} width="100%" />
-            <div className="absolute-top py-12 px-10 w-full">
+            <div className="absolute-top w-[86%] py-[12%]">
                 <h2 className="text-xl">
                     {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
                 </h2>
-                <div>
+                <div className="p-5">
                     {type === "batch" && renderInput("Number of Miners", "number", 1, 100)}
                     {renderInput("Miner Length", "length", 1, 280)}
                     {renderInput("Miner Power", "power", 1, 100)}

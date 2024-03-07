@@ -1,4 +1,15 @@
-import { BgCard1, BgCard2, BgCard3, BgCard4, BgCard5 } from "@/assets";
+import {
+    BgCard1,
+    BgCard2,
+    BgCard3,
+    BgCard4,
+    BgCard5,
+    BlueCard,
+    GreenCard,
+    OrangeCard,
+    PurpleCard,
+    RoseCard,
+} from "@/assets";
 
 const cardNumber = {
     1: BgCard1,
@@ -6,7 +17,14 @@ const cardNumber = {
     3: BgCard3,
     4: BgCard4,
     5: BgCard5,
+    "8Day": BlueCard,
+    "28Day": GreenCard,
+    "90Day": OrangeCard,
+    "369Day": PurpleCard,
+    "888Day": RoseCard,
 };
+
+export type CardNumber = keyof typeof cardNumber;
 
 export default function TCard({
     number,
@@ -14,7 +32,7 @@ export default function TCard({
     height,
     className,
 }: {
-    number: keyof typeof cardNumber;
+    number: CardNumber;
     width?: string;
     height?: string;
     className?: string;
