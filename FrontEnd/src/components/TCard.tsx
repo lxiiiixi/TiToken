@@ -19,7 +19,11 @@ export default function TCard({
     height?: string;
     className?: string;
 }) {
-    const IconComponent = cardNumber[number];
-    if (!IconComponent) return null;
-    return <IconComponent style={{ width, height, zIndex: -20 }} className={className} />;
+    return (
+        <img
+            src={cardNumber[number]}
+            style={{ width, height, zIndex: -20 }}
+            className={className}
+        />
+    );
 }

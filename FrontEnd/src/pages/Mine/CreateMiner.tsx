@@ -42,7 +42,7 @@ function CreateMiner({
 
     return (
         <div className="relative">
-            <TCard number={1} width="100%" className="-z-10" />
+            <TCard number={1} width="100%" />
             <div className="absolute-top py-12 px-10 w-full">
                 <h2 className="text-xl">
                     {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
@@ -65,7 +65,7 @@ function CreateMiner({
                             : "Create Miner"
                         : "Connect Wallet"}
                 </TButton>
-                <TButton className="mx-auto my-8">test testtesttest</TButton>
+                {/* <TButton className="mx-auto my-8">test testtesttest</TButton> */}
             </div>
         </div>
     );

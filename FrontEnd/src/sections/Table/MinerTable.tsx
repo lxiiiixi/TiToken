@@ -16,7 +16,7 @@ const data: DataType[] = [];
 
 const MinerTable: React.FC = () => (
     <div className="rounded-lg overflow-hidden text-xs">
-        <Table dataSource={data} scroll={{ x: 1200 }} className="" bordered footer={() => "Footer"}>
+        <Table dataSource={data} scroll={{ x: 1200 }} bordered footer={() => "Footer"}>
             <Column title="tRank" dataIndex="tRank" key="tRank" />
             <ColumnGroup title="Miner Details">
                 <Column title="Length" dataIndex="length" key="length" />

@@ -12,35 +12,10 @@ interface DataType {
     tags: string[];
 }
 
-const data: DataType[] = [
-    {
-        key: "1",
-        firstName: "John",
-        lastName: "Brown",
-        age: 32,
-        address: "New York No. 1 Lake Park",
-        tags: ["nice", "developer"],
-    },
-    {
-        key: "2",
-        firstName: "Jim",
-        lastName: "Green",
-        age: 42,
-        address: "London No. 1 Lake Park",
-        tags: ["loser"],
-    },
-    {
-        key: "3",
-        firstName: "Joe",
-        lastName: "Black",
-        age: 32,
-        address: "Sydney No. 1 Lake Park",
-        tags: ["cool", "teacher"],
-    },
-];
+const data: DataType[] = [];
 
 const StakeTable: React.FC = () => (
-    <Table dataSource={data} scroll={{ x: 1600 }} footer={() => <></>}>
+    <Table dataSource={data} scroll={{ x: 1600 }} bordered footer={() => <></>}>
         <Column title="stakeID" dataIndex="stakeID" key="stakeID" />
         <ColumnGroup title="Stake Details">
             <Column title="Length" dataIndex="length" key="length" />

@@ -12,6 +12,10 @@ import { SCALING_FACTOR_1e18 } from "@/configs/constants";
 import { calculateShares } from "@/configs/calculate";
 import StakeTable from "@/sections/Table/StakeTable";
 import TInfoGroup from "@/components/TInfoGroup";
+import TCard from "@/components/TCard";
+import { TTabs, TabPanel } from "@/components/TTabs";
+import { useAccount } from "wagmi";
+import TButton from "@/components/TButton";
 
 export type StakeData = {
     amount: number;
@@ -33,6 +37,7 @@ function Index() {
         length: 3500,
     });
 
+    const { address } = useAccount();
     const { balanceOf } = useErc20MetaData();
     // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake } = useStartStake();
@@ -89,9 +94,15 @@ function Index() {
                     {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
                     {renderInput("Stake Length", "length", 0, 3500)}
                 </div>
-                <Button block className="my-4" onClick={handleOnclickStake}>
-                    Start Stake
-                </Button>
+                <TButton
+                    type={address ? "primary" : "secondary"}
+                    handleClick={() => address && handleOnclickStake()}
+                    width="90%"
+                    height="40px"
+                    className="mx-auto my-8"
+                >
+                    {address ? "Start Stake" : "Connect Wallet"}
+                </TButton>
                 <p className="text-gray-500 text-sm text-center my-2">
                     don't have TITAN X? buy here or mine here.
                 </p>
@@ -168,19 +179,30 @@ function Index() {
                 title="Stake"
                 subTitle="Earn ETH Passive Income by staking your TITAN X"
             >
-                <div className="flex gap-4">
-                    <div className="w-1/2">
-                        <SingleMiner />
+                <div className="flex-row md:flex gap-4">
+                    <div className="w-full md:w-1/2 relative">
+                        <TCard number={1} className="w-full" />
+                        <div className="absolute-top w-full">
+                            <SingleMiner />
+                        </div>
                     </div>
-                    <div className="w-1/2">
-                        {/* <InfoCard data={infoData} /> */}
-                        {infoData.map(item => (
-                            <TInfoGroup key={item.key} data={item.content} title={item.label} />
-                        ))}
-                        <NextDifficultIncrease />
+                    <div className="w-full md:w-1/2 relative">
+                        <TCard number={2} className="w-full" />
+                        <div className="absolute-top w-full">
+                            {infoData.map(item => (
+                                <TInfoGroup key={item.key} data={item.content} title={item.label} />
+                            ))}
+                            <NextDifficultIncrease />
+                        </div>
                     </div>
                 </div>
-                <StakeTable />
+                <TTabs>
+                    <TabPanel title="Active Stakers">
+                        <StakeTable />
+                    </TabPanel>
+                    <TabPanel title="Claimable Stakers">1</TabPanel>
+                    <TabPanel title="Ended Stakers">1</TabPanel>
+                </TTabs>
             </ContentWrapper>
         </div>
     );
