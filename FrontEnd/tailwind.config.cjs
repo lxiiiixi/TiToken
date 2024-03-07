@@ -13,6 +13,9 @@ export default {
         primary1: "#95965f",
         primary2: "#5d5e55",
         tableBorder: "#686a40",
+        primary: {
+          400: '#FFE804'
+        }
       },
     },
   },

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ContentWrapper from "@/sections/ContentWrapper";
-import type { TabsProps } from "antd";
-import { Tabs } from "antd";
+// import type { TabsProps } from "antd";
+// import { Tabs } from "antd";
 import CreateMiner from "./CreateMiner";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
 import { useWriteContract, useAccount } from "wagmi";
@@ -13,6 +13,8 @@ import MinerTable from "@/sections/Table/MinerTable";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
 import TCard from "@/components/TCard";
 import TInfoGroup from "@/components/TInfoGroup";
+import { TTabs, TabPanel } from "@/components/TTabs";
+import { Divider } from "antd";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -90,66 +92,57 @@ function Index() {
         setMinerData(data);
     };
 
-    const items: TabsProps["items"] = [
-        {
-            key: "1",
-            label: "Single Miner",
-            children: (
-                <CreateMiner
-                    type="single"
-                    minerData={minerData}
-                    changeMinerData={changeMinerData}
-                    onSubmit={handleSubmitMiner}
-                />
-            ),
-        },
-        {
-            key: "2",
-            label: "Batch Create Miners",
-            children: (
-                <CreateMiner
-                    type="batch"
-                    minerData={minerData}
-                    changeMinerData={changeMinerData}
-                    onSubmit={handleSubmitMiner}
-                />
-            ),
-        },
-    ];
-
     return (
         <div>
             <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
-                <div className="flex gap-4">
-                    <div className="w-1/2 flex-1">
-                        <Tabs
-                            defaultActiveKey="1"
-                            items={items}
-                            onChange={key => {
-                                if (key === "1") {
-                                    setMinerData({
-                                        ...minerData,
-                                        number: 1,
-                                    });
-                                } else {
-                                    setMinerData({
-                                        ...minerData,
-                                        number: 10,
-                                    });
-                                }
-                            }}
-                        />
+                <div className="flex-row lg:flex gap-4">
+                    <div className="w-full lg:w-1/2 flex-1">
+                        <TTabs>
+                            <TabPanel title="Single Miner">
+                                <CreateMiner
+                                    type="single"
+                                    isWalletConnected={!!address}
+                                    minerData={minerData}
+                                    changeMinerData={changeMinerData}
+                                    onSubmit={handleSubmitMiner}
+                                />
+                            </TabPanel>
+                            <TabPanel title="Batch Create Miners">
+                                <CreateMiner
+                                    type="batch"
+                                    isWalletConnected={!!address}
+                                    minerData={minerData}
+                                    changeMinerData={changeMinerData}
+                                    onSubmit={handleSubmitMiner}
+                                />
+                            </TabPanel>
+                        </TTabs>
                     </div>
-                    <div className="w-1/2 flex-1 relative py-4 px-6">
-                        <TCard number={2} className="absolute top-0 right-0 w-full h-full" />
-                        {mineInfoDisplay.map(item => (
-                            <TInfoGroup key={item.key} title={item.label} data={item.content} />
-                        ))}
-                        <NextDifficultIncrease />
+                    <div className="w-full lg:w-1/2 flex-1 relative">
+                        <TCard number={2} className="w-full h-full" />
+                        <div className="absolute-top w-full px-[4%] py-[5%]">
+                            {mineInfoDisplay.map(item => (
+                                <>
+                                    <TInfoGroup
+                                        key={item.key}
+                                        title={item.label}
+                                        data={item.content}
+                                    />
+                                    <Divider />
+                                </>
+                            ))}
+                            <NextDifficultIncrease />
+                        </div>
                     </div>
                 </div>
                 <div className="mt-20">
-                    <MinerTable />
+                    <TTabs>
+                        <TabPanel title="Active Miners">
+                            <MinerTable />
+                        </TabPanel>
+                        <TabPanel title="Claimable Miners">1</TabPanel>
+                        <TabPanel title="Ended Miners">1</TabPanel>
+                    </TTabs>
                 </div>
             </ContentWrapper>
         </div>
