@@ -24,7 +24,7 @@
 
 :root {
     --primary-color: #ffe804;
-    --background-color: #24282b;
+    --background-color: #161611;
 
     font-family: "PrintChar21";
     /*  Inter, system-ui, Avenir, Helvetica, Arial, sans-serif */
@@ -48,6 +48,7 @@
 body {
     margin: 0;
     min-width: 320px;
+    max-width: 100vw;
     min-height: 100vh;
 }
 
