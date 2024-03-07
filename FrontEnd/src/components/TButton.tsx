@@ -1,20 +1,20 @@
 export default function TButton({
     type = "primary",
-    disabled = false,
     width = "180px",
     height = "50px",
 }: {
     type?: "primary" | "secondary";
-    disabled?: boolean;
     width?: string;
     height?: string;
 }) {
+    const bgColor = type === "primary" ? "var(--primary-color)" : "#988f34";
+
     return (
         <div className="parent relative cursor-pointer" style={{ width, height }}>
             <div
                 className="child1 flex-center"
                 style={{
-                    backgroundColor: disabled ? "var(--primary-color)" : "#988f34",
+                    backgroundColor: bgColor,
                 }}
             >
                 button
