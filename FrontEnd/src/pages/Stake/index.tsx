@@ -1,6 +1,5 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { InputNumber, Button } from "antd";
-import InfoCard from "@/components/InfoCard";
 import { useState } from "react";
 import {
     useErc20MetaData,
@@ -12,6 +11,7 @@ import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import { SCALING_FACTOR_1e18 } from "@/configs/constants";
 import { calculateShares } from "@/configs/calculate";
 import StakeTable from "@/sections/Table/StakeTable";
+import TInfoGroup from "@/components/TInfoGroup";
 
 export type StakeData = {
     amount: number;
@@ -173,7 +173,10 @@ function Index() {
                         <SingleMiner />
                     </div>
                     <div className="w-1/2">
-                        <InfoCard data={infoData} />
+                        {/* <InfoCard data={infoData} /> */}
+                        {infoData.map(item => (
+                            <TInfoGroup key={item.key} data={item.content} title={item.label} />
+                        ))}
                         <NextDifficultIncrease />
                     </div>
                 </div>

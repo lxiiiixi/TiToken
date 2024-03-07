@@ -2,7 +2,6 @@ import { useState } from "react";
 import ContentWrapper from "@/sections/ContentWrapper";
 import type { TabsProps } from "antd";
 import { Tabs } from "antd";
-import InfoCard from "@/components/InfoCard";
 import CreateMiner from "./CreateMiner";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
 import { useWriteContract, useAccount } from "wagmi";
@@ -13,6 +12,7 @@ import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import MinerTable from "@/sections/Table/MinerTable";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
 import TCard from "@/components/TCard";
+import TInfoGroup from "@/components/TInfoGroup";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -142,7 +142,9 @@ function Index() {
                     </div>
                     <div className="w-1/2 flex-1 relative py-4 px-6">
                         <TCard number={2} className="absolute top-0 right-0 w-full h-full" />
-                        <InfoCard data={mineInfoDisplay} />
+                        {mineInfoDisplay.map(item => (
+                            <TInfoGroup key={item.key} title={item.label} data={item.content} />
+                        ))}
                         <NextDifficultIncrease />
                     </div>
                 </div>
