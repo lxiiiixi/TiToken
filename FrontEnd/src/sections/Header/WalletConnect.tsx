@@ -17,9 +17,9 @@ function WalletConnect() {
     const menu = connectors.map(connector => ({
         key: connector.uid,
         label: (
-            <Button key={connector.uid} onClick={() => connect({ connector })} className="mx-2">
+            <div key={connector.uid} onClick={() => connect({ connector })} className="mx-2">
                 {connector.name}
-            </Button>
+            </div>
         ),
     }));
 
@@ -60,7 +60,11 @@ function WalletConnect() {
         return (
             <div className="flex-center gap-3">
                 <div>{`${shortAddress(address)}`}</div>
-                <Button type="primary" onClick={() => disconnect()}>
+                <Button
+                    type="primary"
+                    className="cursor-pointer h-[48px]"
+                    onClick={() => disconnect()}
+                >
                     Disconnect
                 </Button>
             </div>

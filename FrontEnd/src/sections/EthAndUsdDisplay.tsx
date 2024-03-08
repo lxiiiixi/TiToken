@@ -13,7 +13,7 @@ export default function EthAndUsdDisplay({
     return (
         <div className="flex flex-col text-right">
             <span>${formatPrice(ethValue)}</span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-white/70">
                 {formatPrice(formatEther(ethAmount), 4)} ETH
             </span>
         </div>
