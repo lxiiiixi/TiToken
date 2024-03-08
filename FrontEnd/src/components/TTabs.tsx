@@ -6,6 +6,7 @@ interface TabPanelProps {
 }
 
 interface TabsProps {
+    type?: "primary" | "center";
     children: ReactElement<TabPanelProps>[] | ReactElement<TabPanelProps>;
 }
 
@@ -13,7 +14,7 @@ export const TabPanel: React.FC<TabPanelProps> = ({ children }) => {
     return <div>{children}</div>;
 };
 
-export const TTabs: React.FC<TabsProps> = ({ children }) => {
+export const TTabs: React.FC<TabsProps> = ({ type = "primary", children }) => {
     const [activeTab, setActiveTab] = useState(0);
 
     // Ensure children is an array
@@ -22,7 +23,9 @@ export const TTabs: React.FC<TabsProps> = ({ children }) => {
     return (
         <div>
             <ul
-                className="list-none flex border-solid border-b border-white/20 border-0 pr-0"
+                className={`list-none flex border-solid pr-0 ${
+                    type === "primary" && "border-b border-white/20 border-0"
+                } ${type === "center" && " border-0 flex-center"}`}
                 style={{ paddingInlineStart: 0 }}
             >
                 {tabsArray.map((child, index) => {

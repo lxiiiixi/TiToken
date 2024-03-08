@@ -1,8 +1,6 @@
-// import Profile from "@/components/Profile";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import HomeLayout from "@/sections/HomeLayout";
-
 import Mine from "@/pages/Mine";
 import Payouts from "@/pages/Payouts";
 import Stake from "@/pages/Stake";
@@ -15,21 +13,23 @@ import Component from "@/pages/Component";
 
 function App() {
     return (
-        <Router>
-            <HomeLayout>
-                <Routes>
-                    <Route path="/" element={<Mine />} />
-                    <Route path="payouts" element={<Payouts />} />
-                    <Route path="stake" element={<Stake />} />
-                    <Route path="buyandburn" element={<BuyAndBurn />} />
-                    <Route path="burnpool" element={<BurnPool />} />
-                    <Route path="stats" element={<Stats />} />
-                    <Route path="calculator" element={<Calculator />} />
-                    <Route path="component" element={<Component />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </HomeLayout>
-        </Router>
+        <div className={`${process.env.NODE_ENV === "development" ? "debug-screens" : ""}`}>
+            <Router>
+                <HomeLayout>
+                    <Routes>
+                        <Route path="/" element={<Mine />} />
+                        <Route path="payouts" element={<Payouts />} />
+                        <Route path="stake" element={<Stake />} />
+                        <Route path="buyandburn" element={<BuyAndBurn />} />
+                        <Route path="burnpool" element={<BurnPool />} />
+                        <Route path="stats" element={<Stats />} />
+                        <Route path="calculator" element={<Calculator />} />
+                        <Route path="component" element={<Component />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
+                </HomeLayout>
+            </Router>
+        </div>
     );
 }
 

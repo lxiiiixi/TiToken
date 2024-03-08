@@ -4,6 +4,7 @@ import { Divider } from "antd";
 import { formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
+import TInfoGroup from "@/components/TInfoGroup";
 
 export default function Mining() {
     const [miningData, setMiningData] = React.useState({
@@ -45,23 +46,32 @@ export default function Mining() {
             />
             <Divider />
             <div>
-                <div className="flex-between">
-                    <div>Est. TITAN X at End</div>
-                    <div>{`${formatPrice(formatEther(mintRewardWithBonus))}`}</div>
-                </div>
-                <div className="flex-between">
-                    <div>ETH to Start Miner(s)</div>
-                    <div>{`${formatPrice(formatEther(ethCost), 4)} ETH (~$${formatPrice(
-                        formatEther(ethUsdValue)
-                    )})`}</div>
-                </div>
-                <div className="flex-between">
-                    <div>$ Market Value of Miner(s)</div>
-                    <div>{`$${formatPrice(formatEther(marketValue), 4)}`}</div>
-                </div>
+                <TInfoGroup
+                    title="Summary & Estimated ROI"
+                    data={[
+                        {
+                            key: "Est. TITAN X at End",
+                            label: "Est. TITAN X at End",
+                            tips: "Est. TITAN X at End of Miner(s)",
+                            value: `${formatPrice(formatEther(mintRewardWithBonus))}`,
+                        },
+                        {
+                            key: "ETH to Start Miner(s)",
+                            label: "ETH to Start Miner(s)",
+                            value: `${formatPrice(formatEther(ethCost), 4)} ETH (~$${formatPrice(
+                                formatEther(ethUsdValue)
+                            )})`,
+                        },
+                        {
+                            key: "$ Market Value of Miner(s)",
+                            label: "$ Market Value of Miner(s)",
+                            value: `$${formatPrice(formatEther(marketValue), 4)}`,
+                        },
+                    ]}
+                />
             </div>
             <Divider />
-            <div className="text-center">
+            <div className="text-center mt-8">
                 Est. ROI % at End of Miner(s)
                 <div className="text-3xl">{`${Number(roi) / 100}%`}</div>
             </div>

@@ -1,9 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-
+import tailwindcssDebugScreens from 'tailwindcss-debug-screens'
+// import tailwindcssTypography from '@tailwindcss/typography'
 
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    debugScreens: {
+      position: ['bottom', 'left'],
+      style: {
+        letterSpacing: '0.1rem',
+      },
+    },
     extend: {
       // https://tailwindcss.com/docs/customizing-colors
       colors: {
@@ -20,7 +27,8 @@ export default {
     },
   },
   plugins: [
-    import('@tailwindcss/typography'),
+    // tailwindcssTypography,
+    tailwindcssDebugScreens,
   ],
   corePlugins: {
     preflight: false

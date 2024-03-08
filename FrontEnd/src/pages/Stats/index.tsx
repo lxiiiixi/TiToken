@@ -1,4 +1,9 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import TCard from "@/components/TCard";
+import ContentWrapper from "@/sections/ContentWrapper";
+// import TInfoGroup from "@/components/TInfoGroup";
+// import TButton from "@/components/TButton";
+// import { Divider } from "antd";
 
 export default function Index() {
     const StatsChart = () => {
@@ -59,11 +64,19 @@ export default function Index() {
     };
 
     return (
-        <div className="flex gap-6">
-            <div className="w-1/2 h-[500px] border border-red-50 rounded-lg p-9">
-                <StatsChart />
+        <ContentWrapper title="Stats" subTitle="">
+            <div className="flex gap-6">
+                <div className="relative w-1/2">
+                    <TCard number={1} className="w-full" />
+                    <div className="absolute-center w-full h-full">
+                        <StatsChart />
+                    </div>
+                </div>
+                <div className="relative w-1/2 h-auto">
+                    <TCard number={2} className="w-full" />
+                    <div className="absolute-center w-[88%]">111</div>
+                </div>
             </div>
-            <div className="w-1/2 h-auto border border-red-50 rounded-lg p-9">1</div>
-        </div>
+        </ContentWrapper>
     );
 }
