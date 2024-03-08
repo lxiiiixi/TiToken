@@ -5,7 +5,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 type InfoCardDataType = {
     key: string;
     label: string;
-    value: string;
+    value: string | React.ReactNode;
     subValue?: string;
     tips?: string;
 };

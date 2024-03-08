@@ -1,99 +1,8 @@
 import { Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
-
-type RouteItem = {
-    key: string;
-    route: string;
-    label: string;
-    icon?: string;
-};
-
-type LinkItem = {
-    key: string;
-    link: string;
-    label: string;
-    icon?: string;
-};
-
-type SubMenuItem = {
-    key: string;
-    label: string;
-    subMenu: (RouteItem | LinkItem)[];
-    icon?: string;
-};
-
-type MenuItem = RouteItem | SubMenuItem;
-
-const menu: MenuItem[] = [
-    {
-        key: "0",
-        label: "Mine",
-        route: "/",
-    },
-    {
-        key: "1",
-        label: "Stake",
-        route: "/stake",
-    },
-    {
-        key: "2",
-        label: "Payouts",
-        route: "/payouts",
-    },
-    {
-        key: "3",
-        label: "Buy & Burn",
-        route: "/buyandburn",
-    },
-    {
-        key: "4",
-        label: "More",
-        subMenu: [
-            {
-                key: "4.1",
-                label: "Burn Pool",
-                route: "/burnpool",
-            },
-            {
-                key: "4.2",
-                label: "Stats",
-                route: "/stats",
-            },
-            {
-                key: "4.3",
-                label: "Docs",
-                link: "#",
-            },
-        ],
-    },
-    {
-        key: "5",
-        label: "Tools",
-        subMenu: [
-            {
-                key: "5.1",
-                label: "Share",
-                route: "/share",
-            },
-            {
-                key: "5.2",
-                label: "Calculator",
-                route: "/calculator",
-            },
-            {
-                key: "5.3",
-                label: "Buy",
-                route: "/buy",
-            },
-            {
-                key: "5.4",
-                label: "Portfolio",
-                route: "/portfolio",
-            },
-        ],
-    },
-] as const;
+import menu from "./menu.ts";
+import type { RouteItem, LinkItem, MenuItem } from "./menu.ts";
 
 function NavMenu() {
     const location = useLocation();
@@ -152,7 +61,7 @@ function NavMenu() {
     }
 
     return (
-        <div className="flex gap-5 text-sm">
+        <div className="flex gap-0 md:gap-2 lg:gap-4 text-sm">
             {menu.map(item => (
                 <div key={item.key}>{renderMenuItem(item)}</div>
             ))}

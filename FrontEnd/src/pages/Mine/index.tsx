@@ -99,7 +99,7 @@ function Index() {
     return (
         <div>
             <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
-                <div className="flex-row lg:flex gap-4">
+                <div className="flex flex-col lg:flex-row gap-4">
                     <div className="w-full lg:w-1/2 flex-1">
                         <TTabs>
                             <TabPanel title="Single Miner">
