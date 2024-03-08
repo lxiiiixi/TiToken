@@ -15,7 +15,7 @@ const MaxInputRender = ({
     min: number;
     max: number;
 }) => (
-    <div className="flex-between my-2">
+    <div className="flex-between my-4">
         <span>{label}</span>
         <span>
             <InputNumber
@@ -26,7 +26,7 @@ const MaxInputRender = ({
                     return value && handleChangeValue(index, value);
                 }}
             />
-            <Button className="ml-2" onClick={() => handleChangeValue(index, max)}>
+            <Button className="ml-2" type="primary" onClick={() => handleChangeValue(index, max)}>
                 MAX
             </Button>
         </span>

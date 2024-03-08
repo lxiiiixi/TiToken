@@ -24,6 +24,11 @@ const antdTheme = {
             margin: 8,
             marginLG: 12,
         },
+        Dropdown: {
+            colorBgElevated: "rgb(255, 255, 255)",
+            colorText: "rgb(0, 0, 0)",
+            controlItemBgHover: "rgba(239, 208, 3, 0.5)",
+        },
     },
 };
 

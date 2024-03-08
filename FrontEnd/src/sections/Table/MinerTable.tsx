@@ -3,20 +3,76 @@ import { Table } from "antd";
 
 const { Column, ColumnGroup } = Table;
 
-interface DataType {
+export interface MinerDataType {
     key: React.Key;
-    firstName: string;
-    lastName: string;
-    age: number;
-    address: string;
-    tags: string[];
+    tRank: number;
+    length: number;
+    startDay: number;
+    endDay: number;
+    power: number;
+    estToken: number;
+    tRankBonus: number;
+    cost: number;
+    value: number;
+    roi: number;
+    progress: number;
+    share: number;
+    action: number;
 }
 
-const data: DataType[] = [];
+const data: MinerDataType[] = [];
 
 const MinerTable: React.FC = () => (
     <div className="rounded-lg overflow-hidden text-xs">
-        <Table dataSource={data} scroll={{ x: 1200 }} bordered footer={() => "Footer"}>
+        <Table
+            dataSource={data}
+            scroll={{ x: 1200 }}
+            bordered
+            pagination={false}
+            className="antd-costom"
+            summary={data => {
+                let estTokenAmount = 0;
+                let tRankBonus = 0;
+                let cost = 0;
+                let value = 0;
+                let roi = 0;
+
+                data.forEach(
+                    ({
+                        estToken,
+                        tRankBonus: _tRankBonus,
+                        cost: _cost,
+                        value: _value,
+                        roi: _roi,
+                    }) => {
+                        estTokenAmount += estToken;
+                        tRankBonus += _tRankBonus;
+                        cost += _cost;
+                        value += _value;
+                        roi += _roi;
+                    }
+                );
+                return (
+                    <>
+                        <Table.Summary.Row>
+                            <Table.Summary.Cell index={0}>Total</Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            <Table.Summary.Cell index={1}>{estTokenAmount}</Table.Summary.Cell>
+                            <Table.Summary.Cell index={1}>{tRankBonus}</Table.Summary.Cell>
+                            <Table.Summary.Cell index={3}> {cost} </Table.Summary.Cell>
+                            <Table.Summary.Cell index={4}> {value} </Table.Summary.Cell>
+                            <Table.Summary.Cell index={4}> {roi} </Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                        </Table.Summary.Row>
+                    </>
+                );
+            }}
+        >
             <Column title="tRank" dataIndex="tRank" key="tRank" />
             <ColumnGroup title="Miner Details">
                 <Column title="Length" dataIndex="length" key="length" />

@@ -1,5 +1,5 @@
 import ContentWrapper from "@/sections/ContentWrapper";
-import { InputNumber, Button, Divider } from "antd";
+import { Divider } from "antd";
 import { useState } from "react";
 import {
     useErc20MetaData,
@@ -16,6 +16,7 @@ import TCard from "@/components/TCard";
 import { TTabs, TabPanel } from "@/components/TTabs";
 import { useAccount } from "wagmi";
 import TButton from "@/components/TButton";
+import MaxInputRender from "@/components/MaxInputRender";
 
 export type StakeData = {
     amount: number;
@@ -59,40 +60,36 @@ function Index() {
                 startStake(stakeData.amount, stakeData.length);
         };
 
-        const handleInput = (key: keyof StakeData, value: number) => {
+        const handleInput = (key: string, value: number) => {
             setStakeData(old => ({
                 ...old,
                 [key]: value,
             }));
         };
 
-        const renderInput = (label: string, key: keyof StakeData, min: number, max: number) => (
-            <div className="flex-between my-2">
-                <span>{label}</span>
-                <span>
-                    <InputNumber
-                        min={min}
-                        max={max}
-                        value={stakeData[key]}
-                        onChange={value => value && handleInput(key, value)}
-                    />
-                    <Button
-                        className="ml-2"
-                        onClick={() => handleInput(key, max)}
-                        disabled={max === 0}
-                    >
-                        MAX
-                    </Button>
-                </span>
-            </div>
-        );
-
         return (
-            <div className="p-6">
+            <>
                 <h2 className="text-xl">Create TITAN X Staker</h2>
-                <div>
-                    {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
-                    {renderInput("Stake Length", "length", 0, 3500)}
+                <div className="p-5">
+                    {/* {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
+                    {renderInput("Stake Length", "length", 0, 3500)} */}
+                    <MaxInputRender
+                        index="amount"
+                        label="Stake Amount"
+                        value={stakeData.amount}
+                        min={0}
+                        max={balanceOf ? Number(balanceOf) : 0}
+                        handleChangeValue={handleInput}
+                    />
+
+                    <MaxInputRender
+                        index="length"
+                        label="Stake Length"
+                        value={stakeData.length}
+                        min={0}
+                        max={3500}
+                        handleChangeValue={handleInput}
+                    />
                 </div>
                 <TButton
                     type={address ? "primary" : "secondary"}
@@ -103,10 +100,10 @@ function Index() {
                 >
                     {address ? "Start Stake" : "Connect Wallet"}
                 </TButton>
-                <p className="text-gray-500 text-sm text-center my-2">
+                <p className="text-gray-500 text-sm text-center">
                     don't have TITAN X? buy here or mine here.
                 </p>
-            </div>
+            </>
         );
     };
 
@@ -182,7 +179,7 @@ function Index() {
                 <div className="flex-row md:flex gap-4">
                     <div className="w-full md:w-1/2 relative">
                         <TCard number={1} className="w-full" />
-                        <div className="absolute-top w-full">
+                        <div className="absolute-top w-[86%] py-[12%]">
                             <SingleMiner />
                         </div>
                     </div>

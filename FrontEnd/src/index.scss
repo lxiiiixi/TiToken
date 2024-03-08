@@ -160,4 +160,11 @@ a {
             font-size: 14px;
         }
     }
+
+    // tabel summary
+    .ant-table-summary {
+        .ant-table-cell {
+            border: none !important;
+        }
+    }
 }

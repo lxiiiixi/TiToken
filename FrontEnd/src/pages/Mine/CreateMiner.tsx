@@ -1,7 +1,7 @@
-import { InputNumber, Button } from "antd";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
 import TCard from "@/components/TCard";
 import TButton from "@/components/TButton";
+import MaxInputRender from "@/components/MaxInputRender";
 
 function CreateMiner({
     type,
@@ -16,29 +16,29 @@ function CreateMiner({
     changeMinerData: (data: MinerInputData) => void;
     onSubmit: (type: "single" | "batch", data: MinerInputData) => void;
 }) {
-    const handleInput = (key: keyof MinerInputData, value: number) => {
+    const handleInput = (key: string, value: number) => {
         changeMinerData({
             ...minerData,
             [key]: value,
         });
     };
 
-    const renderInput = (label: string, key: keyof MinerInputData, min: number, max: number) => (
-        <div className="flex-between my-4">
-            <span>{label}</span>
-            <span>
-                <InputNumber
-                    min={min}
-                    max={max}
-                    value={minerData[key]}
-                    onChange={value => value && handleInput(key, value)}
-                />
-                <Button className="ml-2" onClick={() => handleInput(key, max)} type="primary">
-                    MAX
-                </Button>
-            </span>
-        </div>
-    );
+    // const renderInput = (label: string, key: keyof MinerInputData, min: number, max: number) => (
+    //     <div className="flex-between my-4">
+    //         <span>{label}</span>
+    //         <span>
+    //             <InputNumber
+    //                 min={min}
+    //                 max={max}
+    //                 value={minerData[key]}
+    //                 onChange={value => value && handleInput(key, value)}
+    //             />
+    //             <Button className="ml-2" onClick={() => handleInput(key, max)} type="primary">
+    //                 MAX
+    //             </Button>
+    //         </span>
+    //     </div>
+    // );
 
     return (
         <div className="relative">
@@ -48,9 +48,35 @@ function CreateMiner({
                     {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
                 </h2>
                 <div className="p-5">
-                    {type === "batch" && renderInput("Number of Miners", "number", 1, 100)}
+                    {/* {type === "batch" && renderInput("Number of Miners", "number", 1, 100)}
                     {renderInput("Miner Length", "length", 1, 280)}
-                    {renderInput("Miner Power", "power", 1, 100)}
+                    {renderInput("Miner Power", "power", 1, 100)} */}
+                    {type === "batch" && (
+                        <MaxInputRender
+                            index="number"
+                            label="Number of Miners"
+                            value={minerData.number}
+                            min={1}
+                            max={100}
+                            handleChangeValue={handleInput}
+                        />
+                    )}
+                    <MaxInputRender
+                        index="length"
+                        label="Miner Length"
+                        value={minerData.length}
+                        min={0}
+                        max={280}
+                        handleChangeValue={handleInput}
+                    />
+                    <MaxInputRender
+                        index="power"
+                        label="Miner Powers"
+                        value={minerData.power}
+                        min={0}
+                        max={100}
+                        handleChangeValue={handleInput}
+                    />
                 </div>
                 <TButton
                     type={isWalletConnected ? "primary" : "secondary"}

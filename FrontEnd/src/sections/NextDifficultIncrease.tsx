@@ -1,5 +1,5 @@
-import { Progress } from "antd";
 import GlobalCountdown from "./GlobalCountdown";
+import CountDownProgress from "./CountDownProgress";
 
 export default function NextDifficultIncrease() {
     return (
@@ -8,7 +8,7 @@ export default function NextDifficultIncrease() {
                 <div>Next Difficulty Increase</div>
                 <GlobalCountdown />
             </div>
-            <Progress percent={30} />
+            <CountDownProgress />
         </div>
     );
 }
