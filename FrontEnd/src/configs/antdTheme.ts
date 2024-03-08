@@ -29,6 +29,10 @@ const antdTheme = {
             colorText: "rgb(0, 0, 0)",
             controlItemBgHover: "rgba(239, 208, 3, 0.5)",
         },
+        Tooltip: {
+            colorBgSpotlight: "rgb(23, 24, 18)",
+            fontSize: 12,
+        },
     },
 };
 

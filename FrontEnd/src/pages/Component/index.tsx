@@ -1,4 +1,3 @@
-import TButton from "@/components/TButton";
 // import { Fire } from "@/assets";
 
 export default function index() {

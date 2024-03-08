@@ -15,6 +15,7 @@ import TCard from "@/components/TCard";
 import TInfoGroup from "@/components/TInfoGroup";
 import { TTabs, TabPanel } from "@/components/TTabs";
 import { Divider } from "antd";
+// import useNotification from "@/hooks/useNotification";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -22,6 +23,9 @@ function Index() {
         power: 100,
         number: 1,
     });
+
+    // const openNotification = useNotification();
+
     const {
         mintRewardWithBonus,
         ethCost,

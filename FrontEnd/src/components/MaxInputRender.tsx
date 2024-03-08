@@ -1,4 +1,5 @@
-import { InputNumber, Button } from "antd";
+import { InputNumber, Button, Tooltip } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const MaxInputRender = ({
     index,
@@ -7,6 +8,7 @@ const MaxInputRender = ({
     handleChangeValue,
     min,
     max,
+    tips,
 }: {
     index: string;
     label: string;
@@ -14,9 +16,17 @@ const MaxInputRender = ({
     handleChangeValue: (key: string, value: number) => void;
     min: number;
     max: number;
+    tips?: string;
 }) => (
     <div className="flex-between my-4">
-        <span>{label}</span>
+        <span>
+            {label}
+            {tips && (
+                <Tooltip title={tips}>
+                    <QuestionCircleOutlined className="w-[14px] ml-2" />
+                </Tooltip>
+            )}
+        </span>
         <span>
             <InputNumber
                 min={min}

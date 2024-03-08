@@ -68,6 +68,7 @@ function CreateMiner({
                         min={0}
                         max={280}
                         handleChangeValue={handleInput}
+                        tips="Number of days you want your miner to run for before becoming claimable. This determines how much TITAN X you're getting, in general: longer is better, always."
                     />
                     <MaxInputRender
                         index="power"
@@ -76,6 +77,7 @@ function CreateMiner({
                         min={0}
                         max={100}
                         handleChangeValue={handleInput}
+                        tips="Miner Powers"
                     />
                 </div>
                 <TButton

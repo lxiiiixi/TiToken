@@ -11,24 +11,29 @@ import Stats from "@/pages/Stats";
 import Calculator from "@/pages/Calculator";
 import Component from "@/pages/Component";
 
+import { App as AntdApp } from "antd";
+
 function App() {
+    // const { notification } = AntdApp.useApp();
     return (
         <div className={`${process.env.NODE_ENV === "development" ? "debug-screens" : ""}`}>
-            <Router>
-                <HomeLayout>
-                    <Routes>
-                        <Route path="/" element={<Mine />} />
-                        <Route path="payouts" element={<Payouts />} />
-                        <Route path="stake" element={<Stake />} />
-                        <Route path="buyandburn" element={<BuyAndBurn />} />
-                        <Route path="burnpool" element={<BurnPool />} />
-                        <Route path="stats" element={<Stats />} />
-                        <Route path="calculator" element={<Calculator />} />
-                        <Route path="component" element={<Component />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                </HomeLayout>
-            </Router>
+            <AntdApp notification={{ placement: "bottomLeft" }}>
+                <Router>
+                    <HomeLayout>
+                        <Routes>
+                            <Route path="/" element={<Mine />} />
+                            <Route path="payouts" element={<Payouts />} />
+                            <Route path="stake" element={<Stake />} />
+                            <Route path="buyandburn" element={<BuyAndBurn />} />
+                            <Route path="burnpool" element={<BurnPool />} />
+                            <Route path="stats" element={<Stats />} />
+                            <Route path="calculator" element={<Calculator />} />
+                            <Route path="component" element={<Component />} />
+                            <Route path="*" element={<NotFound />} />
+                        </Routes>
+                    </HomeLayout>
+                </Router>
+            </AntdApp>
         </div>
     );
 }

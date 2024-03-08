@@ -52,9 +52,9 @@ function Index() {
                     <h2>{`${dayNum}-Day Payout Cycles`}</h2>
                     <div className="flex-between my-2">
                         <span>Global Cycle Payout</span>
-                        <span className="flex flex-col">
-                            <span>${formatPrice(payoutValue)}</span>
-                            <span className="text-gray-500 text-xs">
+                        <span className="flex flex-col items-end">
+                            <span className="text-primary-400">${formatPrice(payoutValue)}</span>
+                            <span className="text-white text-xs">
                                 ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
                             </span>
                         </span>

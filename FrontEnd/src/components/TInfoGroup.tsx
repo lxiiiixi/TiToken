@@ -31,12 +31,12 @@ export default function TInfoGroup({
                                 </Tooltip>
                             )}
                         </span>
-                        <span>
-                            {content.value}
+                        <div className="flex-col items-end justify-end">
+                            <span className="text-lg text-primary-400">{content.value} </span>
                             {content.subValue && (
-                                <span className="text-white">{content.subValue}</span>
+                                <span className="text-white text-xs">{content.subValue}</span>
                             )}
-                        </span>
+                        </div>
                     </div>
                 ))}
             </div>
