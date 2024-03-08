@@ -43,8 +43,8 @@ function CreateMiner({
     return (
         <div className="relative">
             <TCard number={1} width="100%" />
-            <div className="absolute-top w-[86%] py-[12%]">
-                <h2 className="text-xl">
+            <div className="absolute-center w-[86%]">
+                <h2 className="text-2xl">
                     {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
                 </h2>
                 <div className="p-5">

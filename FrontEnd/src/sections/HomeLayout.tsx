@@ -13,7 +13,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                     <Header />
                 </div>
                 <div className="flex-1 p-4">{children}</div>
-                <div className="h-[200px] flex-center">
+                <div className="min-h-[200px] flex-center p-10">
                     <Footer />
                 </div>
             </div>

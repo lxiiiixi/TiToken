@@ -12,3 +12,9 @@ export { default as RoseCard } from "@/assets/svgs/RoseCard.svg";
 
 export { default as StartBackground } from "@/assets/svgs/StartBackground.svg?react";
 export { default as GradientBg } from "@/assets/svgs/GradientBg.svg?react";
+
+// icon
+export { default as Telegram } from "@/assets/icon/Telegram.svg?react";
+export { default as X } from "@/assets/icon/X.svg?react";
+export { default as Youtube } from "@/assets/icon/Youtube.svg?react";
+export { default as Logo } from "@/assets/icon/Logo.svg?react";

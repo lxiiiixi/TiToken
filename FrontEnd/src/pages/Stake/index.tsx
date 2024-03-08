@@ -69,7 +69,7 @@ function Index() {
 
         return (
             <>
-                <h2 className="text-xl">Create TITAN X Staker</h2>
+                <h2 className="text-2xl">Create TITAN X Staker</h2>
                 <div className="p-5">
                     {/* {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
                     {renderInput("Stake Length", "length", 0, 3500)} */}

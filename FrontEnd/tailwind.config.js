@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import tailwindcssDebugScreens from 'tailwindcss-debug-screens'
-// import tailwindcssTypography from '@tailwindcss/typography'
+import tailwindcssTypography from '@tailwindcss/typography'
 
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -27,8 +27,8 @@ export default {
     },
   },
   plugins: [
-    // tailwindcssTypography,
     tailwindcssDebugScreens,
+    tailwindcssTypography,
   ],
   corePlugins: {
     preflight: false

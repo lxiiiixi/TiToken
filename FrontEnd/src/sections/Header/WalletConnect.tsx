@@ -33,7 +33,7 @@ function WalletConnect() {
         return (
             <Dropdown menu={{ items: menu }}>
                 <a onClick={e => e.preventDefault()}>
-                    <Button type="primary" className="cursor-pointer h-[56px]">
+                    <Button type="primary" className="cursor-pointer h-[48px]">
                         Connect Wallet
                     </Button>
                 </a>

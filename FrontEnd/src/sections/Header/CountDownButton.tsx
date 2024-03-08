@@ -12,7 +12,7 @@ export default function CountDownButton() {
 
     return (
         <div
-            className="border border-solid h-[56px] border-white/15 bg-[#87828C]/15 px-5 rounded-xl text-center cursor-pointer py-1 antd-costom"
+            className="border border-solid h-[50px] border-white/15 bg-[#87828C]/15 px-5 rounded-lg text-center cursor-pointer py-1 antd-costom"
             onClick={handleOnClick}
         >
             <div>Day {currentContractDay ? currentContractDay.toString() : 0}</div>

@@ -20,7 +20,7 @@ export default function TInfoGroup({
     return (
         <div className="text-lg">
             <span className="text-primary1">{title}</span>
-            <div className="px-6 py-2 text-sm">
+            <div className="px-6 text-base">
                 {data.map(content => (
                     <div key={content.key} className="flex-between my-2">
                         <span>
@@ -32,7 +32,7 @@ export default function TInfoGroup({
                             )}
                         </span>
                         <div className="flex-col items-end justify-end">
-                            <span className="text-lg text-primary-400">{content.value} </span>
+                            <span className="text-primary-400">{content.value} </span>
                             {content.subValue && (
                                 <span className="text-white text-xs">{content.subValue}</span>
                             )}

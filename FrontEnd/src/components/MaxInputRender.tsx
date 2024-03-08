@@ -19,7 +19,7 @@ const MaxInputRender = ({
     tips?: string;
 }) => (
     <div className="flex-between my-4">
-        <span>
+        <span className="text-lg">
             {label}
             {tips && (
                 <Tooltip title={tips}>

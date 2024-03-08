@@ -125,14 +125,14 @@ function Index() {
                     <div className="w-full lg:w-1/2 flex-1 relative">
                         <TCard number={2} className="w-full" />
                         <div className="absolute-top w-[88%] py-[5%]">
-                            {mineInfoDisplay.map(item => (
+                            {mineInfoDisplay.map((item, index) => (
                                 <>
                                     <TInfoGroup
                                         key={item.key}
                                         title={item.label}
                                         data={item.content}
                                     />
-                                    <Divider />
+                                    {index !== mineInfoDisplay.length - 1 && <Divider />}
                                 </>
                             ))}
                             <NextDifficultIncrease />
