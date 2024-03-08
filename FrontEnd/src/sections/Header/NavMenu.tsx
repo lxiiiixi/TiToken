@@ -9,13 +9,17 @@ type RouteItem = {
     icon?: string;
 };
 
+type LinkItem = {
+    key: string;
+    link: string;
+    label: string;
+    icon?: string;
+};
+
 type SubMenuItem = {
     key: string;
     label: string;
-    subMenu: {
-        key: string;
-        label: string;
-    }[];
+    subMenu: (RouteItem | LinkItem)[];
     icon?: string;
 };
 
@@ -49,14 +53,17 @@ const menu: MenuItem[] = [
             {
                 key: "4.1",
                 label: "Burn Pool",
+                route: "/burnpool",
             },
             {
                 key: "4.2",
                 label: "Stats",
+                route: "/stats",
             },
             {
                 key: "4.3",
                 label: "Docs",
+                link: "#",
             },
         ],
     },
@@ -67,18 +74,22 @@ const menu: MenuItem[] = [
             {
                 key: "5.1",
                 label: "Share",
+                route: "/share",
             },
             {
                 key: "5.2",
                 label: "Calculator",
+                route: "/calculator",
             },
             {
                 key: "5.3",
                 label: "Buy",
+                route: "/buy",
             },
             {
                 key: "5.4",
                 label: "Portfolio",
+                route: "/portfolio",
             },
         ],
     },
@@ -86,6 +97,30 @@ const menu: MenuItem[] = [
 
 function NavMenu() {
     const location = useLocation();
+
+    const renderSubMenuItem = (subItem: RouteItem | LinkItem) => {
+        if ("route" in subItem) {
+            return {
+                ...subItem,
+                label: (
+                    // <Menu.Item key={subItem.key}>
+                    <Link to={subItem.route}>{subItem.label}</Link>
+                    // </Menu.Item>
+                ),
+            };
+        } else {
+            return {
+                ...subItem,
+                label: (
+                    // <Menu.Item key={subItem.key}>
+                    <a href={subItem.link} target="_blank" rel="noopener noreferrer">
+                        {subItem.label}
+                    </a>
+                    // </Menu.Item>
+                ),
+            };
+        }
+    };
 
     function renderMenuItem(item: MenuItem) {
         const isActive = "route" in item && location.pathname === item.route;
@@ -102,9 +137,9 @@ function NavMenu() {
                     </span>
                 </Link>
             );
-        } else {
+        } else if ("subMenu" in item) {
             return (
-                <Dropdown menu={{ items: item.subMenu }}>
+                <Dropdown menu={{ items: item.subMenu.map(subItem => renderSubMenuItem(subItem)) }}>
                     <a onClick={e => e.preventDefault()} className={isActive ? "active" : ""}>
                         <Space>
                             {item.label}
