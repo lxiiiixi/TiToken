@@ -34,34 +34,42 @@ export default function NavDrawer() {
         } else if ("subMenu" in item) {
             return (
                 <>
-                    <div
-                        className={`text-nowrap p-2 border-0 border-b border-solid h-[60px] flex-between border-white/60`}
-                    >
-                        {item.label}
-                        <CaretDownOutlined />
-                    </div>
-                    {item.subMenu.map(subItem => {
-                        const isActive = "route" in subItem && location.pathname === subItem.route;
-                        return (
+                    <label>
+                        <input className="peer/showLabel absolute scale-0" type="checkbox" />
+                        <span
+                            className={`block max-h-[60px] overflow-hidden transition-all duration-300 peer-checked/showLabel:max-h-[2400px]`}
+                        >
                             <div
-                                className={`text-nowrap p-2 border-0 border-b border-solid h-[60px] flex justify-start items-center px-10 ${
-                                    isActive ? " border-primary-400" : "border-white/20"
-                                }`}
+                                className={`text-nowrap p-2 border-0 border-b border-solid h-[60px] flex-between border-white/60`}
                             >
-                                {"route" in subItem ? (
-                                    <Link to={subItem.route}>{subItem.label}</Link>
-                                ) : (
-                                    <a
-                                        href={subItem.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {subItem.label}
-                                    </a>
-                                )}
+                                {item.label}
+                                <CaretDownOutlined />
                             </div>
-                        );
-                    })}
+                            {item.subMenu.map(subItem => {
+                                const isActive =
+                                    "route" in subItem && location.pathname === subItem.route;
+                                return (
+                                    <div
+                                        className={`text-nowrap p-2 border-0 border-b border-solid h-[60px] flex justify-start items-center px-10 ${
+                                            isActive ? " border-primary-400" : "border-white/20"
+                                        }`}
+                                    >
+                                        {"route" in subItem ? (
+                                            <Link to={subItem.route}>{subItem.label}</Link>
+                                        ) : (
+                                            <a
+                                                href={subItem.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {subItem.label}
+                                            </a>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </span>
+                    </label>
                 </>
             );
         }
