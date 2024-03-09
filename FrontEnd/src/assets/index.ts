@@ -1,7 +1,7 @@
 export { default as BgCard1 } from "@/assets/svgs/BgCard1.png";
-export { default as BgCard2 } from "@/assets/svgs/BgCard2.svg";
-export { default as BgCard3 } from "@/assets/svgs/BgCard3.svg";
-export { default as BgCard4 } from "@/assets/svgs/BgCard4.svg";
+export { default as BgCard2 } from "@/assets/svgs/BgCard2.png";
+export { default as BgCard3 } from "@/assets/svgs/BgCard3.png";
+export { default as BgCard4 } from "@/assets/svgs/BgCard4.png";
 export { default as BgCard5 } from "@/assets/svgs/BgCard5.svg";
 export { default as BgCard6 } from "@/assets/svgs/BgCard6.svg";
 export { default as BlueCard } from "@/assets/svgs/BlueCard.svg";

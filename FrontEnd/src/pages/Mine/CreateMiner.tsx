@@ -62,8 +62,7 @@ function CreateMiner({
                 type={isWalletConnected ? "primary" : "secondary"}
                 handleClick={() => isWalletConnected && onSubmit(type, minerData)}
                 width="90%"
-                height="40px"
-                className="mx-auto my-8"
+                className="mx-auto my-6"
             >
                 {isWalletConnected
                     ? type === "batch"

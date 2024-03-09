@@ -11,6 +11,7 @@ import { useETHPrice } from "@/hooks/useTokenPrice";
 import TCard from "@/components/TCard";
 import TInfoGroup from "@/components/TInfoGroup";
 import type { CardNumber } from "@/components/TCard";
+import CardBgWrapper from "@/sections/CardBgWrapper";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
@@ -78,41 +79,42 @@ function Index() {
             title="Rolling Payout Cycles"
             subTitle="Earn ETH passively based on your % of the TITAN X staking pool"
         >
-            <div className="relative">
+            <CardBgWrapper number={3}>
+                <TInfoGroup
+                    data={[
+                        {
+                            key: "1",
+                            label: "Your Active Shares",
+                            value: "0",
+                            subValue: "0",
+                        },
+                        {
+                            key: "2",
+                            label: "ETH Claimable",
+                            value: `${userETHClaimableTotal.toString()}`,
+                            subValue: "0",
+                        },
+                    ]}
+                    title={<h2 className="text-white">Your Claimable ETH Payouts</h2>}
+                />
+                {userETHClaimableTotal > 0 ? (
+                    <Button block className="my-2">
+                        Claim Payout
+                    </Button>
+                ) : (
+                    <Button block className="my-2" disabled>
+                        No Payout Claimable Yet
+                    </Button>
+                )}
+                <p className=" text-primary1 text-xs text-center my-2">
+                    don't have any active shares? stake your TITAN X tokens to earn ETH passive
+                    income.
+                </p>
+            </CardBgWrapper>
+            {/* <div className="relative">
                 <TCard number={3} width="100%" />
-                <div className="absolute-center w-[90%]">
-                    <TInfoGroup
-                        data={[
-                            {
-                                key: "1",
-                                label: "Your Active Shares",
-                                value: "0",
-                                subValue: "0",
-                            },
-                            {
-                                key: "2",
-                                label: "ETH Claimable",
-                                value: `${userETHClaimableTotal.toString()}`,
-                                subValue: "0",
-                            },
-                        ]}
-                        title={<h2 className="text-white">Your Claimable ETH Payouts</h2>}
-                    />
-                    {userETHClaimableTotal > 0 ? (
-                        <Button block className="my-2">
-                            Claim Payout
-                        </Button>
-                    ) : (
-                        <Button block className="my-2" disabled>
-                            No Payout Claimable Yet
-                        </Button>
-                    )}
-                    <p className=" text-primary1 text-xs text-center my-2">
-                        don't have any active shares? stake your TITAN X tokens to earn ETH passive
-                        income.
-                    </p>
-                </div>
-            </div>
+                <div className="absolute-center w-[90%]"></div>
+            </div> */}
             <div className="h-[2px] bg-black/20 rounded-sm my-6"></div>
             <Button block>Triggle Avaliable Cycle payouts</Button>
             <div className="flex flex-wrap my-4">

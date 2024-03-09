@@ -12,11 +12,11 @@ import { SCALING_FACTOR_1e18 } from "@/configs/constants";
 import { calculateShares } from "@/configs/calculate";
 import StakeTable from "@/sections/Table/StakeTable";
 import TInfoGroup from "@/components/TInfoGroup";
-import TCard from "@/components/TCard";
 import { TTabs, TabPanel } from "@/components/TTabs";
 import { useAccount } from "wagmi";
 import TButton from "@/components/TButton";
 import MaxInputRender from "@/components/MaxInputRender";
+import CardBgWrapper from "@/sections/CardBgWrapper";
 
 export type StakeData = {
     amount: number;
@@ -176,15 +176,31 @@ function Index() {
                 title="Stake"
                 subTitle="Earn ETH Passive Income by staking your TITAN X"
             >
-                <div className="flex-row md:flex gap-4">
-                    <div className="w-full md:w-1/2 relative">
-                        <TCard number={1} className="w-full" />
+                <div className="flex flex-col lg:flex-row gap-4">
+                    <div className="w-full lg:w-1/2">
+                        <CardBgWrapper number={1}>
+                            <SingleMiner />
+                        </CardBgWrapper>
+                        {/* <TCard number={1} className="w-full" />
                         <div className="absolute-top w-[86%] py-[12%]">
                             <SingleMiner />
-                        </div>
+                        </div> */}
                     </div>
-                    <div className="w-full md:w-1/2 relative">
-                        <TCard number={2} className="w-full" />
+                    <div className="w-full lg:w-1/2">
+                        <CardBgWrapper number={2}>
+                            {infoData.map(item => (
+                                <>
+                                    <TInfoGroup
+                                        key={item.key}
+                                        data={item.content}
+                                        title={item.label}
+                                    />
+                                    <Divider />
+                                </>
+                            ))}
+                            <NextDifficultIncrease />
+                        </CardBgWrapper>
+                        {/* <TCard number={2} className="w-full" />
                         <div className="absolute-top w-full p-10">
                             {infoData.map(item => (
                                 <>
@@ -197,16 +213,18 @@ function Index() {
                                 </>
                             ))}
                             <NextDifficultIncrease />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
-                <TTabs>
-                    <TabPanel title="Active Stakers">
-                        <StakeTable />
-                    </TabPanel>
-                    <TabPanel title="Claimable Stakers">1</TabPanel>
-                    <TabPanel title="Ended Stakers">1</TabPanel>
-                </TTabs>
+                <div className="mt-20">
+                    <TTabs>
+                        <TabPanel title="Active Stakers">
+                            <StakeTable />
+                        </TabPanel>
+                        <TabPanel title="Claimable Stakers">1</TabPanel>
+                        <TabPanel title="Ended Stakers">1</TabPanel>
+                    </TTabs>
+                </div>
             </ContentWrapper>
         </div>
     );

@@ -11,11 +11,11 @@ import getMineInfoDisplay from "./getMineInfoDisplay";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import MinerTable from "@/sections/Table/MinerTable";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
-import TCard from "@/components/TCard";
 import TInfoGroup from "@/components/TInfoGroup";
 import { TTabs, TabPanel } from "@/components/TTabs";
 import { Divider } from "antd";
 // import useNotification from "@/hooks/useNotification";
+import CardBgWrapper from "@/sections/CardBgWrapper";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -100,7 +100,7 @@ function Index() {
         <div>
             <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
                 <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="w-full lg:w-1/2 flex-1">
+                    <div className="w-full lg:w-1/2">
                         <TTabs>
                             <TabPanel title="Single Miner">
                                 <CreateMiner
@@ -122,8 +122,21 @@ function Index() {
                             </TabPanel>
                         </TTabs>
                     </div>
-                    <div className="w-full lg:w-1/2 flex-1 relative">
-                        <TCard number={2} className="w-full" />
+                    <div className="w-full lg:w-1/2">
+                        <CardBgWrapper number={2}>
+                            {mineInfoDisplay.map((item, index) => (
+                                <>
+                                    <TInfoGroup
+                                        key={item.key}
+                                        title={item.label}
+                                        data={item.content}
+                                    />
+                                    {index !== mineInfoDisplay.length - 1 && <Divider />}
+                                </>
+                            ))}
+                            <NextDifficultIncrease />
+                        </CardBgWrapper>
+                        {/* <TCard number={2} className="w-full" />
                         <div className="absolute-top w-[88%] py-[5%]">
                             {mineInfoDisplay.map((item, index) => (
                                 <>
@@ -136,7 +149,7 @@ function Index() {
                                 </>
                             ))}
                             <NextDifficultIncrease />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="mt-20">

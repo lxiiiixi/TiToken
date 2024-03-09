@@ -1,7 +1,6 @@
 export default function TButton({
     type = "primary",
     width,
-    height,
     className,
     handleClick,
     children,
@@ -17,12 +16,12 @@ export default function TButton({
 
     return (
         <div
-            className={`parent relative cursor-pointer text-center ${className}`}
-            style={{ width, height }}
+            className={`parent relative cursor-pointer text-center min-h-[45px] ${className}`}
+            style={{ width }}
             onClick={handleClick}
         >
             <div
-                className="child1 flex-center"
+                className="child1 flex-center py-2 px-5"
                 style={{
                     backgroundColor: bgColor,
                 }}
@@ -30,7 +29,7 @@ export default function TButton({
                 {children}
             </div>
             <div className="child2">
-                <div className="grandchild"></div>
+                <div className="grandchild py-2 px-5">{children}</div>
             </div>
         </div>
     );
