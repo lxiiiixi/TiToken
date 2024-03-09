@@ -30,8 +30,8 @@ export type CardNumber = keyof typeof cardNumber;
 
 export default function TCard({
     number,
-    width,
-    height,
+    width = "100%",
+    height = "100%",
     className,
 }: {
     number: CardNumber;

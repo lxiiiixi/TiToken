@@ -1,4 +1,4 @@
-export { default as BgCard1 } from "@/assets/svgs/BgCard1.svg";
+export { default as BgCard1 } from "@/assets/svgs/BgCard1.png";
 export { default as BgCard2 } from "@/assets/svgs/BgCard2.svg";
 export { default as BgCard3 } from "@/assets/svgs/BgCard3.svg";
 export { default as BgCard4 } from "@/assets/svgs/BgCard4.svg";
