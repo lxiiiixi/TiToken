@@ -12,12 +12,15 @@ import TCard from "@/components/TCard";
 import TInfoGroup from "@/components/TInfoGroup";
 import type { CardNumber } from "@/components/TCard";
 import CardBgWrapper from "@/sections/CardBgWrapper";
+import TButton from "@/components/TButton";
+import { useAccount } from "wagmi";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
     const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
     const { currentContractDay } = useGlobalInfoData();
     const ethUsdPrice = useETHPrice();
+    const { address } = useAccount();
 
     console.log(currentCycleIndex);
 
@@ -97,14 +100,20 @@ function Index() {
                     ]}
                     title={<h2 className="text-white">Your Claimable ETH Payouts</h2>}
                 />
-                {userETHClaimableTotal > 0 ? (
-                    <Button block className="my-2">
+                {!address && (
+                    <TButton type="secondary" width="90%" className="my-8">
+                        Connect Wallet
+                    </TButton>
+                )}
+                {address && userETHClaimableTotal > 0 && (
+                    <TButton width="90%" className="my-8" handleClick={() => {}}>
                         Claim Payout
-                    </Button>
-                ) : (
-                    <Button block className="my-2" disabled>
+                    </TButton>
+                )}
+                {address && userETHClaimableTotal <= 0 && (
+                    <TButton type="secondary" width="90%" className="my-8">
                         No Payout Claimable Yet
-                    </Button>
+                    </TButton>
                 )}
                 <p className=" text-primary1 text-xs text-center my-2">
                     don't have any active shares? stake your TITAN X tokens to earn ETH passive
@@ -116,7 +125,10 @@ function Index() {
                 <div className="absolute-center w-[90%]"></div>
             </div> */}
             <div className="h-[2px] bg-black/20 rounded-sm my-6"></div>
-            <Button block>Triggle Avaliable Cycle payouts</Button>
+            {/* <Button block>Triggle Avaliable Cycle payouts</Button> */}
+            <TButton width="98%" className="my-8">
+                Triggle Avaliable Cycle payouts
+            </TButton>
             <div className="flex flex-wrap my-4">
                 <div className="w-full md:w-1/2 p-2">
                     <PayoutCycleCard

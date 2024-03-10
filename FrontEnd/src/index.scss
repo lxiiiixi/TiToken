@@ -48,7 +48,7 @@
     // background-color: #242424;
     // background-image: url("./assets/svgs/StartBackground.svg");
 
-    background: url("./assets/svgs/StartBackground.svg") repeat-y center/contain,
+    background: url("./assets/background/StartBackground.svg") repeat-y center/contain,
         var(--background-color);
 
     font-synthesis: none;
@@ -75,35 +75,6 @@ a {
 /* —————————————————————————————————————————————— theme ———————————————————————————————————————— */
 
 /* —————————————————————————————————————————————— custom ———————————————————————————————————————— */
-
-/* background */
-.bg-card-1 {
-    // background-image: url("./assets/svgs/BgCard1.svg");
-    // background-size: contain;
-    // background-repeat: no-repeat;
-    background: url("./assets/svgs/BgCard1.svg") top/contain no-repeat;
-}
-.bg-card-2 {
-    background-image: url("./assets/svgs/BgCard2.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-.bg-card-3 {
-    background-image: url("./assets/svgs/BgCard3.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-.bg-card-4 {
-    background-image: url("./assets/svgs/BgCard4.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-.bg-card-5 {
-    background-image: url("./assets/svgs/BgCard5.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
 .parent {
     .child1 {
         width: 100%;

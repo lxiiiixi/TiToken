@@ -1,17 +1,25 @@
-export { default as BgCard1 } from "@/assets/svgs/BgCard1.png";
-export { default as BgCard2 } from "@/assets/svgs/BgCard2.png";
-export { default as BgCard3 } from "@/assets/svgs/BgCard3.png";
-export { default as BgCard4 } from "@/assets/svgs/BgCard4.png";
-export { default as BgCard5 } from "@/assets/svgs/BgCard5.svg";
-export { default as BgCard6 } from "@/assets/svgs/BgCard6.svg";
-export { default as BlueCard } from "@/assets/svgs/BlueCard.svg";
-export { default as GreenCard } from "@/assets/svgs/GreenCard.svg";
-export { default as OrangeCard } from "@/assets/svgs/OrangeCard.svg";
-export { default as PurpleCard } from "@/assets/svgs/PurpleCard.svg";
-export { default as RoseCard } from "@/assets/svgs/RoseCard.svg";
+export { default as BgCard1 } from "@/assets/background/BgCard1.png";
+export { default as BgCard2 } from "@/assets/background/BgCard2.png";
+export { default as BgCard3 } from "@/assets/background/BgCard3.png";
+export { default as BgCard4 } from "@/assets/background/BgCard4.png";
+export { default as BgCard5 } from "@/assets/background/BgCard5.png";
+export { default as BgCard6 } from "@/assets/background/BgCard6.png";
 
-export { default as StartBackground } from "@/assets/svgs/StartBackground.svg?react";
-export { default as GradientBg } from "@/assets/svgs/GradientBg.svg?react";
+export { default as BgCard1H5 } from "@/assets/background/BgCard1H5.png";
+export { default as BgCard2H5 } from "@/assets/background/BgCard2H5.png";
+export { default as BgCard3H5 } from "@/assets/background/BgCard3H5.png";
+export { default as BgCard4H5 } from "@/assets/background/BgCard4H5.png";
+// export { default as BgCard5 } from "@/assets/background/BgCard5.svg";
+export { default as BgCard6H5 } from "@/assets/background/BgCard6H5.png";
+
+export { default as BlueCard } from "@/assets/background/BlueCard.svg";
+export { default as GreenCard } from "@/assets/background/GreenCard.svg";
+export { default as OrangeCard } from "@/assets/background/OrangeCard.svg";
+export { default as PurpleCard } from "@/assets/background/PurpleCard.svg";
+export { default as RoseCard } from "@/assets/background/RoseCard.svg";
+
+export { default as StartBackground } from "@/assets/background/StartBackground.svg?react";
+export { default as GradientBg } from "@/assets/background/GradientBg.svg?react";
 
 // icon
 export { default as Telegram } from "@/assets/icon/Telegram.svg?react";

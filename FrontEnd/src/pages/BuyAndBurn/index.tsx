@@ -8,9 +8,12 @@ import { useDistributeETH } from "@/hooks/useWriteTokenContract";
 import { useBuynBurn } from "@/hooks/useWriteBuyAndBurnContract";
 import TInfoGroup from "@/components/TInfoGroup";
 import CardBgWrapper from "@/sections/CardBgWrapper";
+import TButton from "@/components/TButton";
+import { useAccount } from "wagmi";
 
 function Index() {
     const { wethBalance } = useWethBalance();
+    const { address } = useAccount();
     const ethUsdPrice = useETHPrice();
     const { undistributedEth } = useGetUndistributedEth();
     const { distributeETH } = useDistributeETH();
@@ -53,9 +56,18 @@ function Index() {
                                 },
                             ]}
                         />
-                        <Button block onClick={distributeETH}>
+                        {/* <Button block onClick={distributeETH}>
                             Distribute ETH
-                        </Button>
+                        </Button> */}
+                        {address ? (
+                            <TButton width="90%" className="my-8" handleClick={distributeETH}>
+                                Distribute ETH
+                            </TButton>
+                        ) : (
+                            <TButton type="secondary" width="90%" className="my-8">
+                                Connect Wallet
+                            </TButton>
+                        )}
                     </CardBgWrapper>
                     {/* <div className="relative">
                         <TCard number={4} className="w-full" />
@@ -89,9 +101,18 @@ function Index() {
                                 },
                             ]}
                         />
-                        <Button block onClick={buynBurn}>
+                        {address ? (
+                            <TButton width="90%" className="my-8" handleClick={buynBurn}>
+                                Trigger Buy And Burn
+                            </TButton>
+                        ) : (
+                            <TButton type="secondary" width="90%" className="my-8">
+                                Connect Wallet
+                            </TButton>
+                        )}
+                        {/* <Button block onClick={buynBurn}>
                             Trigger Buy And Burn
-                        </Button>
+                        </Button> */}
                         <p className="text-xs leading-5 text-gray-400 px-6 text-center">
                             <span className="text-primary1 mt-6">
                                 current cap per swap is 3.33 ETH & is callable every 60 minute(s),

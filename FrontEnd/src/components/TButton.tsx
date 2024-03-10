@@ -16,7 +16,7 @@ export default function TButton({
 
     return (
         <div
-            className={`parent relative cursor-pointer text-center min-h-[45px] ${className}`}
+            className={`parent relative cursor-pointer text-center min-h-[45px] mx-auto my-4 ${className}`}
             style={{ width }}
             onClick={handleClick}
         >
