@@ -62,7 +62,7 @@ function CreateMiner({
             {isWalletConnected ? (
                 <TButton
                     type={"primary"}
-                    handleClick={() => () => onSubmit(type, minerData)}
+                    handleClick={() => onSubmit(type, minerData)}
                     width="90%"
                     className="my-6"
                 >

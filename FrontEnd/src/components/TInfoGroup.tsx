@@ -18,11 +18,11 @@ export default function TInfoGroup({
     title: string | ReactNode;
 }) {
     return (
-        <div className="text-lg">
+        <div className="text-base md:text-lg">
             <span className="text-primary1">{title}</span>
-            <div className="px-6 text-base">
+            <div className="px-1 md:px-6 text-xs md:text-base">
                 {data.map(content => (
-                    <div key={content.key} className="flex-between my-2">
+                    <div key={content.key} className="flex-between my-4 gap-3">
                         <span>
                             {content.label}
                             {content.tips && (
@@ -31,7 +31,7 @@ export default function TInfoGroup({
                                 </Tooltip>
                             )}
                         </span>
-                        <div className="flex-col items-end justify-end">
+                        <div className="flex-col items-end justify-end text-right">
                             <span className="text-primary-400">{content.value} </span>
                             {content.subValue && (
                                 <span className="text-white text-xs">{content.subValue}</span>

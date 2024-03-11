@@ -38,7 +38,7 @@ const MaxInputRender = ({
                 min={min}
                 max={max}
                 value={value}
-                className="w-full sm:w-auto"
+                className="w-full md:w-auto md:max-w-[150px]"
                 onChange={value => value && handleChangeValue(index, value)}
             />
             {max && (

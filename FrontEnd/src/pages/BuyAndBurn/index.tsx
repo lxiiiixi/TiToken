@@ -9,6 +9,7 @@ import TInfoGroup from "@/components/TInfoGroup";
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import TButton from "@/components/TButton";
 import { useAccount } from "wagmi";
+import ConnectWalletButton from "@/sections/ConnectWalletButton";
 
 function Index() {
     const { wethBalance } = useWethBalance();
@@ -63,9 +64,7 @@ function Index() {
                                 Distribute ETH
                             </TButton>
                         ) : (
-                            <TButton type="secondary" width="90%" className="my-8">
-                                Connect Wallet
-                            </TButton>
+                            <ConnectWalletButton text="Connect Wallet to Distribute ETH"></ConnectWalletButton>
                         )}
                     </CardBgWrapper>
                     {/* <div className="relative">
@@ -105,9 +104,10 @@ function Index() {
                                 Trigger Buy And Burn
                             </TButton>
                         ) : (
-                            <TButton type="secondary" width="90%" className="my-8">
-                                Connect Wallet
-                            </TButton>
+                            <ConnectWalletButton text="Connect Wallet to Buy & Burn"></ConnectWalletButton>
+                            // <TButton type="secondary" width="90%" className="my-8">
+                            //     Connect Wallet
+                            // </TButton>
                         )}
                         {/* <Button block onClick={buynBurn}>
                             Trigger Buy And Burn

@@ -17,7 +17,13 @@ function GlobalCountdown() {
             console.log("finished!");
         };
 
-        return <Countdown value={Number(deadline * 1000n)} onFinish={onFinish} />;
+        return (
+            <Countdown
+                value={Number(deadline * 1000n)}
+                onFinish={onFinish}
+                className="antd-costom"
+            />
+        );
     };
 
     return <CountDownDisplay />;

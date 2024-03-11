@@ -20,9 +20,7 @@ export interface MinerDataType {
     action: number;
 }
 
-const data: MinerDataType[] = [];
-
-const MinerTable: React.FC = () => (
+const MinerTable = ({ data }: { data: MinerDataType[] }) => (
     <div className="rounded-lg overflow-hidden text-xs">
         <Table
             dataSource={data}

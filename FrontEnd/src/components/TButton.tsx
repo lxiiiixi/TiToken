@@ -21,7 +21,7 @@ export default function TButton({
             onClick={handleClick}
         >
             <div
-                className="child1 flex-center py-2 px-5"
+                className="child1 flex-center py-[8px] px-[25px]"
                 style={{
                     backgroundColor: bgColor,
                 }}
@@ -29,7 +29,7 @@ export default function TButton({
                 {children}
             </div>
             <div className="child2">
-                <div className="grandchild py-2 px-5">{children}</div>
+                <div className="grandchild py-2 px-6 text-transparent">{children}</div>
             </div>
         </div>
     );

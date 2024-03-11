@@ -4,7 +4,7 @@ import ContentWrapper from "@/sections/ContentWrapper";
 // import { Tabs } from "antd";
 import CreateMiner from "./CreateMiner";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
-import { useWriteContract, useAccount } from "wagmi";
+import { useWriteContract, useAccount, useBalance } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
 import { useGetCurrentMintCost, useGetGlobalTRank } from "@/hooks/useReadTokenContract";
 import getMineInfoDisplay from "./getMineInfoDisplay";
@@ -13,9 +13,12 @@ import MinerTable from "@/sections/Table/MinerTable";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
 import TInfoGroup from "@/components/TInfoGroup";
 import { TTabs, TabPanel } from "@/components/TTabs";
-import { Divider } from "antd";
-// import useNotification from "@/hooks/useNotification";
+import { Button, Divider } from "antd";
+import useNotification from "@/hooks/useNotification";
 import CardBgWrapper from "@/sections/CardBgWrapper";
+import { Tooltip } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import { formatEther } from "viem";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -24,7 +27,7 @@ function Index() {
         number: 1,
     });
 
-    // const openNotification = useNotification();
+    const openNotification = useNotification();
 
     const {
         mintRewardWithBonus,
@@ -45,6 +48,7 @@ function Index() {
 
     const { writeContractAsync } = useWriteContract();
     const { address } = useAccount();
+    const { data: balance } = useBalance({ address });
 
     const mineInfoDisplay = getMineInfoDisplay(
         mintRewardWithBonus,
@@ -64,6 +68,19 @@ function Index() {
     const handleSubmitMiner = async (type: "single" | "batch", data: MinerInputData) => {
         if (!currentMintCost) return;
 
+        if (balance?.value === undefined) {
+            openNotification("error", "", `Please connect your wallet`);
+            return;
+        }
+
+        if (ethCost > balance?.value) {
+            openNotification(
+                "error",
+                "Insufficient balance",
+                `A minimum of ${formatEther(ethCost)} ETH is required for this transaction`
+            );
+            return;
+        }
         if (type === "single" && address) {
             try {
                 await writeContractAsync({
@@ -85,6 +102,20 @@ function Index() {
                     functionName: "batchMint",
                     args: [data.power, data.length, data.number],
                     value: ethCost,
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    };
+
+    const handleBatchClaim = async () => {
+        if (address) {
+            try {
+                await writeContractAsync({
+                    ...TOKEN_CONTRACT_CONFIT,
+                    address,
+                    functionName: "batchClaimMint",
                 });
             } catch (err) {
                 console.log(err);
@@ -155,10 +186,31 @@ function Index() {
                 <div className="mt-20">
                     <TTabs>
                         <TabPanel title="Active Miners">
-                            <MinerTable />
+                            <MinerTable data={[]} />
                         </TabPanel>
-                        <TabPanel title="Claimable Miners">1</TabPanel>
-                        <TabPanel title="Ended Miners">1</TabPanel>
+                        <TabPanel title="Claimable Miners">
+                            <div>
+                                <h2>
+                                    Batch Claim
+                                    <Tooltip title={"Batch Claim"}>
+                                        <QuestionCircleOutlined className="w-[14px] ml-2" />
+                                    </Tooltip>
+                                </h2>
+                                <Button
+                                    block
+                                    type="primary"
+                                    className="mb-4"
+                                    onClick={handleBatchClaim}
+                                    disabled={!address || [].length === 0}
+                                >
+                                    Batch Claim Finished Miners (Claims up to 100 at a time)
+                                </Button>
+                            </div>
+                            <MinerTable data={[]} />
+                        </TabPanel>
+                        <TabPanel title="Ended Miners">
+                            <MinerTable data={[]} />
+                        </TabPanel>
                     </TTabs>
                 </div>
             </ContentWrapper>
