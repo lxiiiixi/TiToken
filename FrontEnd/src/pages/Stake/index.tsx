@@ -69,8 +69,8 @@ function Index() {
 
         return (
             <>
-                <h2 className="text-2xl">Create TITAN X Staker</h2>
-                <div className="p-5">
+                <h2 className="text-lg md:text-2xl">Create TITAN X Staker</h2>
+                <div className="p-2 md:p-5">
                     {/* {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
                     {renderInput("Stake Length", "length", 0, 3500)} */}
                     <MaxInputRender

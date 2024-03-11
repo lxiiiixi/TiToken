@@ -1,6 +1,6 @@
 import React from "react";
 import MaxInputRender from "@/components/MaxInputRender";
-import { Divider, InputNumber } from "antd";
+import { Divider } from "antd";
 import TInfoGroup from "@/components/TInfoGroup";
 
 export default function Staking() {
@@ -14,18 +14,13 @@ export default function Staking() {
 
     return (
         <div>
-            <div className="flex-between my-2">
-                <span>Staking Amount</span>
-                <span>
-                    <InputNumber
-                        min={0}
-                        value={stakingData.amount}
-                        onChange={value => {
-                            return value && handleChange("amount", value);
-                        }}
-                    />
-                </span>
-            </div>
+            <MaxInputRender
+                index="amount"
+                label="Stake Amount"
+                value={stakingData.amount}
+                min={0}
+                handleChangeValue={handleChange}
+            />
             <MaxInputRender
                 index="length"
                 label="Stake Length"

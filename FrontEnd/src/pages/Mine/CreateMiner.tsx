@@ -2,6 +2,7 @@ import type { MinerInputData } from "@/hooks/useMiningCalculator";
 import TButton from "@/components/TButton";
 import MaxInputRender from "@/components/MaxInputRender";
 import CardBgWrapper from "@/sections/CardBgWrapper";
+import ConnectWalletButton from "@/sections/ConnectWalletButton";
 
 function CreateMiner({
     type,
@@ -25,10 +26,10 @@ function CreateMiner({
 
     return (
         <CardBgWrapper number={1}>
-            <h2 className="text-2xl">
+            <h2 className="text-lg md:text-2xl">
                 {type === "batch" ? "Batch Create Miners" : "Create TITAN X Miner"}
             </h2>
-            <div className="p-5">
+            <div className="p-2 md:p-5">
                 {type === "batch" && (
                     <MaxInputRender
                         index="number"
@@ -58,18 +59,18 @@ function CreateMiner({
                     tips="Miner Powers"
                 />
             </div>
-            <TButton
-                type={isWalletConnected ? "primary" : "secondary"}
-                handleClick={() => isWalletConnected && onSubmit(type, minerData)}
-                width="90%"
-                className="my-6"
-            >
-                {isWalletConnected
-                    ? type === "batch"
-                        ? "Batch Create Miners"
-                        : "Create Miner"
-                    : "Connect Wallet"}
-            </TButton>
+            {isWalletConnected ? (
+                <TButton
+                    type={"primary"}
+                    handleClick={() => () => onSubmit(type, minerData)}
+                    width="90%"
+                    className="my-6"
+                >
+                    {type === "batch" ? "Batch Create Miners" : "Create Miner"}
+                </TButton>
+            ) : (
+                <ConnectWalletButton text={"Connect Wallet to Create Miner"} />
+            )}
         </CardBgWrapper>
     );
 }

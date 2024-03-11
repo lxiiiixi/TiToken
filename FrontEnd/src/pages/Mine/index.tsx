@@ -82,7 +82,7 @@ function Index() {
                 await writeContractAsync({
                     ...TOKEN_CONTRACT_CONFIT,
                     address,
-                    functionName: "startMint",
+                    functionName: "batchMint",
                     args: [data.power, data.length, data.number],
                     value: ethCost,
                 });

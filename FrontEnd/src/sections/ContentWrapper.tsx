@@ -11,8 +11,8 @@ function ContentWrapper({
 }) {
     return (
         <>
-            <h1 className="text-5xl">{title}</h1>
-            <p className="text-xl">{subTitle}</p>
+            <h1 className="text-3xl md:text-5xl">{title}</h1>
+            <p className="text-base md:text-xl">{subTitle}</p>
             {children}
         </>
     );

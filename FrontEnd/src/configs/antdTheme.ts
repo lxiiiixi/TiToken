@@ -21,8 +21,8 @@ const antdTheme = {
         },
         Divider: {
             colorSplit: "rgba(249, 250, 251, 0.15)",
-            margin: 8,
-            marginLG: 12,
+            // margin: 10,
+            // marginLG: 12,
         },
         Dropdown: {
             colorBgElevated: "rgb(255, 255, 255)",

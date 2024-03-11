@@ -6,7 +6,7 @@ import { PERCENT_BPS } from "./constants";
  * @returns
  */
 export function shortAddress(address: string) {
-    return `${address.slice(0, 5)}...${address.slice(-6)}`;
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
 }
 
 /**
