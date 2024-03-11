@@ -1,15 +1,9 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { Divider, Tooltip } from "antd";
 import { useState } from "react";
-import {
-    useErc20MetaData,
-    useGetUserStakes,
-    useGlobalInfoData,
-} from "@/hooks/useReadTokenContract";
+import { useErc20MetaData, useGetUserStakes } from "@/hooks/useReadTokenContract";
 import { useStartStake } from "@/hooks/useWriteTokenContract";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
-import { SCALING_FACTOR_1e18 } from "@/configs/constants";
-import { calculateShares } from "@/configs/calculate";
 import StakeTable from "@/sections/Table/StakeTable";
 import TInfoGroup from "@/components/TInfoGroup";
 import { TTabs, TabPanel } from "@/components/TTabs";
@@ -19,6 +13,7 @@ import MaxInputRender from "@/components/MaxInputRender";
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import useNotification from "@/hooks/useNotification";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import useStakingCalculator from "@/hooks/useStakingCalculator";
 
 export type StakeData = {
     amount: number;
@@ -40,17 +35,21 @@ function Index() {
         length: 3500,
     });
 
+    const { newShare, newShareDisplay } = useStakingCalculator({
+        amount: stakeData.amount,
+        length: stakeData.length,
+    });
+
     const { address } = useAccount();
     const { balanceOf } = useErc20MetaData();
     // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake } = useStartStake();
     const { userStakes } = useGetUserStakes();
-    const { currentShareRate } = useGlobalInfoData();
     const openNotification = useNotification();
 
-    const newShares = currentShareRate
-        ? calculateShares(BigInt(stakeData.amount), BigInt(stakeData.length), currentShareRate)
-        : 0n;
+    // const newShares = currentShareRate
+    //     ? calculateShares(BigInt(stakeData.amount), BigInt(stakeData.length), currentShareRate)
+    //     : 0n;
 
     const stakeAmount = userStakes
         ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)
@@ -61,7 +60,7 @@ function Index() {
 
     const SingleMiner = () => {
         const handleOnclickStake = () => {
-            if (newShares < 1n) {
+            if (newShare < 1n) {
                 openNotification("warning", "", "Your stake should have at least 1 share");
             }
 
@@ -153,7 +152,7 @@ function Index() {
                                     {
                                         key: "1.2",
                                         label: "# of Shares",
-                                        value: `${newShares}`,
+                                        value: ``,
                                         tips: "# of Shares",
                                     },
                                 ]}
@@ -166,16 +165,7 @@ function Index() {
                                     {
                                         key: "2.1",
                                         label: "Current Share Rate (excl. Bonuses)",
-                                        value: `${
-                                            currentShareRate
-                                                ? (
-                                                      Number(
-                                                          currentShareRate /
-                                                              BigInt(SCALING_FACTOR_1e18 / 100)
-                                                      ) / 100
-                                                  ).toFixed(2)
-                                                : 0
-                                        }`,
+                                        value: `${newShareDisplay}`,
                                         tips: "Current Share Rate (excl. Bonuses)",
                                     },
                                     {
@@ -215,7 +205,7 @@ function Index() {
                                             }
                                         >
                                             <QuestionCircleOutlined className="w-[14px] ml-2" />
-                                        </Tooltip>{" "}
+                                        </Tooltip>
                                     </span>
                                     <span>+ 0</span>
                                 </div>

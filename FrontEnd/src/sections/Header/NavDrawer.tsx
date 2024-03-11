@@ -23,6 +23,7 @@ export default function NavDrawer() {
             return (
                 <Link to={item.route}>
                     <div
+                        key={item.route}
                         className={`text-nowrap p-2 border-0 border-b border-solid h-[60px] flex justify-start items-center ${
                             isActive ? " border-primary-400" : "border-white/60"
                         }`}

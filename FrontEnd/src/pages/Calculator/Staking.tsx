@@ -2,12 +2,41 @@ import React from "react";
 import MaxInputRender from "@/components/MaxInputRender";
 import { Divider } from "antd";
 import TInfoGroup from "@/components/TInfoGroup";
+import useStakingCalculator from "@/hooks/useStakingCalculator";
+import { useETHPrice, useTokenPrice } from "@/hooks/useTokenPrice";
+import { formatEther } from "viem";
+import { useGetPayoutCyclesData } from "@/hooks/useReadTokenContract";
+import { formatPrice } from "@/configs/utils";
 
 export default function Staking() {
     const [stakingData, setStakingData] = React.useState({
-        amount: 0,
+        amount: 100000000,
         length: 3500,
     });
+
+    const { newShareDisplay, percentOfGlobalActiveSharesDisplay } = useStakingCalculator({
+        amount: stakingData.amount,
+        length: stakingData.length,
+    });
+
+    const { globalCyclePayout } = useGetPayoutCyclesData();
+    const ethUsdPrice = useETHPrice();
+    const tokenPrice = useTokenPrice();
+
+    const getCyclePayout = (dayNum: 8 | 28 | 90 | 369 | 888) => {
+        const cyclePayoutByDay = globalCyclePayout ? globalCyclePayout[dayNum] : 0n;
+        const payoutValueByDay = ethUsdPrice * parseFloat(formatEther(cyclePayoutByDay));
+        return {
+            cyclePayoutByDay: `${formatPrice(formatEther(cyclePayoutByDay), 4)} ETH`,
+            payoutValueByDay: formatPrice(payoutValueByDay),
+        };
+    };
+
+    const day8CyclePayout = getCyclePayout(8);
+    const day28CyclePayout = getCyclePayout(28);
+    const day90CyclePayout = getCyclePayout(90);
+    const day369CyclePayout = getCyclePayout(369);
+    const day888CyclePayout = getCyclePayout(888);
 
     const handleChange = (key: string, value: number) =>
         setStakingData(old => ({ ...old, [key]: value }));
@@ -36,7 +65,7 @@ export default function Staking() {
                     {
                         key: "Effective Share Rate",
                         label: "Effective Share Rate",
-                        value: "184.84",
+                        value: newShareDisplay,
                     },
                     {
                         key: "Effective Shares",
@@ -46,7 +75,7 @@ export default function Staking() {
                     {
                         key: "% of Global Active Shares",
                         label: "% of Global Active Shares",
-                        value: "~ 0%",
+                        value: percentOfGlobalActiveSharesDisplay,
                     },
                 ]}
             />
@@ -57,37 +86,37 @@ export default function Staking() {
                     {
                         key: "TITAN X Value",
                         label: "TITAN X Value",
-                        value: "$0.63",
+                        value: `$${formatEther(tokenPrice || 0n)}`,
                     },
                     {
                         key: "Next 8-Day Payout",
                         label: "Next 8-Day Payout",
-                        value: "12,803,856,486,039",
-                        subValue: "≈ $8,099,081.62",
+                        value: `$${day8CyclePayout.payoutValueByDay}`,
+                        subValue: `≈ ${day8CyclePayout.cyclePayoutByDay}`,
                     },
                     {
                         key: "Next 28-Day Payout",
                         label: "Next 28-Day Payout",
-                        value: "183,425,549,385",
-                        subValue: "≈ $116,025.86",
+                        value: `$${day28CyclePayout.payoutValueByDay}`,
+                        subValue: `≈ ${day28CyclePayout.cyclePayoutByDay}`,
                     },
                     {
                         key: "Next 90-Day Payout",
                         label: "Next 90-Day Payout",
-                        value: "11,580,844,872,333",
-                        subValue: "≈ $7,325,465.41",
+                        value: `$${day90CyclePayout.payoutValueByDay}`,
+                        subValue: `≈ ${day90CyclePayout.cyclePayoutByDay}`,
                     },
                     {
                         key: "Next 369-Day Payout",
                         label: "Next 369-Day Payout",
-                        value: "171,416,095,233",
-                        subValue: "≈ $108,429.28",
+                        value: `$${day369CyclePayout.payoutValueByDay}`,
+                        subValue: `≈ ${day369CyclePayout.cyclePayoutByDay}`,
                     },
                     {
                         key: "Next 888-Day Payout",
                         label: "Next 888-Day Payout",
-                        value: "23,558,951,253,591",
-                        subValue: "≈ $14,902,218.66",
+                        value: `$${day888CyclePayout.payoutValueByDay}`,
+                        subValue: `≈ ${day888CyclePayout.cyclePayoutByDay}`,
                     },
                 ]}
             />

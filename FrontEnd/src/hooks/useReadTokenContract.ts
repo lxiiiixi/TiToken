@@ -91,6 +91,10 @@ export function useGlobalInfoData() {
                 ...TOKEN_CONTRACT_CONFIT,
                 functionName: "getCurrentShareRate", // current share rate
             },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getGlobalActiveShares", // get global active shares
+            },
         ],
     });
 
@@ -102,6 +106,8 @@ export function useGlobalInfoData() {
         genesisTs: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
         currentShareRate:
             result.data[2].status === "success" ? (result.data[2].result as bigint) : 0n,
+        globalActiveShares:
+            result.data[3].status === "success" ? (result.data[3].result as bigint) : 0n,
     };
 }
 

@@ -6,7 +6,7 @@ import CardBgWrapper from "@/sections/CardBgWrapper";
 export default function Index() {
     return (
         <div className="max-w-[715px] m-auto p-4 rounded-lg">
-            <h1 className="text-center">Calculator</h1>
+            <h1 className="text-center text-3xl md:text-5xl">Calculator</h1>
             <TTabs type="center">
                 <TabPanel title="TitanX.win Mining">
                     <CardBgWrapper number={5}>

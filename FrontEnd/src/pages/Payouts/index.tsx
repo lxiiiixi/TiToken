@@ -18,22 +18,15 @@ import ConnectWalletButton from "@/sections/ConnectWalletButton";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
-    const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
     const { currentContractDay } = useGlobalInfoData();
-    const ethUsdPrice = useETHPrice();
     const { address } = useAccount();
     const { triggerPayouts, claimUserAvailableETHPayouts } = usePayouts();
 
-    const PayoutCycleCard = ({
-        dayNum,
-        globalCyclePayout,
-    }: {
-        dayNum: number;
-        globalCyclePayout: bigint;
-    }) => {
-        const payoutValue = ethUsdPrice * parseFloat(formatEther(globalCyclePayout));
-
-        // 这里不是很确定的是，这个天数是从项目部署开始计算的，还是质押开始的
+    const PayoutCycleCard = ({ dayNum }: { dayNum: number }) => {
+        const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
+        const cyclePayout = globalCyclePayout ? globalCyclePayout[dayNum] : 0n;
+        const ethUsdPrice = useETHPrice();
+        const payoutValue = ethUsdPrice * parseFloat(formatEther(cyclePayout));
 
         const cycleDays = [8, 28, 90, 369, 888];
         const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
@@ -44,7 +37,9 @@ function Index() {
             acc[day] =
                 (currentCycleIndex &&
                     currentContractDay &&
-                    Math.round(((day - Number(nextDay[day] - currentContractDay)) / day) * 100)) ||
+                    Math.round(
+                        ((day - Number(nextDay[day] - currentContractDay + 1n)) / day) * 100
+                    )) ||
                 100;
             return acc;
         }, {});
@@ -57,7 +52,7 @@ function Index() {
                     <span className="flex flex-col items-end">
                         <span className="text-primary-400">${formatPrice(payoutValue)}</span>
                         <span className="text-white text-xs">
-                            ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
+                            ≈ {formatPrice(formatEther(cyclePayout), 4)} ETH
                         </span>
                     </span>
                 </div>
@@ -133,31 +128,31 @@ function Index() {
                 <div className="w-full md:w-1/2 p-2">
                     <PayoutCycleCard
                         dayNum={8}
-                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[8] : 0n}
+                        // globalCyclePayout={globalCyclePayout ? globalCyclePayout[8] : 0n}
                     />
                 </div>
                 <div className="w-full md:w-1/2 p-2">
                     <PayoutCycleCard
                         dayNum={28}
-                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[28] : 0n}
+                        // globalCyclePayout={globalCyclePayout ? globalCyclePayout[28] : 0n}
                     />
                 </div>
                 <div className="w-full md:w-1/2 p-2">
                     <PayoutCycleCard
                         dayNum={90}
-                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[90] : 0n}
+                        // globalCyclePayout={globalCyclePayout ? globalCyclePayout[90] : 0n}
                     />
                 </div>
                 <div className="w-full md:w-1/2 p-2">
                     <PayoutCycleCard
                         dayNum={369}
-                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[369] : 0n}
+                        // globalCyclePayout={globalCyclePayout ? globalCyclePayout[369] : 0n}
                     />
                 </div>
                 <div className="w-full p-2">
                     <PayoutCycleCard
                         dayNum={888}
-                        globalCyclePayout={globalCyclePayout ? globalCyclePayout[888] : 0n}
+                        // globalCyclePayout={globalCyclePayout ? globalCyclePayout[888] : 0n}
                     />
                 </div>
             </div>
