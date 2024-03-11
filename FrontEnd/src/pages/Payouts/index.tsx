@@ -1,5 +1,5 @@
 import ContentWrapper from "@/sections/ContentWrapper";
-import { Button, Divider, Progress } from "antd";
+import { Divider, Progress } from "antd";
 import {
     useGetUserETHClaimableTotal,
     useGetPayoutCyclesData,
@@ -8,7 +8,6 @@ import {
 import { formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import { useETHPrice } from "@/hooks/useTokenPrice";
-import TCard from "@/components/TCard";
 import TInfoGroup from "@/components/TInfoGroup";
 import type { CardNumber } from "@/components/TCard";
 import CardBgWrapper from "@/sections/CardBgWrapper";
@@ -50,31 +49,53 @@ function Index() {
         }, {});
 
         return (
-            <div className="relative">
-                <TCard number={`${dayNum}Day` as CardNumber} width="100%" />
-                <div className="absolute-center w-[88%]">
-                    <h2>{`${dayNum}-Day Payout Cycles`}</h2>
-                    <div className="flex-between my-2">
-                        <span>Global Cycle Payout</span>
-                        <span className="flex flex-col items-end">
-                            <span className="text-primary-400">${formatPrice(payoutValue)}</span>
-                            <span className="text-white text-xs">
-                                ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
-                            </span>
+            <CardBgWrapper number={`${dayNum}Day` as CardNumber}>
+                <h2>{`${dayNum}-Day Payout Cycles`}</h2>
+                <div className="flex-between my-2">
+                    <span>Global Cycle Payout</span>
+                    <span className="flex flex-col items-end">
+                        <span className="text-primary-400">${formatPrice(payoutValue)}</span>
+                        <span className="text-white text-xs">
+                            ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
                         </span>
-                    </div>
-                    <div className="flex-between my-2">
-                        <span>Your Est. Payout</span>
-                        <span>No Stakes</span>
-                    </div>
-                    <Divider />
-                    <div>
-                        <p>Countdown</p>
-                        <Progress percent={countdownPercent[dayNum]} />
-                        <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
-                    </div>
+                    </span>
                 </div>
-            </div>
+                <div className="flex-between my-2">
+                    <span>Your Est. Payout</span>
+                    <span>No Stakes</span>
+                </div>
+                <Divider />
+                <div>
+                    <p>Countdown</p>
+                    <Progress percent={countdownPercent[dayNum]} />
+                    <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
+                </div>
+            </CardBgWrapper>
+            // <div className="relative">
+            //     <TCard number={`${dayNum}Day` as CardNumber} width="100%" />
+            //     <div className="absolute-center w-[88%]">
+            //         <h2>{`${dayNum}-Day Payout Cycles`}</h2>
+            //         <div className="flex-between my-2">
+            //             <span>Global Cycle Payout</span>
+            //             <span className="flex flex-col items-end">
+            //                 <span className="text-primary-400">${formatPrice(payoutValue)}</span>
+            //                 <span className="text-white text-xs">
+            //                     ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
+            //                 </span>
+            //             </span>
+            //         </div>
+            //         <div className="flex-between my-2">
+            //             <span>Your Est. Payout</span>
+            //             <span>No Stakes</span>
+            //         </div>
+            //         <Divider />
+            //         <div>
+            //             <p>Countdown</p>
+            //             <Progress percent={countdownPercent[dayNum]} />
+            //             <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
+            //         </div>
+            //     </div>
+            // </div>
         );
     };
     return (

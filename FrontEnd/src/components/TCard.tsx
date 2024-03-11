@@ -16,6 +16,11 @@ import {
     OrangeCard,
     PurpleCard,
     RoseCard,
+    BlueCardH5,
+    GreenCardH5,
+    OrangeCardH5,
+    PurpleCardH5,
+    // RoseCardH5,
 } from "@/assets";
 
 const cardNumber = {
@@ -39,10 +44,10 @@ const cardH5Number = {
     4: BgCard4H5,
     5: BgCard5,
     6: BgCard6H5,
-    "8Day": BlueCard,
-    "28Day": GreenCard,
-    "90Day": OrangeCard,
-    "369Day": PurpleCard,
+    "8Day": BlueCardH5,
+    "28Day": GreenCardH5,
+    "90Day": OrangeCardH5,
+    "369Day": PurpleCardH5,
     "888Day": RoseCard,
 };
 
@@ -62,9 +67,9 @@ export default function TCard({
     return (
         <picture>
             {/* PC: 431px - 1920px */}
-            <source media="(min-width: 431px)" srcSet={cardNumber[number]} />
+            <source media="(min-width: 580px)" srcSet={cardNumber[number]} />
             {/* H5: 0px - 430px */}
-            <source media="(max-width: 430px)" srcSet={cardH5Number[number]} />
+            <source media="(max-width: 580px)" srcSet={cardH5Number[number]} />
             <img
                 src={cardNumber[number]}
                 style={{ width, height, zIndex: -20 }}

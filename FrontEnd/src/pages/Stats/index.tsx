@@ -1,6 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import TCard from "@/components/TCard";
 import ContentWrapper from "@/sections/ContentWrapper";
+import CardBgWrapper from "@/sections/CardBgWrapper";
+import ColorfulDisplay from "@/components/ColorfulDisplay";
 // import TInfoGroup from "@/components/TInfoGroup";
 // import TButton from "@/components/TButton";
 // import { Divider } from "antd";
@@ -65,16 +66,51 @@ export default function Index() {
 
     return (
         <ContentWrapper title="Stats" subTitle="">
-            <div className="flex gap-6">
-                <div className="relative w-1/2">
-                    <TCard number={1} className="w-full" />
-                    <div className="absolute-center w-full h-full">
+            <div className="flex flex-col lg:flex-row gap-4">
+                <div className="w-full lg:w-1/2">
+                    <CardBgWrapper number={1}>
                         <StatsChart />
-                    </div>
+                    </CardBgWrapper>
                 </div>
-                <div className="relative w-1/2 h-auto">
-                    <TCard number={2} className="w-full" />
-                    <div className="absolute-center w-[88%]">111</div>
+                <div className="w-full lg:w-1/2">
+                    <CardBgWrapper number={2}>
+                        <h4>Supply</h4>
+                        <ColorfulDisplay
+                            textColor="blue"
+                            value="1,000,000"
+                            label="Liquid"
+                            tips="TITAN"
+                            subValue="1,000"
+                        />
+                        <ColorfulDisplay
+                            textColor="purple"
+                            value="1,000,000"
+                            label="Staked"
+                            tips="TITAN"
+                            subValue="1,000"
+                        />
+                        <ColorfulDisplay
+                            textColor="orange"
+                            value="1,000,000"
+                            label="Panalties"
+                            tips="TITAN"
+                            subValue="1,000"
+                        />
+                        <ColorfulDisplay
+                            textColor="green"
+                            value="1,000,000"
+                            label="BoT Protocols"
+                            tips="TITAN"
+                            subValue="1,000"
+                        />
+                        <ColorfulDisplay
+                            textColor="pink"
+                            value="1,000,000"
+                            label="User Burned"
+                            tips="TITAN"
+                            subValue="1,000"
+                        />
+                    </CardBgWrapper>
                 </div>
             </div>
         </ContentWrapper>

@@ -1,5 +1,4 @@
 import ContentWrapper from "@/sections/ContentWrapper";
-import { Button } from "antd";
 import { useWethBalance } from "@/hooks/useReadBuyAndBurnContract";
 import { useETHPrice } from "@/hooks/useTokenPrice";
 import EthAndUsdDisplay from "@/sections/EthAndUsdDisplay";
