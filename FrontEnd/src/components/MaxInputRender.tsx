@@ -41,7 +41,7 @@ const MaxInputRender = ({
                 className="w-full md:w-auto md:max-w-[150px]"
                 onChange={value => value && handleChangeValue(index, value)}
             />
-            {max && (
+            {max !== undefined && (
                 <Button
                     className="ml-2"
                     type="primary"

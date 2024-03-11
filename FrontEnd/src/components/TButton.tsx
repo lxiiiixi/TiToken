@@ -16,20 +16,22 @@ export default function TButton({
 
     return (
         <div
-            className={`parent relative cursor-pointer text-center min-h-[45px] mx-auto my-4 ${className}`}
+            className={`parent relative cursor-pointer text-center min-h-[45px] mx-auto my-4 rounded-[3px] ${className}`}
             style={{ width }}
             onClick={handleClick}
         >
             <div
-                className="child1 flex-center py-[8px] px-[25px]"
+                className="child1 w-full flex-center py-[8px] px-[25px] rounded-[3px] clip-path-1 md:clip-path-2"
                 style={{
                     backgroundColor: bgColor,
                 }}
             >
                 {children}
             </div>
-            <div className="child2">
-                <div className="grandchild py-2 px-6 text-transparent">{children}</div>
+            <div className="child2 w-full absolute-top rounded-[3px] flex-center clip-path-1 md:clip-path-2">
+                <div className="grandchild w-full py-2 px-6 text-transparent rounded-[3px] clip-path-1 md:clip-path-2">
+                    {children}
+                </div>
             </div>
         </div>
     );

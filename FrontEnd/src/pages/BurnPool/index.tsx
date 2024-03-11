@@ -1,15 +1,20 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import TInfoGroup from "@/components/TInfoGroup";
-import TButton from "@/components/TButton";
 import { Divider } from "antd";
 import CardBgWrapper from "@/sections/CardBgWrapper";
+import ConnectWalletButton from "@/sections/ConnectWalletButton";
+import { useAccount } from "wagmi";
+import TButton from "@/components/TButton";
+import { usePayouts } from "@/hooks/useWriteTokenContract";
 
 export default function Index() {
+    const { address } = useAccount();
+    const { claimUserAvailableETHBurnPool } = usePayouts();
     return (
         <ContentWrapper title="Burn Pool Bonuses" subTitle="Earn ETH bonuses when you burn TITAN X">
             <CardBgWrapper number={3}>
                 <TInfoGroup
-                    title={"Your Burn Bonus"}
+                    title={<h2 className="text-white text-base md:text-2xl">Your Burn Bonus</h2>}
                     data={[
                         {
                             key: "1",
@@ -43,9 +48,17 @@ export default function Index() {
                         },
                     ]}
                 />
-                <TButton type="secondary" height="40px" className="mt-4">
-                    connect
-                </TButton>
+                {address ? (
+                    <TButton
+                        width="90%"
+                        className="my-8"
+                        handleClick={claimUserAvailableETHBurnPool}
+                    >
+                        Claim Bonus ETH
+                    </TButton>
+                ) : (
+                    <ConnectWalletButton text="Connect Wallet to Claim Bonus ETH" />
+                )}
                 <p className="text-center text-primary1 text-xs">burn pool not enabled yet</p>
             </CardBgWrapper>
             {/* <div className="relative">

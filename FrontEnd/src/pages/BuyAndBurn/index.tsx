@@ -29,7 +29,7 @@ function Index() {
                     <CardBgWrapper number={4}>
                         <TInfoGroup
                             title={
-                                <h2 className="text-white text-xl">
+                                <h2 className="text-white text-base md:text-2xl">
                                     Distribute into Payouts + Buy & Burn
                                 </h2>
                             }
@@ -75,7 +75,7 @@ function Index() {
                 <div className="w-full lg:w-1/2">
                     <CardBgWrapper number={2}>
                         <TInfoGroup
-                            title={<h2 className="text-white text-xl">Buy & Burn</h2>}
+                            title={<h2 className="text-white text-base md:text-2xl">Buy & Burn</h2>}
                             data={[
                                 {
                                     key: "Buy & Burn Balance",

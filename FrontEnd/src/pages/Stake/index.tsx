@@ -1,5 +1,5 @@
 import ContentWrapper from "@/sections/ContentWrapper";
-import { Divider } from "antd";
+import { Divider, Tooltip } from "antd";
 import { useState } from "react";
 import {
     useErc20MetaData,
@@ -17,6 +17,8 @@ import { useAccount } from "wagmi";
 import TButton from "@/components/TButton";
 import MaxInputRender from "@/components/MaxInputRender";
 import CardBgWrapper from "@/sections/CardBgWrapper";
+import useNotification from "@/hooks/useNotification";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 export type StakeData = {
     amount: number;
@@ -44,6 +46,7 @@ function Index() {
     const { startStake } = useStartStake();
     const { userStakes } = useGetUserStakes();
     const { currentShareRate } = useGlobalInfoData();
+    const openNotification = useNotification();
 
     const newShares = currentShareRate
         ? calculateShares(BigInt(stakeData.amount), BigInt(stakeData.length), currentShareRate)
@@ -54,8 +57,14 @@ function Index() {
         : 0n;
     // console.log(currentShareRate);
 
+    // Your stake should have at least 1 share
+
     const SingleMiner = () => {
         const handleOnclickStake = () => {
+            if (newShares < 1n) {
+                openNotification("warning", "", "Your stake should have at least 1 share");
+            }
+
             if (startStake && stakeData.amount && stakeData.length)
                 startStake(stakeData.amount, stakeData.length);
         };
@@ -107,69 +116,6 @@ function Index() {
         );
     };
 
-    const infoData = [
-        {
-            key: "1",
-            label: "Stake Summary",
-            content: [
-                {
-                    key: "1.1",
-                    label: "TITAN X in Stake",
-                    value: `${stakeAmount}`,
-                    tips: "TITAN X in Stake",
-                },
-                {
-                    key: "1.2",
-                    label: "# of Shares",
-                    value: `${newShares}`,
-                    tips: "# of Shares",
-                },
-            ],
-        },
-        {
-            key: "2",
-            label: "TITAN X Stake Details (Estimations)",
-            content: [
-                {
-                    key: "2.1",
-                    label: "Current Share Rate (excl. Bonuses)",
-                    value: `${
-                        currentShareRate
-                            ? (
-                                  Number(currentShareRate / BigInt(SCALING_FACTOR_1e18 / 100)) / 100
-                              ).toFixed(2)
-                            : 0
-                    }`,
-                    tips: "Current Share Rate (excl. Bonuses)",
-                },
-                {
-                    key: "2.2",
-                    label: "Base Shares (excl. Bonuses)",
-                    value: "+0",
-                    tips: "Base Shares (excl. Bonuses)",
-                },
-                {
-                    key: "2.3",
-                    label: "Stake Share Bonuses",
-                    value: "+0",
-                    tips: "Stake Share Bonuses",
-                },
-                {
-                    key: "2.4",
-                    label: "Effective Share Rate (incl. Bonuses)",
-                    value: "+0",
-                    tips: "Effective Share Rate (incl. Bonuses)",
-                },
-                {
-                    key: "2.5",
-                    label: "Effective Shares (incl. Bonuses)",
-                    value: "0",
-                    tips: "Effective Shares (incl. Bonuses)",
-                },
-            ],
-        },
-    ];
-
     return (
         <div>
             <ContentWrapper
@@ -181,14 +127,10 @@ function Index() {
                         <CardBgWrapper number={1}>
                             <SingleMiner />
                         </CardBgWrapper>
-                        {/* <TCard number={1} className="w-full" />
-                        <div className="absolute-top w-[86%] py-[12%]">
-                            <SingleMiner />
-                        </div> */}
                     </div>
                     <div className="w-full lg:w-1/2">
                         <CardBgWrapper number={2}>
-                            {infoData.map(item => (
+                            {/* {infoData.map(item => (
                                 <>
                                     <TInfoGroup
                                         key={item.key}
@@ -197,23 +139,108 @@ function Index() {
                                     />
                                     <Divider />
                                 </>
-                            ))}
+                            ))} */}
+                            <TInfoGroup
+                                key={"Stake summary"}
+                                title="Stake Summary"
+                                data={[
+                                    {
+                                        key: "1.1",
+                                        label: "TITAN X in Stake",
+                                        value: `${stakeAmount}`,
+                                        tips: "TITAN X in Stake",
+                                    },
+                                    {
+                                        key: "1.2",
+                                        label: "# of Shares",
+                                        value: `${newShares}`,
+                                        tips: "# of Shares",
+                                    },
+                                ]}
+                            />
+                            <Divider />
+                            <TInfoGroup
+                                key={"TITAN X Stake Details (Estimations)"}
+                                title="TITAN X Stake Details (Estimations)"
+                                data={[
+                                    {
+                                        key: "2.1",
+                                        label: "Current Share Rate (excl. Bonuses)",
+                                        value: `${
+                                            currentShareRate
+                                                ? (
+                                                      Number(
+                                                          currentShareRate /
+                                                              BigInt(SCALING_FACTOR_1e18 / 100)
+                                                      ) / 100
+                                                  ).toFixed(2)
+                                                : 0
+                                        }`,
+                                        tips: "Current Share Rate (excl. Bonuses)",
+                                    },
+                                    {
+                                        key: "2.2",
+                                        label: "Base Shares (excl. Bonuses)",
+                                        value: "+0",
+                                        tips: "Base Shares (excl. Bonuses)",
+                                    },
+                                    {
+                                        key: "2.3",
+                                        label: "Stake Share Bonuses",
+                                        value: 0,
+                                        tips: "Stake Share Bonuses",
+                                    },
+                                ]}
+                            />
+                            <div className="pl-4 md:pl-12 md:pr-6 text-white/70">
+                                <div className="flex-between my-2">
+                                    <span>
+                                        Longer Pays More (350.00%)
+                                        <Tooltip
+                                            title={
+                                                "The longer you stake for, the more shares you get. This bonus starts at 0% and goes all the way up to 350% more shares at day 2888, you can go up to day 3500 to keep your shares for longer (called share preservation)."
+                                            }
+                                        >
+                                            <QuestionCircleOutlined className="w-[14px] ml-2" />
+                                        </Tooltip>
+                                    </span>
+                                    <span>+ 0</span>
+                                </div>
+                                <div className="flex-between my-2">
+                                    <span>
+                                        Bigger Pays More (0.00%)
+                                        <Tooltip
+                                            title={
+                                                "The bigger your stake is, you get more shares. This goes up to 8% max at 100B TITAN X in 1 stake. This is linear - so if you stake 12.5B for example, it would be 1%."
+                                            }
+                                        >
+                                            <QuestionCircleOutlined className="w-[14px] ml-2" />
+                                        </Tooltip>{" "}
+                                    </span>
+                                    <span>+ 0</span>
+                                </div>
+                            </div>
+                            <TInfoGroup
+                                key={"More"}
+                                title=""
+                                data={[
+                                    {
+                                        key: "2.4",
+                                        label: "Effective Share Rate (incl. Bonuses)",
+                                        value: "+0",
+                                        tips: "Effective Share Rate (incl. Bonuses)",
+                                    },
+                                    {
+                                        key: "2.5",
+                                        label: "Effective Shares (incl. Bonuses)",
+                                        value: "0",
+                                        tips: "Effective Shares (incl. Bonuses)",
+                                    },
+                                ]}
+                            />
+                            <Divider />
                             <NextDifficultIncrease />
                         </CardBgWrapper>
-                        {/* <TCard number={2} className="w-full" />
-                        <div className="absolute-top w-full p-10">
-                            {infoData.map(item => (
-                                <>
-                                    <TInfoGroup
-                                        key={item.key}
-                                        data={item.content}
-                                        title={item.label}
-                                    />
-                                    <Divider />
-                                </>
-                            ))}
-                            <NextDifficultIncrease />
-                        </div> */}
                     </div>
                 </div>
                 <div className="mt-20">
@@ -221,8 +248,12 @@ function Index() {
                         <TabPanel title="Active Stakers">
                             <StakeTable />
                         </TabPanel>
-                        <TabPanel title="Claimable Stakers">1</TabPanel>
-                        <TabPanel title="Ended Stakers">1</TabPanel>
+                        <TabPanel title="Claimable Stakers">
+                            <StakeTable />
+                        </TabPanel>
+                        <TabPanel title="Ended Stakers">
+                            <StakeTable />
+                        </TabPanel>
                     </TTabs>
                 </div>
             </ContentWrapper>

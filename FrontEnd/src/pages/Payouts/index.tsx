@@ -13,6 +13,8 @@ import type { CardNumber } from "@/components/TCard";
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import TButton from "@/components/TButton";
 import { useAccount } from "wagmi";
+import { usePayouts } from "@/hooks/useWriteTokenContract";
+import ConnectWalletButton from "@/sections/ConnectWalletButton";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
@@ -20,8 +22,7 @@ function Index() {
     const { currentContractDay } = useGlobalInfoData();
     const ethUsdPrice = useETHPrice();
     const { address } = useAccount();
-
-    console.log(currentCycleIndex);
+    const { triggerPayouts, claimUserAvailableETHPayouts } = usePayouts();
 
     const PayoutCycleCard = ({
         dayNum,
@@ -71,31 +72,6 @@ function Index() {
                     <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
                 </div>
             </CardBgWrapper>
-            // <div className="relative">
-            //     <TCard number={`${dayNum}Day` as CardNumber} width="100%" />
-            //     <div className="absolute-center w-[88%]">
-            //         <h2>{`${dayNum}-Day Payout Cycles`}</h2>
-            //         <div className="flex-between my-2">
-            //             <span>Global Cycle Payout</span>
-            //             <span className="flex flex-col items-end">
-            //                 <span className="text-primary-400">${formatPrice(payoutValue)}</span>
-            //                 <span className="text-white text-xs">
-            //                     ≈ {formatPrice(formatEther(globalCyclePayout), 4)} ETH
-            //                 </span>
-            //             </span>
-            //         </div>
-            //         <div className="flex-between my-2">
-            //             <span>Your Est. Payout</span>
-            //             <span>No Stakes</span>
-            //         </div>
-            //         <Divider />
-            //         <div>
-            //             <p>Countdown</p>
-            //             <Progress percent={countdownPercent[dayNum]} />
-            //             <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
-            //         </div>
-            //     </div>
-            // </div>
         );
     };
     return (
@@ -119,24 +95,28 @@ function Index() {
                             subValue: "0",
                         },
                     ]}
-                    title={<h2 className="text-white">Your Claimable ETH Payouts</h2>}
+                    title={
+                        <h2 className="text-white text-base md:text-2xl">
+                            Your Claimable ETH Payouts
+                        </h2>
+                    }
                 />
-                {!address && (
-                    <TButton type="secondary" width="90%" className="my-8">
-                        Connect Wallet
-                    </TButton>
-                )}
+                {!address && <ConnectWalletButton text="Connect Wallet to Claim ETH Payouts" />}
                 {address && userETHClaimableTotal > 0 && (
-                    <TButton width="90%" className="my-8" handleClick={() => {}}>
+                    <TButton
+                        width="90%"
+                        className="my-8"
+                        handleClick={claimUserAvailableETHPayouts}
+                    >
                         Claim Payout
                     </TButton>
                 )}
                 {address && userETHClaimableTotal <= 0 && (
-                    <TButton type="secondary" width="90%" className="my-8">
+                    <TButton type="secondary" width="90%" className="my-6">
                         No Payout Claimable Yet
                     </TButton>
                 )}
-                <p className=" text-primary1 text-xs text-center my-2">
+                <p className=" text-primary1 text-xs text-center">
                     don't have any active shares? stake your TITAN X tokens to earn ETH passive
                     income.
                 </p>
@@ -145,9 +125,8 @@ function Index() {
                 <TCard number={3} width="100%" />
                 <div className="absolute-center w-[90%]"></div>
             </div> */}
-            <div className="h-[2px] bg-black/20 rounded-sm my-6"></div>
             {/* <Button block>Triggle Avaliable Cycle payouts</Button> */}
-            <TButton width="98%" className="my-8">
+            <TButton width="98%" className="mt-6 md:my-8" handleClick={triggerPayouts}>
                 Triggle Avaliable Cycle payouts
             </TButton>
             <div className="flex flex-wrap my-4">
