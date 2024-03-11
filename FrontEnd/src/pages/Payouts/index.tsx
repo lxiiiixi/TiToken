@@ -22,24 +22,31 @@ function Index() {
     const { address } = useAccount();
     const { triggerPayouts, claimUserAvailableETHPayouts } = usePayouts();
 
+    const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
+    const cycleDays = [8, 28, 90, 369, 888];
+    const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
+        acc[day] = (currentCycleIndex && (currentCycleIndex[day] + 1n) * BigInt(day)) || 0n;
+        return acc;
+    }, {});
+
+    const ableToTriggle = currentContractDay && Object.values(nextDay).includes(currentContractDay);
+
     const PayoutCycleCard = ({ dayNum }: { dayNum: number }) => {
-        const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
+        // const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
         const cyclePayout = globalCyclePayout ? globalCyclePayout[dayNum] : 0n;
         const ethUsdPrice = useETHPrice();
         const payoutValue = ethUsdPrice * parseFloat(formatEther(cyclePayout));
 
-        const cycleDays = [8, 28, 90, 369, 888];
-        const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
-            acc[day] = (currentCycleIndex && (currentCycleIndex[day] + 1n) * BigInt(day)) || 0n;
-            return acc;
-        }, {});
+        // const cycleDays = [8, 28, 90, 369, 888];
+        // const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
+        //     acc[day] = (currentCycleIndex && (currentCycleIndex[day] + 1n) * BigInt(day)) || 0n;
+        //     return acc;
+        // }, {});
         const countdownPercent = cycleDays.reduce((acc: { [key: number]: number }, day) => {
             acc[day] =
                 (currentCycleIndex &&
                     currentContractDay &&
-                    Math.round(
-                        ((day - Number(nextDay[day] - currentContractDay + 1n)) / day) * 100
-                    )) ||
+                    Math.round(((day - Number(nextDay[day] - currentContractDay)) / day) * 100)) ||
                 100;
             return acc;
         }, {});
@@ -121,9 +128,19 @@ function Index() {
                 <div className="absolute-center w-[90%]"></div>
             </div> */}
             {/* <Button block>Triggle Avaliable Cycle payouts</Button> */}
-            <TButton width="98%" className="mt-6 md:my-8" handleClick={triggerPayouts}>
-                Triggle Avaliable Cycle payouts
-            </TButton>
+            {!address && <ConnectWalletButton text="Connect Wallet to Claim ETH Payouts" />}
+            {address && (
+                <TButton
+                    width="98%"
+                    className={`mt-6 md:my-8`}
+                    type={ableToTriggle ? "primary" : "secondary"}
+                    handleClick={() => {
+                        if (ableToTriggle && triggerPayouts) triggerPayouts();
+                    }}
+                >
+                    Triggle Avaliable Cycle payouts
+                </TButton>
+            )}
             <div className="flex flex-wrap my-4">
                 <div className="w-full md:w-1/2 p-2">
                     <PayoutCycleCard

@@ -17,7 +17,14 @@ function WalletConnect() {
     const menu = connectors.map(connector => ({
         key: connector.uid,
         label: (
-            <div key={connector.uid} onClick={() => connect({ connector })} className="mx-2">
+            <div
+                key={connector.uid}
+                onClick={() => {
+                    localStorage.setItem("preferredWallet", connector.uid);
+                    connect({ connector });
+                }}
+                className="mx-2"
+            >
                 {connector.name}
             </div>
         ),
