@@ -113,6 +113,15 @@ a {
         }
     }
 }
+
+// recharts pie fix
+.recharts-pie {
+    g:focus,
+    path:focus {
+        outline: none !important;
+    }
+}
+
 /* —————————————————————————————————————————————— antd ———————————————————————————————————————— */
 .antd-costom {
     .ant-statistic {

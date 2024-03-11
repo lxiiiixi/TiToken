@@ -1,5 +1,5 @@
 import { useReadContract, useReadContracts, useAccount } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import { TOKEN_CONTRACT_CONFIT, BUYANDBURN_CONTRACT_CONFIG } from "@/configs/constants";
 import type { UserStakesInfo } from "@/pages/Stake";
 
 export function useGetCurrentMintCost() {
@@ -264,4 +264,35 @@ export function useGetUndistributedEth() {
     }
 
     return { undistributedEth: 0n };
+}
+
+export function useStatsSupply() {
+    const result = useReadContracts({
+        contracts: [
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "totalSupply",
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getTotalTitanStaked",
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getTotalPenalties",
+            },
+            {
+                ...BUYANDBURN_CONTRACT_CONFIG,
+                functionName: "getTotalTitanBuyAndBurnV2",
+            },
+        ],
+    });
+    if (!result.data || !result.isSuccess) return {};
+
+    return {
+        liquid: result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
+        staked: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
+        penalties: result.data[2].status === "success" ? (result.data[2].result as bigint) : 0n,
+        buyAndBurn: result.data[3].status === "success" ? (result.data[3].result as bigint) : 0n,
+    };
 }

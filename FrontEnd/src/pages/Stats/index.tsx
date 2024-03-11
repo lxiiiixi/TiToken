@@ -1,66 +1,64 @@
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import ContentWrapper from "@/sections/ContentWrapper";
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import ColorfulDisplay from "@/components/ColorfulDisplay";
-// import TInfoGroup from "@/components/TInfoGroup";
-// import TButton from "@/components/TButton";
-// import { Divider } from "antd";
+import {
+    useStatsSupply,
+    useGetGlobalTRank,
+    useGlobalInfoData,
+    useGetCurrentMintPowerBonus,
+} from "@/hooks/useReadTokenContract";
+import { formatEther } from "viem";
+import { formatPrice } from "@/configs/utils";
+import { Divider } from "antd";
+import TInfoGroup from "@/components/TInfoGroup";
 
 export default function Index() {
+    const { liquid, staked, penalties, buyAndBurn } = useStatsSupply();
+    const { globalTRank } = useGetGlobalTRank();
+    const { currentMintPowerBonus } = useGetCurrentMintPowerBonus();
+    const { globalActiveShares } = useGlobalInfoData();
+
+    console.log(Number(formatEther(liquid || 0n)), staked, penalties, buyAndBurn);
+
     const StatsChart = () => {
         const data = [
-            { name: "Group A", value: 400 },
-            { name: "Group B", value: 300 },
-            { name: "Group C", value: 300 },
-            { name: "Group D", value: 200 },
+            { name: "Group A", value: Number(formatEther(liquid || 0n)) },
+            { name: "Group B", value: Number(formatEther(staked || 0n)) },
+            { name: "Group C", value: Number(formatEther(penalties || 0n)) },
+            { name: "Group D", value: Number(formatEther(buyAndBurn || 0n)) },
         ];
+        // const data = [
+        //     { name: "Group A", value: 1000 },
+        //     { name: "Group B", value: 2000 },
+        //     { name: "Group C", value: 3000 },
+        //     { name: "Group D", value: 4000 },
+        // ];
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-        // const RADIAN = Math.PI / 180;
-        // const renderCustomizedLabel = ({
-        //     cx,
-        //     cy,
-        //     midAngle,
-        //     innerRadius,
-        //     outerRadius,
-        //     percent,
-        //     index,
-        // }) => {
-        //     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-        //     const x = cx + radius * Math.cos(-midAngle * RADIAN);
-        //     const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-        //     return (
-        //         <text
-        //             x={x}
-        //             y={y}
-        //             fill="white"
-        //             textAnchor={x > cx ? "start" : "end"}
-        //             dominantBaseline="central"
-        //         >
-        //             {`${(percent * 100).toFixed(0)}%`}
-        //         </text>
-        //     );
-        // };
 
         return (
-            <ResponsiveContainer width="100%" height="100%">
-                <PieChart width={400} height={400}>
-                    <Pie
-                        data={data}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        // label={renderCustomizedLabel}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                    >
-                        {data.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                    </Pie>
-                </PieChart>
-            </ResponsiveContainer>
+            <div className="w-full h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                    <PieChart width={500} height={400}>
+                        <Pie
+                            data={data}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label
+                        >
+                            {data.map((_, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend align="center" verticalAlign="top" />
+                    </PieChart>
+                </ResponsiveContainer>
+            </div>
         );
     };
 
@@ -77,21 +75,21 @@ export default function Index() {
                         <h4>Supply</h4>
                         <ColorfulDisplay
                             textColor="blue"
-                            value="1,000,000"
+                            value={formatPrice(formatEther(liquid || 0n))}
                             label="Liquid"
                             tips="TITAN"
                             subValue="1,000"
                         />
                         <ColorfulDisplay
                             textColor="purple"
-                            value="1,000,000"
+                            value={formatPrice(formatEther(staked || 0n))}
                             label="Staked"
                             tips="TITAN"
                             subValue="1,000"
                         />
                         <ColorfulDisplay
                             textColor="orange"
-                            value="1,000,000"
+                            value={formatPrice(formatEther(penalties || 0n))}
                             label="Panalties"
                             tips="TITAN"
                             subValue="1,000"
@@ -109,6 +107,37 @@ export default function Index() {
                             label="User Burned"
                             tips="TITAN"
                             subValue="1,000"
+                        />
+                        <ColorfulDisplay
+                            textColor="pink"
+                            value={formatPrice(formatEther(buyAndBurn || 0n))}
+                            label="Buy & Burned"
+                            tips="TITAN"
+                            subValue="1,000"
+                        />
+                        <Divider />
+                        <TInfoGroup
+                            title="Mining & Staking"
+                            data={[
+                                {
+                                    key: "TRank",
+                                    label: "Global TRank",
+                                    value: formatPrice(globalTRank.toString()),
+                                    tips: "TITAN",
+                                },
+                                {
+                                    key: "MiningPower",
+                                    label: "Global Mining Power",
+                                    value: formatPrice(currentMintPowerBonus),
+                                    tips: "TITAN",
+                                },
+                                {
+                                    key: "ActiveShares",
+                                    label: "Global Active Shares",
+                                    value: formatPrice(formatEther(globalActiveShares || 0n)),
+                                    tips: "TITAN",
+                                },
+                            ]}
                         />
                     </CardBgWrapper>
                 </div>
