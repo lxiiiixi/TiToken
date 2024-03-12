@@ -134,17 +134,30 @@ export function useErc20MetaData() {
     };
 }
 
-export function useGetUserCurrentActiveShares() {
-    const { data: userCurrentActiveShares } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
-        functionName: "getUserCurrentActiveShares",
+export function useGetActiveShares() {
+    const { address } = useAccount();
+    const result = useReadContracts({
+        contracts: [
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getUserCurrentActiveShares",
+                args: [address],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getGlobalActiveShares", // get global active shares
+            },
+        ],
     });
 
-    if (typeof userCurrentActiveShares === "bigint") {
-        return { userCurrentActiveShares };
-    }
+    if (!result.data || !result.isSuccess) return {};
 
-    return { userCurrentActiveShares: 0n };
+    return {
+        userCurrentActiveShares:
+            result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
+        globalActiveShares:
+            result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
+    };
 }
 
 export function useGetUserStakes() {

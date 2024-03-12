@@ -4,8 +4,9 @@ import {
     useGetUserETHClaimableTotal,
     useGetPayoutCyclesData,
     useGlobalInfoData,
+    useGetActiveShares,
 } from "@/hooks/useReadTokenContract";
-import { formatPrice } from "@/configs/utils";
+import { formatPercentage, formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import { useETHPrice } from "@/hooks/useTokenPrice";
 import TInfoGroup from "@/components/TInfoGroup";
@@ -15,6 +16,9 @@ import TButton from "@/components/TButton";
 import { useAccount } from "wagmi";
 import { usePayouts } from "@/hooks/useWriteTokenContract";
 import ConnectWalletButton from "@/sections/ConnectWalletButton";
+import TIPS from "@/configs/tips";
+import { PERCENT_BPS } from "@/configs/constants";
+import { calculateUserPayoutByShares } from "@/configs/calculate";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
@@ -22,6 +26,7 @@ function Index() {
     const { address } = useAccount();
     const { triggerPayouts, claimUserAvailableETHPayouts } = usePayouts();
 
+    const ethUsdPrice = useETHPrice();
     const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
     const cycleDays = [8, 28, 90, 369, 888];
     const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
@@ -31,11 +36,31 @@ function Index() {
 
     const ableToTriggle = currentContractDay && Object.values(nextDay).includes(currentContractDay);
 
+    const { userCurrentActiveShares, globalActiveShares } = useGetActiveShares();
+    const percentOfUserShare =
+        userCurrentActiveShares && globalActiveShares
+            ? (userCurrentActiveShares * BigInt(PERCENT_BPS)) / globalActiveShares
+            : 0n;
+
+    const ethPriceBigInt = BigInt(Math.round(ethUsdPrice));
+    const ethClaimableUsd = formatEther(userETHClaimableTotal * ethPriceBigInt);
+
     const PayoutCycleCard = ({ dayNum }: { dayNum: number }) => {
         // const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();
         const cyclePayout = globalCyclePayout ? globalCyclePayout[dayNum] : 0n;
-        const ethUsdPrice = useETHPrice();
         const payoutValue = ethUsdPrice * parseFloat(formatEther(cyclePayout));
+
+        const userPayoutByShares = userCurrentActiveShares
+            ? calculateUserPayoutByShares(userCurrentActiveShares, globalActiveShares, cyclePayout)
+            : 0n;
+        const userPayoutValue = ethUsdPrice * parseFloat(formatEther(userPayoutByShares));
+
+        // const demo = calculateUserPayoutByShares(
+        //     116179378709353253087033865n,
+        //     globalActiveShares,
+        //     cyclePayout
+        // );
+        // console.log(demo, formatPrice(formatEther(demo), 4));
 
         // const cycleDays = [8, 28, 90, 369, 888];
         // const nextDay = cycleDays.reduce((acc: { [key: number]: bigint }, day) => {
@@ -53,7 +78,7 @@ function Index() {
 
         return (
             <CardBgWrapper number={`${dayNum}Day` as CardNumber}>
-                <h2>{`${dayNum}-Day Payout Cycles`}</h2>
+                {/* <h2>{`${dayNum}-Day Payout Cycles`}</h2>
                 <div className="flex-between my-2">
                     <span>Global Cycle Payout</span>
                     <span className="flex flex-col items-end">
@@ -62,11 +87,35 @@ function Index() {
                             ≈ {formatPrice(formatEther(cyclePayout), 4)} ETH
                         </span>
                     </span>
-                </div>
-                <div className="flex-between my-2">
+                </div> */}
+                {/* <div className="flex-between my-2">
                     <span>Your Est. Payout</span>
                     <span>No Stakes</span>
-                </div>
+                </div> */}
+                <TInfoGroup
+                    data={[
+                        {
+                            key: "Global Cycle Payout",
+                            label: "Global Cycle Payout",
+                            value: `$ ${formatPrice(payoutValue)}`,
+                            subValue: `≈ ${formatPrice(formatEther(cyclePayout), 4)} ETH`,
+                            tips: TIPS.payout.globalCyclePayout,
+                        },
+                        {
+                            key: "Your Est. Payout",
+                            label: "Your Est. Payout",
+                            value: `${
+                                userCurrentActiveShares === 0n
+                                    ? "No Stakes"
+                                    : formatPrice(formatEther(userPayoutByShares), 4)
+                            }`,
+                            subValue: `≈ ${userPayoutValue || "-"} ETH`,
+                            tips: TIPS.payout.yourEstPayout,
+                        },
+                    ]}
+                    title={<h2 className="text-lg md:text-3xl">{`${dayNum}-Day Payout Cycles`}</h2>}
+                />
+
                 <Divider />
                 <div>
                     <p>Countdown</p>
@@ -76,6 +125,7 @@ function Index() {
             </CardBgWrapper>
         );
     };
+
     return (
         <ContentWrapper
             title="Rolling Payout Cycles"
@@ -87,14 +137,16 @@ function Index() {
                         {
                             key: "1",
                             label: "Your Active Shares",
-                            value: "0",
-                            subValue: "0",
+                            value: `${userCurrentActiveShares?.toString()}`,
+                            subValue: `≈ ${formatPercentage(percentOfUserShare)} of global shares`,
+                            tips: TIPS.payout.yourActiveShares,
                         },
                         {
                             key: "2",
                             label: "ETH Claimable",
-                            value: `${userETHClaimableTotal.toString()}`,
-                            subValue: "0",
+                            value: `${ethClaimableUsd || "-"}`,
+                            subValue: `≈ ${userETHClaimableTotal.toString() || "-"} ETH`,
+                            tips: TIPS.payout.ethClaimable,
                         },
                     ]}
                     title={

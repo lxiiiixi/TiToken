@@ -96,7 +96,7 @@ a {
         z-index: 40;
     }
 
-    .child1:hover {
+    &:hover .child1 {
         top: 1px;
         left: 1px;
     }

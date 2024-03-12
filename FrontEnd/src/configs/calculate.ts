@@ -119,3 +119,12 @@ export const calculateShares = (amount: bigint, noOfDays: bigint, shareRate: big
     shares /= shareRate / BigInt(SCALING_FACTOR_1e18);
     return shares;
 };
+
+export const calculateUserPayoutByShares = (
+    userCurrentActiveShares: bigint,
+    globalActiveShares: bigint,
+    ethPayoutAmount: bigint
+) => {
+    const radio = (userCurrentActiveShares * BigInt(SCALING_FACTOR_1e18)) / globalActiveShares;
+    return (ethPayoutAmount * radio) / BigInt(SCALING_FACTOR_1e18);
+};

@@ -68,11 +68,11 @@ export function formatPercentage(value: number | bigint) {
     const numericValue = typeof value === "bigint" ? Number(value) : value;
 
     if (numericValue === 0) {
-        return "0.00000000%";
+        return "0.00 %";
     }
 
     // 将值转换为基本的百分比形式
     const percentage = numericValue / (PERCENT_BPS * 100);
 
-    return `${percentage.toFixed(2)}%`;
+    return `${percentage.toFixed(2)} %`;
 }

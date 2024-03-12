@@ -1,4 +1,4 @@
-import { useGlobalInfoData, useGetUserCurrentActiveShares } from "@/hooks/useReadTokenContract";
+import { useGlobalInfoData, useGetActiveShares } from "@/hooks/useReadTokenContract";
 import {
     calculateLongerPaysMoreBonus,
     calculateBiggerPaysMoreBonus,
@@ -12,7 +12,7 @@ import type { StakeData } from "@/pages/Stake";
 
 export default function useStakingCalculator(stakeData: StakeData) {
     const { currentShareRate, globalActiveShares } = useGlobalInfoData();
-    const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
+    const { userCurrentActiveShares } = useGetActiveShares();
 
     // 根据用户输入的 amount， 计算的时候需要转换精度，通过用户输入的代币数量是 format 之后的，计算时则需要转换过来
 
@@ -41,8 +41,6 @@ export default function useStakingCalculator(stakeData: StakeData) {
             ? (newShareWithBonus * BigInt(SCALING_FACTOR_1e18) * BigInt(SCALING_FACTOR_1e18)) /
               globalActiveShares
             : 0n;
-
-    console.log(biggerPaysMoreBonus);
 
     // display
     const baseSharesDisplay = formatPrice(Number(baseShareWithoutBonus));

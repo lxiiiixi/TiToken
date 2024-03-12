@@ -18,7 +18,18 @@ const TIPS = {
         increase:
             "Every day it becomes a little bit harder to get shares by staking. It increases by 0.03% every day, meaning that with every passing day, you need more TITAN X to create shares & get ETH payouts, general rule is: today is always better than tomorrow.",
     },
-    payout: {},
+    payout: {
+        yourActiveShares:
+            "Your active shares from your TITAN X stakes. Once you end a stake, the shares become inactive and are not counted. This determines your % rewards from the payouts.",
+        ethClaimable:
+            "your unclaimed amount of ETH from all payout cycles (excl. ETH you have already claimed)",
+        globalCyclePayout:
+            "Total ETH currently in this cycle payout waiting to be paid out to stakers of TITAN X.",
+        yourEstPayout:
+            "Your estimated payout when this cycle changes, this constantly changes based on the amount of ETH in the cycle & your % of total user shares. Keep an eye on this. You can get more by staking more TITAN X & staking more TITAN X for longer.",
+        countDown:
+            "Countdown until this payout cycle triggers & pays out all TITAN X stakers. These cycles are 'rolling', meaning that once the cycle has paid out, a next cycle starts. The payout cycles NEVER end, they are forever & will keep running forever.",
+    },
 } as const;
 
 export default TIPS;

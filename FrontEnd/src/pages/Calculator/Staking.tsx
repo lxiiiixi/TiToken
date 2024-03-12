@@ -3,10 +3,8 @@ import MaxInputRender from "@/components/MaxInputRender";
 import { Divider } from "antd";
 import TInfoGroup from "@/components/TInfoGroup";
 import useStakingCalculator from "@/hooks/useStakingCalculator";
-import { useETHPrice, useTokenPrice } from "@/hooks/useTokenPrice";
-import { formatEther } from "viem";
-import { useGetPayoutCyclesData } from "@/hooks/useReadTokenContract";
-import { formatPrice } from "@/configs/utils";
+
+import useStakerPayoutsCalculator from "@/hooks/useStakerPayoutsCalculator";
 
 export default function Staking() {
     const [stakingData, setStakingData] = React.useState({
@@ -19,24 +17,14 @@ export default function Staking() {
         length: stakingData.length,
     });
 
-    const { globalCyclePayout } = useGetPayoutCyclesData();
-    const ethUsdPrice = useETHPrice();
-    const tokenPrice = useTokenPrice();
-
-    const getCyclePayout = (dayNum: 8 | 28 | 90 | 369 | 888) => {
-        const cyclePayoutByDay = globalCyclePayout ? globalCyclePayout[dayNum] : 0n;
-        const payoutValueByDay = ethUsdPrice * parseFloat(formatEther(cyclePayoutByDay));
-        return {
-            cyclePayoutByDay: `${formatPrice(formatEther(cyclePayoutByDay), 4)} ETH`,
-            payoutValueByDay: formatPrice(payoutValueByDay),
-        };
-    };
-
-    const day8CyclePayout = getCyclePayout(8);
-    const day28CyclePayout = getCyclePayout(28);
-    const day90CyclePayout = getCyclePayout(90);
-    const day369CyclePayout = getCyclePayout(369);
-    const day888CyclePayout = getCyclePayout(888);
+    const {
+        tokenValue,
+        day8CyclePayout,
+        day28CyclePayout,
+        day90CyclePayout,
+        day369CyclePayout,
+        day888CyclePayout,
+    } = useStakerPayoutsCalculator(BigInt(stakingData.amount), BigInt(stakingData.length));
 
     const handleChange = (key: string, value: number) =>
         setStakingData(old => ({ ...old, [key]: value }));
@@ -87,7 +75,7 @@ export default function Staking() {
                     {
                         key: "TITAN X Value",
                         label: "TITAN X Value",
-                        value: `$${formatEther(tokenPrice || 0n)}`,
+                        value: `$${tokenValue}`,
                     },
                     {
                         key: "Next 8-Day Payout",
