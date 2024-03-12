@@ -14,6 +14,7 @@ import CardBgWrapper from "@/sections/CardBgWrapper";
 import useNotification from "@/hooks/useNotification";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import useStakingCalculator from "@/hooks/useStakingCalculator";
+import TIPS from "@/configs/tips";
 
 export type StakeData = {
     amount: number;
@@ -88,8 +89,8 @@ function Index() {
                         min={0}
                         max={balanceOf ? Number(balanceOf) : 0}
                         handleChangeValue={handleInput}
+                        tips={TIPS.stake.amount}
                     />
-
                     <MaxInputRender
                         index="length"
                         label="Stake Length"
@@ -97,6 +98,7 @@ function Index() {
                         min={0}
                         max={3500}
                         handleChangeValue={handleInput}
+                        tips={TIPS.stake.length}
                     />
                 </div>
                 <TButton
@@ -129,16 +131,6 @@ function Index() {
                     </div>
                     <div className="w-full lg:w-1/2">
                         <CardBgWrapper number={2}>
-                            {/* {infoData.map(item => (
-                                <>
-                                    <TInfoGroup
-                                        key={item.key}
-                                        data={item.content}
-                                        title={item.label}
-                                    />
-                                    <Divider />
-                                </>
-                            ))} */}
                             <TInfoGroup
                                 key={"Stake summary"}
                                 title="Stake Summary"
@@ -147,13 +139,13 @@ function Index() {
                                         key: "1.1",
                                         label: "TITAN X in Stake",
                                         value: `${stakeAmount}`,
-                                        tips: "TITAN X in Stake",
+                                        tips: TIPS.stake.inStake,
                                     },
                                     {
                                         key: "1.2",
                                         label: "# of Shares",
                                         value: ``,
-                                        tips: "# of Shares",
+                                        tips: TIPS.stake.shares,
                                     },
                                 ]}
                             />
@@ -166,19 +158,18 @@ function Index() {
                                         key: "2.1",
                                         label: "Current Share Rate (excl. Bonuses)",
                                         value: `${newShareDisplay}`,
-                                        tips: "Current Share Rate (excl. Bonuses)",
+                                        tips: TIPS.stake.currentShareRate,
                                     },
                                     {
                                         key: "2.2",
                                         label: "Base Shares (excl. Bonuses)",
                                         value: "+0",
-                                        tips: "Base Shares (excl. Bonuses)",
+                                        tips: TIPS.stake.baseShares,
                                     },
                                     {
                                         key: "2.3",
                                         label: "Stake Share Bonuses",
                                         value: 0,
-                                        tips: "Stake Share Bonuses",
                                     },
                                 ]}
                             />
@@ -186,11 +177,7 @@ function Index() {
                                 <div className="flex-between my-2">
                                     <span>
                                         Longer Pays More (350.00%)
-                                        <Tooltip
-                                            title={
-                                                "The longer you stake for, the more shares you get. This bonus starts at 0% and goes all the way up to 350% more shares at day 2888, you can go up to day 3500 to keep your shares for longer (called share preservation)."
-                                            }
-                                        >
+                                        <Tooltip title={TIPS.stake.longerPaysMore}>
                                             <QuestionCircleOutlined className="w-[14px] ml-2" />
                                         </Tooltip>
                                     </span>
@@ -199,11 +186,7 @@ function Index() {
                                 <div className="flex-between my-2">
                                     <span>
                                         Bigger Pays More (0.00%)
-                                        <Tooltip
-                                            title={
-                                                "The bigger your stake is, you get more shares. This goes up to 8% max at 100B TITAN X in 1 stake. This is linear - so if you stake 12.5B for example, it would be 1%."
-                                            }
-                                        >
+                                        <Tooltip title={TIPS.stake.biggerPaysMore}>
                                             <QuestionCircleOutlined className="w-[14px] ml-2" />
                                         </Tooltip>
                                     </span>
@@ -218,18 +201,18 @@ function Index() {
                                         key: "2.4",
                                         label: "Effective Share Rate (incl. Bonuses)",
                                         value: "+0",
-                                        tips: "Effective Share Rate (incl. Bonuses)",
+                                        tips: TIPS.stake.effectiveShareRate,
                                     },
                                     {
                                         key: "2.5",
                                         label: "Effective Shares (incl. Bonuses)",
                                         value: "0",
-                                        tips: "Effective Shares (incl. Bonuses)",
+                                        tips: TIPS.stake.effectiveShares,
                                     },
                                 ]}
                             />
                             <Divider />
-                            <NextDifficultIncrease />
+                            <NextDifficultIncrease tips={TIPS.stake.increase} />
                         </CardBgWrapper>
                     </div>
                 </div>
