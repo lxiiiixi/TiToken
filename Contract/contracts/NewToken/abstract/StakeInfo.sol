@@ -4,6 +4,8 @@ pragma solidity ^0.8.10;
 import "../libs/calcFunctions.sol";
 import "../libs/TitanXErrors.sol";
 
+import "hardhat/console.sol";
+
 abstract contract StakeInfo {
     //Variables
     /** @dev track global stake Id */

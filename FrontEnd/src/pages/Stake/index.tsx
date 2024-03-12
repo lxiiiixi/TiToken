@@ -1,20 +1,22 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { Divider, Tooltip } from "antd";
 import { useState } from "react";
-import { useErc20MetaData, useGetUserStakes } from "@/hooks/useReadTokenContract";
+import { useErc20MetaData } from "@/hooks/useReadTokenContract";
 import { useStartStake } from "@/hooks/useWriteTokenContract";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import StakeTable from "@/sections/Table/StakeTable";
 import TInfoGroup from "@/components/TInfoGroup";
 import { TTabs, TabPanel } from "@/components/TTabs";
 import { useAccount } from "wagmi";
-import TButton from "@/components/TButton";
-import MaxInputRender from "@/components/MaxInputRender";
+
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import useNotification from "@/hooks/useNotification";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import useStakingCalculator from "@/hooks/useStakingCalculator";
 import TIPS from "@/configs/tips";
+import { formatPrice } from "@/configs/utils";
+
+import SingleMiner from "./SingleMiner";
 
 export type StakeData = {
     amount: number;
@@ -31,90 +33,43 @@ export type UserStakesInfo = {
 };
 
 function Index() {
+    const openNotification = useNotification();
+
     const [stakeData, setStakeData] = useState<StakeData>({
         amount: 0,
         length: 3500,
     });
 
-    const { newShare, newShareDisplay } = useStakingCalculator({
-        amount: stakeData.amount,
-        length: stakeData.length,
-    });
+    const {
+        newShareWithBonus,
+        currentShareRateDisplay,
+        baseSharesDisplay,
+        newShareWithBonusDisplay,
+        longerPaysMoreBonusDisplay,
+        biggerPaysMoreBonusDisplay,
+    } = useStakingCalculator(stakeData);
 
     const { address } = useAccount();
     const { balanceOf } = useErc20MetaData();
     // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake } = useStartStake();
-    const { userStakes } = useGetUserStakes();
-    const openNotification = useNotification();
-
-    // const newShares = currentShareRate
-    //     ? calculateShares(BigInt(stakeData.amount), BigInt(stakeData.length), currentShareRate)
+    // const { userStakes } = useGetUserStakes();
+    // const stakeAmount = userStakes
+    //     ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)
     //     : 0n;
 
-    const stakeAmount = userStakes
-        ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)
-        : 0n;
-    // console.log(currentShareRate);
+    const handleOnclickStake = () => {
+        if (newShareWithBonus < 1n) {
+            //  if (shares / SCALING_FACTOR_1e18 < 1) revert TitanXErrors.TitanX_RequireOneMinimumShare();
+            openNotification("warning", "", "Your stake should have at least 1 share");
+        }
 
-    // Your stake should have at least 1 share
+        if (startStake && stakeData.amount && stakeData.length)
+            startStake(stakeData.amount, stakeData.length);
+    };
 
-    const SingleMiner = () => {
-        const handleOnclickStake = () => {
-            if (newShare < 1n) {
-                openNotification("warning", "", "Your stake should have at least 1 share");
-            }
-
-            if (startStake && stakeData.amount && stakeData.length)
-                startStake(stakeData.amount, stakeData.length);
-        };
-
-        const handleInput = (key: string, value: number) => {
-            setStakeData(old => ({
-                ...old,
-                [key]: value,
-            }));
-        };
-
-        return (
-            <>
-                <h2 className="text-lg md:text-2xl">Create TITAN X Staker</h2>
-                <div className="p-2 md:p-5">
-                    {/* {renderInput("Stake Amount", "amount", 0, balanceOf ? Number(balanceOf) : 0)}
-                    {renderInput("Stake Length", "length", 0, 3500)} */}
-                    <MaxInputRender
-                        index="amount"
-                        label="Stake Amount"
-                        value={stakeData.amount}
-                        min={0}
-                        max={balanceOf ? Number(balanceOf) : 0}
-                        handleChangeValue={handleInput}
-                        tips={TIPS.stake.amount}
-                    />
-                    <MaxInputRender
-                        index="length"
-                        label="Stake Length"
-                        value={stakeData.length}
-                        min={0}
-                        max={3500}
-                        handleChangeValue={handleInput}
-                        tips={TIPS.stake.length}
-                    />
-                </div>
-                <TButton
-                    type={address ? "primary" : "secondary"}
-                    handleClick={() => address && handleOnclickStake()}
-                    width="90%"
-                    height="40px"
-                    className="mx-auto my-8"
-                >
-                    {address ? "Start Stake" : "Connect Wallet"}
-                </TButton>
-                <p className="text-gray-500 text-sm text-center">
-                    don't have TITAN X? buy here or mine here.
-                </p>
-            </>
-        );
+    const changeStakeData = (data: StakeData) => {
+        setStakeData(data);
     };
 
     return (
@@ -126,7 +81,12 @@ function Index() {
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="w-full lg:w-1/2">
                         <CardBgWrapper number={1}>
-                            <SingleMiner />
+                            <SingleMiner
+                                stakeData={stakeData}
+                                changeStakeData={changeStakeData}
+                                isWalletConnected={!!address}
+                                handleOnclickStake={handleOnclickStake}
+                            />
                         </CardBgWrapper>
                     </div>
                     <div className="w-full lg:w-1/2">
@@ -138,13 +98,13 @@ function Index() {
                                     {
                                         key: "1.1",
                                         label: "TITAN X in Stake",
-                                        value: `${stakeAmount}`,
+                                        value: `${formatPrice(stakeData.amount)}`,
                                         tips: TIPS.stake.inStake,
                                     },
                                     {
                                         key: "1.2",
                                         label: "# of Shares",
-                                        value: ``,
+                                        value: newShareWithBonusDisplay,
                                         tips: TIPS.stake.shares,
                                     },
                                 ]}
@@ -157,19 +117,19 @@ function Index() {
                                     {
                                         key: "2.1",
                                         label: "Current Share Rate (excl. Bonuses)",
-                                        value: `${newShareDisplay}`,
+                                        value: currentShareRateDisplay,
                                         tips: TIPS.stake.currentShareRate,
                                     },
                                     {
                                         key: "2.2",
                                         label: "Base Shares (excl. Bonuses)",
-                                        value: "+0",
+                                        value: `${baseSharesDisplay}`,
                                         tips: TIPS.stake.baseShares,
                                     },
                                     {
                                         key: "2.3",
                                         label: "Stake Share Bonuses",
-                                        value: 0,
+                                        value: "",
                                     },
                                 ]}
                             />
@@ -181,7 +141,9 @@ function Index() {
                                             <QuestionCircleOutlined className="w-[14px] ml-2" />
                                         </Tooltip>
                                     </span>
-                                    <span>+ 0</span>
+                                    <span className="text-nowrap">
+                                        + {longerPaysMoreBonusDisplay}
+                                    </span>
                                 </div>
                                 <div className="flex-between my-2">
                                     <span>
@@ -190,7 +152,9 @@ function Index() {
                                             <QuestionCircleOutlined className="w-[14px] ml-2" />
                                         </Tooltip>
                                     </span>
-                                    <span>+ 0</span>
+                                    <span className="text-nowrap">
+                                        + {biggerPaysMoreBonusDisplay}
+                                    </span>
                                 </div>
                             </div>
                             <TInfoGroup

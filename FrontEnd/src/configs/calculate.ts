@@ -81,19 +81,29 @@ export const calculateROI = (marketValue: bigint, minterCostValue: bigint) => {
     return -((minterCostValue - marketValue) * 10000n) / minterCostValue;
 };
 
-/**
- * calculate share bonus
- * @param amount
- * @param noOfDays
- * @returns
+/** @notice calculate share bonus
+ * @param amount titan amount
+ * @param noOfDays stake length
+ * @return shareBonus calculated shares bonus in 11 decimals
  */
-export const calculateShareBonus = (amount: bigint, noOfDays: bigint): bigint => {
+export const calculateLongerPaysMoreBonus = (noOfDays: bigint): bigint => {
     const cappedExtraDays = noOfDays <= BigInt(LPB_MAX_DAYS) ? noOfDays : BigInt(LPB_MAX_DAYS);
+    return (cappedExtraDays * BigInt(SCALING_FACTOR_1e11)) / BigInt(LPB_PER_PERCENT);
+};
+
+export const calculateBiggerPaysMoreBonus = (amount: bigint): bigint => {
     const cappedStakedTitan = amount <= BigInt(BPB_MAX_TITAN) ? amount : BigInt(BPB_MAX_TITAN);
-    const shareBonus =
-        (cappedExtraDays * BigInt(SCALING_FACTOR_1e11)) / BigInt(LPB_PER_PERCENT) +
-        (cappedStakedTitan * BigInt(SCALING_FACTOR_1e11)) / BigInt(BPB_PER_PERCENT);
-    return shareBonus;
+    return (cappedStakedTitan * BigInt(SCALING_FACTOR_1e11)) / BigInt(BPB_PER_PERCENT);
+};
+
+export const calculateShareBonus = (amount: bigint, noOfDays: bigint): bigint => {
+    // const cappedExtraDays = noOfDays <= BigInt(LPB_MAX_DAYS) ? noOfDays : BigInt(LPB_MAX_DAYS);
+    // const cappedStakedTitan = amount <= BigInt(BPB_MAX_TITAN) ? amount : BigInt(BPB_MAX_TITAN);
+    // const shareBonus =
+    //     (cappedExtraDays * BigInt(SCALING_FACTOR_1e11)) / BigInt(LPB_PER_PERCENT) +
+    //     (cappedStakedTitan * BigInt(SCALING_FACTOR_1e11)) / BigInt(BPB_PER_PERCENT);
+    // return shareBonus;
+    return calculateLongerPaysMoreBonus(noOfDays) + calculateBiggerPaysMoreBonus(amount);
 };
 
 /**

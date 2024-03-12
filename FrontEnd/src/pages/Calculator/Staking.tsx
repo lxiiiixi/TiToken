@@ -14,7 +14,7 @@ export default function Staking() {
         length: 3500,
     });
 
-    const { newShareDisplay, percentOfGlobalActiveSharesDisplay } = useStakingCalculator({
+    const { newShareWithBonusDisplay, percentOfGlobalActiveSharesDisplay } = useStakingCalculator({
         amount: stakingData.amount,
         length: stakingData.length,
     });
@@ -48,6 +48,7 @@ export default function Staking() {
                 label="Stake Amount"
                 value={stakingData.amount}
                 min={0}
+                format
                 handleChangeValue={handleChange}
             />
             <MaxInputRender
@@ -65,12 +66,12 @@ export default function Staking() {
                     {
                         key: "Effective Share Rate",
                         label: "Effective Share Rate",
-                        value: newShareDisplay,
+                        value: "",
                     },
                     {
                         key: "Effective Shares",
                         label: "Effective Shares",
-                        value: "~ 5.41",
+                        value: newShareWithBonusDisplay,
                     },
                     {
                         key: "% of Global Active Shares",

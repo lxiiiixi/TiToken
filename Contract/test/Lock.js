@@ -79,6 +79,8 @@ describe("Lock", function () {
       expect(await token.balanceOf(alice.address)).to.equal(mintReward);
       expect(await token.balanceOf(owner.address)).to.equal(mintReward * 800n / 10000n);
 
+      // console.log(mintReward, "mintReward"); // 1707798400000000000000000000n
+
       // stake
       await tokenManager.connect(alice).startStake(mintReward, 100)
       await tokenManager.startStake(mintReward * 800n / 10000n, 100)

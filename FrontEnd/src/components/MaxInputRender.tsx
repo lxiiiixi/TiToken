@@ -18,6 +18,7 @@ const MaxInputRender = ({
     value,
     handleChangeValue,
     min,
+    format,
     max,
     tips,
 }: {
@@ -26,6 +27,7 @@ const MaxInputRender = ({
     value: number;
     handleChangeValue: (key: string, value: number) => void;
     min: number;
+    format?: boolean;
     max?: number;
     tips?: string;
 }) => (
@@ -38,6 +40,9 @@ const MaxInputRender = ({
                 min={min}
                 max={max}
                 value={value}
+                formatter={
+                    format ? value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : undefined
+                }
                 className="w-full md:w-auto md:max-w-[150px]"
                 onChange={value => value && handleChangeValue(index, value)}
             />

@@ -1,48 +1,76 @@
 import { useGlobalInfoData, useGetUserCurrentActiveShares } from "@/hooks/useReadTokenContract";
-import { calculateShares } from "@/configs/calculate";
-import { SCALING_FACTOR_1e18 } from "@/configs/constants";
+import {
+    calculateLongerPaysMoreBonus,
+    calculateBiggerPaysMoreBonus,
+    calculateShares,
+} from "@/configs/calculate";
+import { SCALING_FACTOR_1e18, SCALING_FACTOR_1e11 } from "@/configs/constants";
 import { formatEther } from "viem";
-import { formatPercentage } from "@/configs/utils";
+import { formatPercentage, formatPrice } from "@/configs/utils";
 
-export default function useStakingCalculator({
-    amount,
-    length,
-}: {
-    amount: number;
-    length: number;
-}) {
+import type { StakeData } from "@/pages/Stake";
+
+export default function useStakingCalculator(stakeData: StakeData) {
     const { currentShareRate, globalActiveShares } = useGlobalInfoData();
     const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
 
-    const newShare = currentShareRate
-        ? calculateShares(BigInt(amount), BigInt(length), currentShareRate)
+    // 根据用户输入的 amount， 计算的时候需要转换精度，通过用户输入的代币数量是 format 之后的，计算时则需要转换过来
+
+    const parsedAmount = BigInt(stakeData.amount.toString());
+
+    console.log(stakeData.amount, parsedAmount);
+
+    const baseShareWithoutBonus = currentShareRate
+        ? parsedAmount / (currentShareRate / BigInt(SCALING_FACTOR_1e18))
         : 0n;
 
-    const newShareDisplay = currentShareRate
-        ? (Number(currentShareRate / BigInt(SCALING_FACTOR_1e18 / 100)) / 100).toFixed(2)
-        : 0;
+    const longerPaysMoreBonus =
+        (baseShareWithoutBonus * calculateLongerPaysMoreBonus(BigInt(stakeData.length))) /
+        BigInt(SCALING_FACTOR_1e11);
+    const biggerPaysMoreBonus =
+        (baseShareWithoutBonus * calculateBiggerPaysMoreBonus(parsedAmount)) /
+        BigInt(SCALING_FACTOR_1e11);
+    const shareBonus = longerPaysMoreBonus + biggerPaysMoreBonus;
 
-    console.log(currentShareRate);
+    const newShareWithBonus = currentShareRate
+        ? calculateShares(parsedAmount, BigInt(length), currentShareRate)
+        : 0n;
 
-    console.log(1111, newShare, newShare * BigInt(SCALING_FACTOR_1e18), globalActiveShares);
     const percentOfGlobalActiveShares =
-        newShare && globalActiveShares
-            ? (newShare * BigInt(SCALING_FACTOR_1e18) * BigInt(SCALING_FACTOR_1e18)) /
+        newShareWithBonus && globalActiveShares
+            ? (newShareWithBonus * BigInt(SCALING_FACTOR_1e18) * BigInt(SCALING_FACTOR_1e18)) /
               globalActiveShares
             : 0n;
-    // 这里不确定关于单位和精度的问题
 
+    console.log(biggerPaysMoreBonus);
+
+    // display
+    const baseSharesDisplay = formatPrice(Number(baseShareWithoutBonus));
+    const currentShareRateDisplay = formatPrice(Number(formatEther(currentShareRate || 0n)));
     const percentOfGlobalActiveSharesDisplay = formatPercentage(
         Number(formatEther(percentOfGlobalActiveShares))
     );
+    const longerPaysMoreBonusDisplay = formatPrice(Number(longerPaysMoreBonus));
+    const biggerPaysMoreBonusDisplay = formatPrice(Number(biggerPaysMoreBonus));
+    const newShareWithBonusDisplay = formatPrice(Number(newShareWithBonus));
+    // const userCurrentActiveSharesDisplay = formatPrice(Number(formatEther(userCurrentActiveShares || 0n)));
 
-    // console.log(percentOfGlobalActiveShares / BigInt(SCALING_FACTOR_1e18));
+    console.log(111, baseShareWithoutBonus);
 
     return {
-        newShare,
-        newShareDisplay,
+        baseShareWithoutBonus,
+        shareBonus,
+        newShareWithBonus,
+        currentShareRate,
+        longerPaysMoreBonus,
+        biggerPaysMoreBonus,
         userCurrentActiveShares,
         globalActiveShares,
+        baseSharesDisplay,
+        currentShareRateDisplay,
         percentOfGlobalActiveSharesDisplay,
+        newShareWithBonusDisplay,
+        longerPaysMoreBonusDisplay,
+        biggerPaysMoreBonusDisplay,
     };
 }
