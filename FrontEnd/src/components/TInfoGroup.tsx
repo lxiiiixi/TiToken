@@ -32,9 +32,7 @@ export default function TInfoGroup({
                             )}
                         </span>
                         <div className="flex-col items-end justify-end text-right">
-                            <span className="text-primary-400 text-base md:text-lg">
-                                {content.value}{" "}
-                            </span>
+                            <span className="text-primary-400">{content.value} </span>
                             {content.subValue && (
                                 <span className="text-white text-xs">{content.subValue}</span>
                             )}

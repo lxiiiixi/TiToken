@@ -1,7 +1,7 @@
 import { useReadContract } from "wagmi";
 import unipoolv3 from "@/abis/unipoolv3.json";
 import { useQuery } from "@tanstack/react-query";
-import { parseEther } from "viem";
+import { formatEther, parseEther } from "viem";
 
 export function useETHPrice() {
     const fetchData = async () => {
@@ -34,4 +34,10 @@ export function useTokenPrice() {
     const tokenValueInUSD = ethUsdPriceBigint / priceRatio;
 
     return tokenValueInUSD;
+}
+
+export function useTokenUsdValue(tokenAmount: bigint) {
+    const tokenValueInUSD = useTokenPrice();
+    const tokenValue = tokenValueInUSD ? tokenAmount * tokenValueInUSD : 0n;
+    return formatEther(tokenValue);
 }

@@ -1,5 +1,6 @@
 import { useWriteContract, useAccount } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import { parseEther } from "viem";
 
 export function useManualDailyUpdate() {
     const { writeContract } = useWriteContract();
@@ -34,7 +35,7 @@ export function useStartStake() {
             ...TOKEN_CONTRACT_CONFIT,
             address,
             functionName: "startStake",
-            args: [amount, numOfDays],
+            args: [parseEther(String(amount)), numOfDays],
         });
     };
     return { startStake };

@@ -1,22 +1,48 @@
 import { formatEther } from "viem";
-import { useTokenPrice, useETHPrice } from "./useTokenPrice";
-import { useGetPayoutCyclesData } from "@/hooks/useReadTokenContract";
+import { useETHPrice } from "./useTokenPrice";
+import { useGetPayoutCyclesData, useGetActiveShares } from "@/hooks/useReadTokenContract";
 import { formatPrice } from "@/configs/utils";
+import { calculateUserPayoutByShares } from "@/configs/calculate";
 
-export default function useStakerPayoutsCalculator(tokenAmount: bigint, length: bigint) {
-    const tokenValueInUSD = useTokenPrice();
-    const tokenValue = tokenValueInUSD ? tokenAmount * tokenValueInUSD : 0n;
-
+export default function useStakerPayoutsCalculator(userShare: bigint) {
     const { globalCyclePayout } = useGetPayoutCyclesData();
+    const { globalActiveShares } = useGetActiveShares();
+
     const ethUsdPrice = useETHPrice();
-    const tokenPrice = useTokenPrice();
+
+    console.log("——————————————————————————");
 
     const getCyclePayout = (dayNum: 8 | 28 | 90 | 369 | 888) => {
         const cyclePayoutByDay = globalCyclePayout ? globalCyclePayout[dayNum] : 0n;
         const payoutValueByDay = ethUsdPrice * parseFloat(formatEther(cyclePayoutByDay));
+
+        const userPayoutByShares = globalActiveShares
+            ? calculateUserPayoutByShares(userShare, globalActiveShares, cyclePayoutByDay)
+            : 0n;
+        const userPayoutValueByShares = ethUsdPrice * parseFloat(formatEther(userPayoutByShares));
+
+        console.log(
+            dayNum,
+            cyclePayoutByDay,
+            `${formatPrice(formatEther(cyclePayoutByDay), 4)} ETH`
+        );
+        console.log(
+            dayNum,
+            userPayoutByShares,
+            `${formatPrice(formatEther(userPayoutByShares), 4)} ETH`
+        );
+        console.log(
+            dayNum,
+            userPayoutByShares,
+            `${formatPrice(formatEther(userPayoutByShares), 4)} ETH`
+        );
+        console.log(dayNum, userPayoutValueByShares, formatPrice(userPayoutValueByShares));
+
         return {
             cyclePayoutByDay: `${formatPrice(formatEther(cyclePayoutByDay), 4)} ETH`,
             payoutValueByDay: formatPrice(payoutValueByDay),
+            userPayoutByShares: `${formatPrice(formatEther(userPayoutByShares), 4)} ETH`,
+            userPayoutValueByShares: formatPrice(userPayoutValueByShares),
         };
     };
     const day8CyclePayout = getCyclePayout(8);
@@ -28,8 +54,8 @@ export default function useStakerPayoutsCalculator(tokenAmount: bigint, length: 
     // 这里对 TiTanX 代币可以获得的支付计算是基于当前每个周期的比例和用户的份额占全局份额的百分比计算得到
     // 对于 payout 页面也是如此，只不过计算页面是基于用户的输入模拟计算的
     // 现在的问题主要在于：用户的份额如何计算
+
     return {
-        tokenValue: formatEther(tokenValue),
         day8CyclePayout,
         day28CyclePayout,
         day90CyclePayout,
