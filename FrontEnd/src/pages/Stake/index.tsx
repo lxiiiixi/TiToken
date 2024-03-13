@@ -46,6 +46,7 @@ function Index() {
         newShareWithBonusDisplay,
         longerPaysMoreBonusDisplay,
         biggerPaysMoreBonusDisplay,
+        effectiveShareRateDisplay,
     } = useStakingCalculator(stakeData);
 
     const { address } = useAccount();
@@ -163,13 +164,13 @@ function Index() {
                                     {
                                         key: "2.4",
                                         label: "Effective Share Rate (incl. Bonuses)",
-                                        value: "+0",
+                                        value: effectiveShareRateDisplay,
                                         tips: TIPS.stake.effectiveShareRate,
                                     },
                                     {
                                         key: "2.5",
                                         label: "Effective Shares (incl. Bonuses)",
-                                        value: "0",
+                                        value: newShareWithBonusDisplay,
                                         tips: TIPS.stake.effectiveShares,
                                     },
                                 ]}

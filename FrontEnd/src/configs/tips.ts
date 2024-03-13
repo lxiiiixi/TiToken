@@ -8,13 +8,14 @@ const TIPS = {
         currentShareRate: "Current share rate (moves up by 0.03% every day up until 2800 cap.",
         baseShares:
             "This would be your number of shares in this stake without any Longer Pays More or Bigger Pays More bonuses.",
-        longerPaysMore: "Current share rate (moves up by 0.03% every day up until 2800 cap.",
-        biggerPaysMore:
-            "This would be your number of shares in this stake without any Longer Pays More or Bigger Pays More bonuses.",
-        effectiveShareRate:
+        longerPaysMore:
             "The longer you stake for, the more shares you get. This bonus starts at 0% and goes all the way up to 350% more shares at day 2888, you can go up to day 3500 to keep your shares for longer (called share preservation).",
-        effectiveShares:
+        biggerPaysMore:
             "The bigger your stake is, you get more shares. This goes up to 8% max at 100B TITAN X in 1 stake. This is linear - so if you stake 12.5B for example, it would be 1%.",
+        effectiveShareRate:
+            "This is your effective share rate including all bonuses. This is what will be used (estimated) to give you your shares in your stake.",
+        effectiveShares:
+            "This is the number of shares in your stake and includes the Bigger Pays More and Longer Pays More bonuses.",
         increase:
             "Every day it becomes a little bit harder to get shares by staking. It increases by 0.03% every day, meaning that with every passing day, you need more TITAN X to create shares & get ETH payouts, general rule is: today is always better than tomorrow.",
     },
@@ -48,6 +49,19 @@ const TIPS = {
             "Your % of the ETH burn pool when it gets paid out (every 28 days, never stops), this is based on your % of TITAN X burned vs global # of TITAN X burned by all users in this 28-day period.",
         claimableETH:
             "Your claimable ETH from previous burn pool payout cycles. Once claimed, it gets sent to your wallet and removed from the smart contract.",
+    },
+    calculator: {
+        mining: {},
+        staking: {
+            amount: "How much TITAN X you want to stake. Bigger pays more so instead of creating 10 individual stakes, do one big one and you get an amplifier.",
+            length: "Number of days you want to stake for. In general: longer is always better bcause of the longer pays more bonus.",
+            effectiveShareRate:
+                "This is your effective share rate including all bonuses. This is what will be used (estimated) to give you your shares in your stake.",
+            effectiveShares:
+                "This is the number of shares in your stake and includes the Bigger Pays More and Longer Pays More bonuses.",
+            globalActiveShares:
+                "This is the number of shares in your stake and includes the Bigger Pays More and Longer Pays More bonuses.",
+        },
     },
 } as const;
 

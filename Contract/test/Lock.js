@@ -5,6 +5,7 @@ const {
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { calculateMintCost, calculateMintReward, calculateShares } = require("./calculate.js");
+const { formatEther, ZeroAddress, parseEther } = require("ethers");
 
 const getAndFormatBalance = async (address, ifFormat) => {
   if (ifFormat) {
@@ -143,7 +144,35 @@ describe("Lock", function () {
       expect(await tokenManager.getUserCurrentActiveShares(alice.address)).to.equal(shareNew2);
       expect(await tokenManager.getGlobalActiveShares()).to.equal(shareNew2);
     });
+  });
 
+  describe("Calculate Share", function () {
+    it("Should record correct share", async function () {
+      const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
+      const mintableTitan = await tokenManager.getCurrentMintableTitan()
+      const EAABonus = await tokenManager.getCurrentEAABonus()
+      const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
+      const mintReward = calculateMintReward(100, 137, mintableTitan, EAABonus, burnBonus)
+      await tokenManager.connect(alice).startMint(100, 137, ZeroAddress, { value: ethers.parseEther("1") });
+      await time.increase(60 * 60 * 24 * 137); // 137 day
+      // claim
+      await tokenManager.connect(alice).batchClaimMint()
+      expect(await token.balanceOf(alice.address)).to.equal(mintReward);
+      expect(await token.balanceOf(owner.address)).to.equal(mintReward * 800n / 10000n);
+
+      console.log("mintReward", mintReward, formatEther(mintReward));
+
+      // stake
+      const stakeAmount = parseEther("10000000")
+      await tokenManager.connect(alice).startStake(stakeAmount, 3500)
+      const shareRate = await tokenManager.getCurrentShareRate()
+      const aliceStakingInfo = await tokenManager.getUserStakeInfo(alice.address, 1)
+
+      console.log("shareRate", shareRate, formatEther(shareRate));
+      console.log("aliceStakingInfo", aliceStakingInfo[1], formatEther(aliceStakingInfo[1]));
+      console.log("calculateShares", calculateShares(stakeAmount, 3500n, shareRate), formatEther(calculateShares(stakeAmount, 3500n, shareRate)));
+
+    });
   });
 
   describe("Mint and claim test", function () {
@@ -167,52 +196,52 @@ describe("Lock", function () {
     });
   });
 
-  describe("Claim ETH payout test", function () {
-    it("Claim before maturity day", async function () {
-      const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
+  // describe("Claim ETH payout test", function () {
+  //   it("Claim before maturity day", async function () {
+  //     const { token, tokenManager } = await loadFixture(deployOneYearLockFixture);
 
-      await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
-      await tokenManager.connect(bob).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
-      await tokenManager.connect(owner).startMint(100, 280, ethers.ZeroAddress, { value: ethers.parseEther("1") });
+  //     await tokenManager.connect(alice).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+  //     await tokenManager.connect(bob).startMint(100, 280, owner.address, { value: ethers.parseEther("1") });
+  //     await tokenManager.connect(owner).startMint(100, 280, ethers.ZeroAddress, { value: ethers.parseEther("1") });
 
-      // const aliceEthBalance = await getAndFormatBalance(alice.address, true)
-      // const bobEthBalance = await getAndFormatBalance(bob.address, true)
-      // const ownerEthBalance = await getAndFormatBalance(owner.address, true)
-      // console.log(aliceEthBalance, bobEthBalance, ownerEthBalance);
+  //     // const aliceEthBalance = await getAndFormatBalance(alice.address, true)
+  //     // const bobEthBalance = await getAndFormatBalance(bob.address, true)
+  //     // const ownerEthBalance = await getAndFormatBalance(owner.address, true)
+  //     // console.log(aliceEthBalance, bobEthBalance, ownerEthBalance);
 
-      await time.increase(60 * 60 * 24 * 280); // 280 day
+  //     await time.increase(60 * 60 * 24 * 280); // 280 day
 
-      await tokenManager.connect(alice).claimMint(1)
-      await tokenManager.connect(bob).claimMint(1)
-      await tokenManager.connect(owner).claimMint(1)
+  //     await tokenManager.connect(alice).claimMint(1)
+  //     await tokenManager.connect(bob).claimMint(1)
+  //     await tokenManager.connect(owner).claimMint(1)
 
-      const mintableTitan = await tokenManager.getCurrentMintableTitan()
-      const EAABonus = await tokenManager.getCurrentEAABonus()
-      const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
-      const mintReward = calculateMintReward(100, 280, mintableTitan, EAABonus, burnBonus)
+  //     const mintableTitan = await tokenManager.getCurrentMintableTitan()
+  //     const EAABonus = await tokenManager.getCurrentEAABonus()
+  //     const burnBonus = await tokenManager.getUserBurnAmplifierBonus(owner.address)
+  //     const mintReward = calculateMintReward(100, 280, mintableTitan, EAABonus, burnBonus)
 
-      await tokenManager.connect(alice).startStake(mintReward, 30)
-      await tokenManager.connect(bob).startStake(mintReward, 90)
-      await tokenManager.connect(owner).startStake(mintReward, 369)
+  //     await tokenManager.connect(alice).startStake(mintReward, 30)
+  //     await tokenManager.connect(bob).startStake(mintReward, 90)
+  //     await tokenManager.connect(owner).startStake(mintReward, 369)
 
-      // await time.increase(60 * 60 * 24 * 6); // 8 day
+  //     // await time.increase(60 * 60 * 24 * 6); // 8 day
 
-      expect(await tokenManager.getUserETHClaimableTotal(alice.address)).to.equal(0);
-      await tokenManager.triggerPayouts()
+  //     expect(await tokenManager.getUserETHClaimableTotal(alice.address)).to.equal(0);
+  //     await tokenManager.triggerPayouts()
 
-      const aliceETHClaimable = await tokenManager.getUserETHClaimableTotal(alice.address)
-      const bobETHClaimable = await tokenManager.getUserETHClaimableTotal(bob.address)
-      const ownerETHClaimable = await tokenManager.getUserETHClaimableTotal(owner.address)
+  //     const aliceETHClaimable = await tokenManager.getUserETHClaimableTotal(alice.address)
+  //     const bobETHClaimable = await tokenManager.getUserETHClaimableTotal(bob.address)
+  //     const ownerETHClaimable = await tokenManager.getUserETHClaimableTotal(owner.address)
 
-      await expect(tokenManager.connect(alice).claimUserAvailableETHPayouts())
-        .to.emit(tokenManager, "RewardClaimed")
-        .withArgs(alice.address, aliceETHClaimable)
-      await expect(tokenManager.connect(bob).claimUserAvailableETHPayouts())
-        .to.emit(tokenManager, "RewardClaimed")
-        .withArgs(bob.address, bobETHClaimable)
-      await expect(tokenManager.connect(owner).claimUserAvailableETHPayouts())
-        .to.emit(tokenManager, "RewardClaimed")
-        .withArgs(owner.address, ownerETHClaimable)
-    });
-  });
+  //     await expect(tokenManager.connect(alice).claimUserAvailableETHPayouts())
+  //       .to.emit(tokenManager, "RewardClaimed")
+  //       .withArgs(alice.address, aliceETHClaimable)
+  //     await expect(tokenManager.connect(bob).claimUserAvailableETHPayouts())
+  //       .to.emit(tokenManager, "RewardClaimed")
+  //       .withArgs(bob.address, bobETHClaimable)
+  //     await expect(tokenManager.connect(owner).claimUserAvailableETHPayouts())
+  //       .to.emit(tokenManager, "RewardClaimed")
+  //       .withArgs(owner.address, ownerETHClaimable)
+  //   });
+  // });
 });

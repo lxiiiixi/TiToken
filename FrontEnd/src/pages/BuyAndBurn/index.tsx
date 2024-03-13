@@ -11,6 +11,7 @@ import TButton from "@/components/TButton";
 import { useAccount } from "wagmi";
 import ConnectWalletButton from "@/sections/ConnectWalletButton";
 import TIPS from "@/configs/tips";
+import { parseEther } from "viem";
 
 function Index() {
     const { wethBalance } = useWethBalance();
@@ -19,6 +20,7 @@ function Index() {
     const { undistributedEth } = useGetUndistributedEth();
     const { distributeETH } = useDistributeETH();
     const { buynBurn } = useBuynBurn();
+    const perSwapCap = parseEther("3.33");
 
     return (
         <ContentWrapper
@@ -79,30 +81,68 @@ function Index() {
                     <CardBgWrapper number={2}>
                         <TInfoGroup
                             title={<h2 className="text-white text-base md:text-2xl">Buy & Burn</h2>}
-                            data={[
-                                {
-                                    key: "Buy & Burn Balance",
-                                    label: "Buy & Burn Balance",
-                                    tips: TIPS.buynburn.balance,
-                                    value: (
-                                        <EthAndUsdDisplay
-                                            ethAmount={wethBalance}
-                                            ethUsdPrice={ethUsdPrice}
-                                        />
-                                    ),
-                                },
-                                {
-                                    key: "User Reward",
-                                    label: "User Reward",
-                                    tips: TIPS.buynburn.buynburnUserReward,
-                                    value: (
-                                        <EthAndUsdDisplay
-                                            ethAmount={(wethBalance * 33n) / 10000n}
-                                            ethUsdPrice={ethUsdPrice}
-                                        />
-                                    ),
-                                },
-                            ]}
+                            data={
+                                wethBalance > perSwapCap
+                                    ? [
+                                          {
+                                              key: "Buy & Burn Balance",
+                                              label: "Buy & Burn Balance",
+                                              tips: TIPS.buynburn.balance,
+                                              value: (
+                                                  <EthAndUsdDisplay
+                                                      ethAmount={wethBalance}
+                                                      ethUsdPrice={ethUsdPrice}
+                                                  />
+                                              ),
+                                          },
+                                          {
+                                              key: "Next Buy & Burn",
+                                              label: "Next Buy & Burn",
+                                              tips: TIPS.buynburn.buynburnUserReward,
+                                              value: (
+                                                  <EthAndUsdDisplay
+                                                      ethAmount={perSwapCap}
+                                                      ethUsdPrice={ethUsdPrice}
+                                                  />
+                                              ),
+                                          },
+                                          {
+                                              key: "User Reward",
+                                              label: "User Reward",
+                                              tips: TIPS.buynburn.buynburnUserReward,
+                                              value: (
+                                                  <EthAndUsdDisplay
+                                                      ethAmount={(perSwapCap * 33n) / 10000n}
+                                                      ethUsdPrice={ethUsdPrice}
+                                                  />
+                                              ),
+                                          },
+                                      ]
+                                    : [
+                                          {
+                                              key: "Buy & Burn Balance",
+                                              label: "Buy & Burn Balance",
+                                              tips: TIPS.buynburn.balance,
+                                              value: (
+                                                  <EthAndUsdDisplay
+                                                      ethAmount={wethBalance}
+                                                      ethUsdPrice={ethUsdPrice}
+                                                  />
+                                              ),
+                                          },
+                                          {
+                                              key: "User Reward",
+                                              label: "User Reward",
+                                              tips: TIPS.buynburn.buynburnUserReward,
+                                              value: (
+                                                  <EthAndUsdDisplay
+                                                      ethAmount={(wethBalance * 33n) / 10000n}
+                                                      ethUsdPrice={ethUsdPrice}
+                                                  />
+                                              ),
+                                          },
+                                      ]
+                            }
                         />
                         {address ? (
                             <TButton width="90%" className="my-8" handleClick={buynBurn}>

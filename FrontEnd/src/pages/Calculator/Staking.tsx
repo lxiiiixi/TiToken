@@ -4,21 +4,22 @@ import { Divider } from "antd";
 import TInfoGroup from "@/components/TInfoGroup";
 import useStakingCalculator from "@/hooks/useStakingCalculator";
 import { useTokenUsdValue } from "@/hooks/useTokenPrice";
-
 import useStakerPayoutsCalculator from "@/hooks/useStakerPayoutsCalculator";
 import { formatPrice } from "@/configs/utils";
+import TIPS from "@/configs/tips";
 
 export default function Staking() {
+    const StakingTips = TIPS.calculator.staking;
     const [stakingData, setStakingData] = React.useState({
         amount: 1000000,
         length: 3500,
     });
 
     const {
-        currentShareRateDisplay,
         newShareWithBonus,
         newShareWithBonusDisplay,
         percentOfGlobalActiveSharesDisplay,
+        effectiveShareRateDisplay,
     } = useStakingCalculator(stakingData);
 
     const tokenValue = useTokenUsdValue(BigInt(stakingData.amount));
@@ -29,12 +30,13 @@ export default function Staking() {
         day90CyclePayout,
         day369CyclePayout,
         day888CyclePayout,
+        payoutValueSum,
     } = useStakerPayoutsCalculator(newShareWithBonus);
-
-    console.log("newShareWithBonus", newShareWithBonus);
 
     const handleChange = (key: string, value: number) =>
         setStakingData(old => ({ ...old, [key]: value }));
+
+    const roi = payoutValueSum && tokenValue ? payoutValueSum / Number(tokenValue) : 0;
 
     return (
         <div>
@@ -44,6 +46,7 @@ export default function Staking() {
                 value={stakingData.amount}
                 min={0}
                 format
+                tips={StakingTips.amount}
                 handleChangeValue={handleChange}
             />
             <MaxInputRender
@@ -52,6 +55,7 @@ export default function Staking() {
                 value={stakingData.length}
                 min={0}
                 max={3500}
+                tips={StakingTips.length}
                 handleChangeValue={handleChange}
             />
             <Divider />
@@ -61,17 +65,20 @@ export default function Staking() {
                     {
                         key: "Effective Share Rate",
                         label: "Effective Share Rate",
-                        value: currentShareRateDisplay,
+                        value: `${effectiveShareRateDisplay}`,
+                        tips: StakingTips.effectiveShareRate,
                     },
                     {
                         key: "Effective Shares",
                         label: "Effective Shares",
-                        value: newShareWithBonusDisplay,
+                        value: `~ ${newShareWithBonusDisplay}`,
+                        tips: StakingTips.effectiveShares,
                     },
                     {
                         key: "% of Global Active Shares",
                         label: "% of Global Active Shares",
-                        value: percentOfGlobalActiveSharesDisplay,
+                        value: `~ ${percentOfGlobalActiveSharesDisplay}`,
+                        tips: StakingTips.globalActiveShares,
                     },
                 ]}
             />
@@ -120,7 +127,7 @@ export default function Staking() {
             <div className="text-center mt-8">
                 Est. ROI % Throughout Stake
                 {/* <div className="text-3xl">{`${Number(roi) / 100}%`}</div> */}
-                <div className="text-3xl">{`101.86%`}</div>
+                <div className="text-3xl">{`${(roi * 100).toFixed(2)}%`}</div>
             </div>
         </div>
     );

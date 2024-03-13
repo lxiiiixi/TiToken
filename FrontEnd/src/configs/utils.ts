@@ -29,16 +29,11 @@ export function formatPrice(price: number | bigint | string, decimalPlaces: numb
     let decimalPart = "";
 
     if (typeof price === "string") {
-        // 分割整数部分和小数部分
-        const parts = price.split(".");
+        const roundedPrice = Number(price).toFixed(decimalPlaces);
+        const parts = roundedPrice.split(".");
         const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        if (!parts[1]) return integerPart;
-        let decimalPart = parts[1].substring(0, decimalPlaces);
-        if (Number(parts[1].substring(decimalPlaces, decimalPlaces + 1)) >= 5) {
-            const temp = Number(decimalPart) + 1;
-            decimalPart = String(temp);
-        }
-        return integerPart + "." + decimalPart;
+        const decimalPart = parts[1] ? "." + parts[1] : "";
+        return integerPart + decimalPart;
     }
 
     // 处理 bigint 类型
