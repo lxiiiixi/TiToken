@@ -10,6 +10,7 @@ import CardBgWrapper from "@/sections/CardBgWrapper";
 import TButton from "@/components/TButton";
 import { useAccount } from "wagmi";
 import ConnectWalletButton from "@/sections/ConnectWalletButton";
+import TIPS from "@/configs/tips";
 
 function Index() {
     const { wethBalance } = useWethBalance();
@@ -37,6 +38,7 @@ function Index() {
                                 {
                                     key: "To Be Distributed",
                                     label: "To Be Distributed",
+                                    tips: TIPS.buynburn.toBeDistribute,
                                     value: (
                                         <EthAndUsdDisplay
                                             ethAmount={undistributedEth}
@@ -47,6 +49,7 @@ function Index() {
                                 {
                                     key: "User Reward",
                                     label: "User Reward",
+                                    tips: TIPS.buynburn.distributeUserReward,
                                     value: (
                                         <EthAndUsdDisplay
                                             ethAmount={(undistributedEth * 33n) / 10000n}
@@ -80,6 +83,7 @@ function Index() {
                                 {
                                     key: "Buy & Burn Balance",
                                     label: "Buy & Burn Balance",
+                                    tips: TIPS.buynburn.balance,
                                     value: (
                                         <EthAndUsdDisplay
                                             ethAmount={wethBalance}
@@ -90,6 +94,7 @@ function Index() {
                                 {
                                     key: "User Reward",
                                     label: "User Reward",
+                                    tips: TIPS.buynburn.buynburnUserReward,
                                     value: (
                                         <EthAndUsdDisplay
                                             ethAmount={(wethBalance * 33n) / 10000n}

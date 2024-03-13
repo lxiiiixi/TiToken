@@ -30,6 +30,25 @@ const TIPS = {
         countDown:
             "Countdown until this payout cycle triggers & pays out all TITAN X stakers. These cycles are 'rolling', meaning that once the cycle has paid out, a next cycle starts. The payout cycles NEVER end, they are forever & will keep running forever.",
     },
+    buynburn: {
+        toBeDistribute:
+            "ETH ready to be distributed to Buy & Burn, Payout Pools, and User Burn Pools",
+        distributeUserReward:
+            "Earn a % of total ETH for executing this function. TITAN X is decentralized, there is no company running these functions, users run these functions & are incentivised to do so.",
+        balance:
+            "62% of all ETH gets sent to the buy & burn pool. This will buy TITAN X on market from the WETH/TITANX pool and forever burn it out of existence. This provides on-market buy pressure pushing up the price & removes the bought supply off the market forever by burning it.",
+        buynburnUserReward:
+            "Earn a % of total ETH for executing this function. TITAN X is decentralized, there is no company running these functions, users run these functions & are incentivised to do so.",
+    },
+    burnPoolBonuses: {
+        poolPayout:
+            "ETH in this burn pool. This changes constantly as more miners get started, 3% of all ETH goes to this pool to be paid out to users burning TITAN X to participate in other projects built on top of TITAN X.",
+        tokenBurnThisCycle: "The amount of TITAN X you've burned during this 28-day cycle.",
+        estBonusThisCycle:
+            "Your % of the ETH burn pool when it gets paid out (every 28 days, never stops), this is based on your % of TITAN X burned vs global # of TITAN X burned by all users in this 28-day period.",
+        claimableETH:
+            "Your claimable ETH from previous burn pool payout cycles. Once claimed, it gets sent to your wallet and removed from the smart contract.",
+    },
 } as const;
 
 export default TIPS;

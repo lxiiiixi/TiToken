@@ -831,7 +831,7 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
 
     /** @notice get user current cycle total titan burned
      * @param user user address
-     * @return burnTotal total titan burned in curreny burn cycle
+     * @return burnTotal total titan burned in current burn cycle
      */
     function getUserCycleBurnTotal(address user) public view returns (uint256) {
         return _getUserCycleBurnTotal(user, getCurrentCycleIndex(DAY28) + 1);

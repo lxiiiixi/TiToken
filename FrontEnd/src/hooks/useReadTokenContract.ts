@@ -38,6 +38,18 @@ export function useGetCurrentMintPowerBonus() {
     return { currentMintPowerBonus: 0n };
 }
 
+export function useGetGlobalMintPower() {
+    const { data: globalMintPower } = useReadContract({
+        ...TOKEN_CONTRACT_CONFIT,
+        functionName: "getGlobalMintPower",
+    });
+
+    if (typeof globalMintPower === "bigint") {
+        return { globalMintPower };
+    }
+    return { globalMintPower: 0n };
+}
+
 export function useGetUserBurnAmplifierBonus() {
     const { address } = useAccount();
     const { data: userBurnAmplifierBonus } = useReadContract({
@@ -302,10 +314,54 @@ export function useStatsSupply() {
     });
     if (!result.data || !result.isSuccess) return {};
 
-    return {
-        liquid: result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
-        staked: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
-        penalties: result.data[2].status === "success" ? (result.data[2].result as bigint) : 0n,
-        buyAndBurn: result.data[3].status === "success" ? (result.data[3].result as bigint) : 0n,
-    };
+    const keys = ["liquid", "staked", "penalties", "buyAndBurn"];
+    return result.data.reduce((acc: { [key: string]: bigint }, curr, index) => {
+        acc[keys[index]] = curr.status === "success" ? (curr.result as bigint) : 0n;
+        return acc;
+    }, {});
+}
+
+export function useBurnPoolBonuses() {
+    const { address } = useAccount();
+    const result = useReadContracts({
+        contracts: [
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getUserBurnPoolETHClaimableTotal",
+                args: [address],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getUserCycleBurnTotal", // get user current cycle total titan burned
+                args: [address],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getUserBurnTotal", // return user address total burned titan
+                args: [address],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getUserBurnAmplifierBonus", // The burn amplifier percentage is applied to all future mints. Capped at MAX_BURN_AMP_PERCENT (8%)
+                args: [address],
+            },
+            {
+                ...TOKEN_CONTRACT_CONFIT,
+                functionName: "getUserLastBurnClaimIndex", // Returns user's last claimed burn payout index for the specified cycle day
+                args: [address, 28],
+            },
+        ],
+    });
+    if (!result.data || !result.isSuccess) return {};
+
+    const keys = [
+        "userBurnPoolETHClaimableTotal",
+        "userCycleBurnTotal",
+        "userBurnTotal",
+        "userLastBurnClaimIndex",
+    ];
+    return result.data.reduce((acc: { [key: string]: bigint }, curr, index) => {
+        acc[keys[index]] = curr.status === "success" ? (curr.result as bigint) : 0n;
+        return acc;
+    }, {});
 }
