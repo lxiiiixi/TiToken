@@ -2,6 +2,7 @@ import TButton from "@/components/TButton";
 import MaxInputRender from "@/components/MaxInputRender";
 import type { StakeData } from "./index";
 import TIPS from "@/configs/tips";
+import { useErc20MetaData } from "@/hooks/useReadTokenContract";
 
 const SingleMiner = ({
     stakeData,
@@ -14,6 +15,7 @@ const SingleMiner = ({
     changeStakeData: (data: StakeData) => void;
     handleOnclickStake: () => void;
 }) => {
+    const { balanceOf } = useErc20MetaData();
     const handleInput = (key: string, value: number) => {
         changeStakeData({
             ...stakeData,
@@ -32,7 +34,7 @@ const SingleMiner = ({
                     label="Stake Amount"
                     value={stakeData.amount}
                     min={0}
-                    // max={balanceOf ? Number(balanceOf) : 0}
+                    max={balanceOf ? Number(balanceOf) : 0}
                     handleChangeValue={handleInput}
                     format
                     tips={TIPS.stake.amount}

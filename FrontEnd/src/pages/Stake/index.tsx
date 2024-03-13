@@ -1,7 +1,6 @@
 import ContentWrapper from "@/sections/ContentWrapper";
 import { Divider, Tooltip } from "antd";
 import { useState } from "react";
-import { useErc20MetaData } from "@/hooks/useReadTokenContract";
 import { useStartStake } from "@/hooks/useWriteTokenContract";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import StakeTable from "@/sections/Table/StakeTable";
@@ -50,7 +49,7 @@ function Index() {
     } = useStakingCalculator(stakeData);
 
     const { address } = useAccount();
-    const { balanceOf } = useErc20MetaData();
+
     // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake } = useStartStake();
     // const { userStakes } = useGetUserStakes();
