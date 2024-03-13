@@ -12,13 +12,14 @@ import { formatEther } from "viem";
 import { formatPrice } from "@/configs/utils";
 import { Divider } from "antd";
 import TInfoGroup from "@/components/TInfoGroup";
+import { useTokenPrice } from "@/hooks/useTokenPrice";
 
 export default function Index() {
     const { liquid, staked, penalties, buyAndBurn } = useStatsSupply();
     const { globalTRank } = useGetGlobalTRank();
     const { globalMintPower } = useGetGlobalMintPower();
     const { globalActiveShares } = useGlobalInfoData();
-
+    const tokenValueInUSD = useTokenPrice();
     // console.log(Number(formatEther(liquid || 0n)), staked, penalties, buyAndBurn);
 
     const StatsChart = () => {
@@ -108,6 +109,11 @@ export default function Index() {
         );
     };
 
+    const getTokenUsdValue = (amount: bigint) => {
+        if (!tokenValueInUSD) return 0n;
+        return formatPrice((amount * tokenValueInUSD) / BigInt(1e18) / BigInt(1e18));
+    };
+
     return (
         <ContentWrapper title="Stats" subTitle="">
             <div className="flex flex-col lg:flex-row gap-4">
@@ -125,23 +131,23 @@ export default function Index() {
                                 value={formatPrice(formatEther(liquid || 0n))}
                                 label="Liquid"
                                 tips="TITAN"
-                                subValue="1,000"
+                                subValue={`≈ $${getTokenUsdValue(liquid)}`}
                             />
                             <ColorfulDisplay
                                 textColor="purple"
                                 value={formatPrice(formatEther(staked || 0n))}
                                 label="Staked"
                                 tips="TITAN"
-                                subValue="1,000"
+                                subValue={`≈ $${getTokenUsdValue(staked)}`}
                             />
                             <ColorfulDisplay
                                 textColor="orange"
                                 value={formatPrice(formatEther(penalties || 0n))}
                                 label="Panalties"
                                 tips="TITAN"
-                                subValue="1,000"
+                                subValue={`≈ $${getTokenUsdValue(penalties)}`}
                             />
-                            <ColorfulDisplay
+                            {/* <ColorfulDisplay
                                 textColor="green"
                                 value="1,000,000"
                                 label="BoT Protocols"
@@ -154,13 +160,13 @@ export default function Index() {
                                 label="User Burned"
                                 tips="TITAN"
                                 subValue="1,000"
-                            />
+                            /> */}
                             <ColorfulDisplay
                                 textColor="pink"
                                 value={formatPrice(formatEther(buyAndBurn || 0n))}
                                 label="Buy & Burned"
                                 tips="TITAN"
-                                subValue="1,000"
+                                subValue={`≈ $${getTokenUsdValue(buyAndBurn)}`}
                             />
                         </div>
                         <Divider />

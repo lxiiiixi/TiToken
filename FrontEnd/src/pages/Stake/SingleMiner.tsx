@@ -34,7 +34,7 @@ const SingleMiner = ({
                     label="Stake Amount"
                     value={stakeData.amount}
                     min={0}
-                    // max={balanceOf ? Number(balanceOf) : 0}
+                    max={balanceOf ? Number(balanceOf) : 0}
                     handleChangeValue={handleInput}
                     format
                     tips={TIPS.stake.amount}
