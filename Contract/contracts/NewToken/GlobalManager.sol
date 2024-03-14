@@ -60,17 +60,18 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
     event ApproveBurnMints(address indexed user, address indexed project, uint256 indexed amount);
 
 
-    constructor(address genesisAddress, address initialOwner) Ownable(initialOwner){
+    constructor(address genesisAddress, address initialOwner,address buyAndBurn) Ownable(initialOwner){
         if (genesisAddress == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
+        if (buyAndBurn == address(0)) revert TitanXErrors.TitanX_InvalidAddress();
         s_genesisAddress = genesisAddress;
-
+        s_buyAndBurnAddress = buyAndBurn;
         token = new TITANX();
 
         // buyAndburn 一开始也必须设置一个可以接受 ETH 的地址，否则有人质押的时候会向一个零地址转账。
         
 		// s_blastYieldAddress.configureClaimableYield();
         s_blastYieldAddress.configureClaimableGas();
-        // s_blastYieldAddress.configureGovernor(address(this)); // only this address can claim
+        s_blastYieldAddress.configureGovernor(address(this)); // only this address can claim
     }
 
     function claimAllYieldAndGas() external {
@@ -975,7 +976,7 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
         uint8 inviterBonus = 2;
         // uint256 share = userStakeInfo.shares;
         uint256 share = getUserCurrentActiveShares(user); // latest stake active shares
-        uint256 onePercentGlobalShares = getGlobalActiveShares() * 50 / 100; // 50% of global shares
+        uint256 onePercentGlobalShares = getGlobalActiveShares() * 5 / 10000; // 0.05% of global shares
         if(userStakeInfo.numOfDays >= 90 && share > onePercentGlobalShares) inviterBonus = 5;
         if(inviterBonus != getInviterBonusPercent(user)){
             setInviterBonusPercent(user, inviterBonus);

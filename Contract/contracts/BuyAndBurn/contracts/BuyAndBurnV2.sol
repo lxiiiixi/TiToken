@@ -18,6 +18,8 @@ import "../interfaces/ITokenManager.sol";
 contract BuyAndBurnV2 is ReentrancyGuard {
     ITokenManager public tokenManager;
     IERC20 public token;
+    IWETH9 public WETH9;
+    address public token_weth_pool;
 
     /** @dev genesis timestamp */
     uint256 private immutable i_genesisTs;
@@ -49,7 +51,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         address indexed caller
     );
 
-    constructor(address _token, address _tokenManager) {
+    constructor(address _token, address _tokenManager,address _WETH9) {
         i_genesisTs = block.timestamp;
         s_ownerAddress = msg.sender;
         s_capPerSwap = 1 ether;
@@ -58,12 +60,13 @@ contract BuyAndBurnV2 is ReentrancyGuard {
 
         token = IERC20(_token);
         tokenManager = ITokenManager(_tokenManager);
+        WETH9 = IWETH9(_WETH9);
     }
 
     /** @notice receive eth and convert all eth into weth */
     receive() external payable {
         //prevent ETH withdrawal received from WETH contract into deposit function
-        if (msg.sender != WETH9) IWETH9(WETH9).deposit{value: msg.value}();
+        if (msg.sender != address(WETH9)) IWETH9(WETH9).deposit{value: msg.value}();
     }
 
     /** @notice remove owner */
@@ -79,6 +82,12 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         require(msg.sender == s_ownerAddress, "InvalidCaller");
         require(ownerAddress != address(0), "InvalidAddress");
         s_ownerAddress = ownerAddress;
+    }
+
+    function setPoolAddress(address poolAddress) external {
+        require(msg.sender == s_ownerAddress, "InvalidCaller");
+        require(poolAddress != address(0), "InvalidAddress");
+        token_weth_pool = poolAddress;
     }
 
     /**
@@ -150,7 +159,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         require(amount0Delta > 0 || amount1Delta > 0); // swaps entirely within 0-liquidity regions are not supported
         IUniswapV3Pool pool = CallbackValidation.verifyCallback(
             UNISWAPV3FACTORY,
-            WETH9,
+            address(WETH9),
             address(token),
             POOLFEE1PERCENT
         );
@@ -158,7 +167,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
 
         //swap weth for titan
         TransferHelper.safeTransferFrom(
-            WETH9,
+            address(WETH9),
             address(this),
             msg.sender,
             amount0Delta > 0 ? uint256(amount0Delta) : uint256(amount1Delta)
@@ -181,12 +190,12 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         (int256 amount0, int256 amount1) = IUniswapV3Pool(TITANX_WETH_POOL)
             .swap(
                 address(this),
-                WETH9 < address(token),
+                address(WETH9) < address(token),
                 int256(amountWETH),
-                WETH9 < address(token) ? MIN_SQRT_RATIO + 1 : MAX_SQRT_RATIO - 1,
+                address(WETH9) < address(token) ? MIN_SQRT_RATIO + 1 : MAX_SQRT_RATIO - 1,
                 ""
             );
-        uint256 titan = WETH9 < address(token)
+        uint256 titan = address(WETH9) < address(token)
             ? uint256(amount1 >= 0 ? amount1 : -amount1)
             : uint256(amount0 >= 0 ? amount0 : -amount0);
 
@@ -253,7 +262,7 @@ contract BuyAndBurnV2 is ReentrancyGuard {
         uint256 numerator1 = sqrtPriceX96 * sqrtPriceX96;
         uint256 numerator2 = 10 ** 18;
         uint256 price = FullMath.mulDiv(numerator1, numerator2, 1 << 192);
-        price = WETH9 < address(token) ? (1 ether * 1 ether) / price : price;
+        price = address(WETH9) < address(token) ? (1 ether * 1 ether) / price : price;
         return price;
     }
 
