@@ -2,7 +2,7 @@ import TButton from "@/components/TButton";
 import MaxInputRender from "@/components/MaxInputRender";
 import type { StakeData } from "./index";
 import TIPS from "@/configs/tips";
-import { useErc20MetaData } from "@/hooks/useReadTokenContract";
+import { useErc20MetaData } from "@/hooks/useERC20";
 
 const SingleMiner = ({
     stakeData,

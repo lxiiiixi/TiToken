@@ -12,6 +12,12 @@ export const BUYANDBURN_CONTRACT_CONFIG = {
     abi: buyandburn,
 } as const;
 
+export const TOKEN_MANAGER_CONTRACT_CONFIT = {
+    // address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
+    address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,
+    abi: token,
+} as const;
+
 export const TOKEN_CONTRACT_CONFIT = {
     // address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
     address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,

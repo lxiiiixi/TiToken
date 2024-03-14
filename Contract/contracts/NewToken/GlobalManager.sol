@@ -66,8 +66,6 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
         s_genesisAddress = genesisAddress;
         s_buyAndBurnAddress = buyAndBurn;
         token = new TITANX();
-
-        // buyAndburn 一开始也必须设置一个可以接受 ETH 的地址，否则有人质押的时候会向一个零地址转账。
         
 		// s_blastYieldAddress.configureClaimableYield();
         s_blastYieldAddress.configureClaimableGas();

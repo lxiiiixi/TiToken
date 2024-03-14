@@ -1,10 +1,14 @@
 import { useReadContract, useReadContracts, useAccount } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT, BUYANDBURN_CONTRACT_CONFIG } from "@/configs/constants";
+import {
+    TOKEN_CONTRACT_CONFIT,
+    TOKEN_MANAGER_CONTRACT_CONFIT,
+    BUYANDBURN_CONTRACT_CONFIG,
+} from "@/configs/constants";
 import type { UserStakesInfo } from "@/pages/Stake";
 
 export function useGetCurrentMintCost() {
     const { data: currentMintCost } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getCurrentMintCost",
     });
 
@@ -16,7 +20,7 @@ export function useGetCurrentMintCost() {
 
 export function useGetCurrentMintableTitan() {
     const { data: currentMintableTitan } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getCurrentMintableTitan",
     });
 
@@ -28,7 +32,7 @@ export function useGetCurrentMintableTitan() {
 
 export function useGetCurrentMintPowerBonus() {
     const { data: currentMintPowerBonus } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getCurrentMintPowerBonus",
     });
 
@@ -40,7 +44,7 @@ export function useGetCurrentMintPowerBonus() {
 
 export function useGetGlobalMintPower() {
     const { data: globalMintPower } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getGlobalMintPower",
     });
 
@@ -53,7 +57,7 @@ export function useGetGlobalMintPower() {
 export function useGetUserBurnAmplifierBonus() {
     const { address } = useAccount();
     const { data: userBurnAmplifierBonus } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getUserBurnAmplifierBonus",
         args: [address],
     });
@@ -66,7 +70,7 @@ export function useGetUserBurnAmplifierBonus() {
 
 export function useGetCurrentEAABonus() {
     const { data: currentEAABonus } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getCurrentEAABonus",
     });
 
@@ -78,7 +82,7 @@ export function useGetCurrentEAABonus() {
 
 export function useGetGlobalTRank() {
     const { data: globalTRank } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getGlobalTRank",
     });
 
@@ -92,19 +96,19 @@ export function useGlobalInfoData() {
     const result = useReadContracts({
         contracts: [
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentContractDay", // current contract day
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "genesisTs", // contract deployment block timestamp (in seconds)
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentShareRate", // current share rate
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getGlobalActiveShares", // get global active shares
             },
         ],
@@ -123,40 +127,17 @@ export function useGlobalInfoData() {
     };
 }
 
-export function useErc20MetaData() {
-    const result = useReadContracts({
-        contracts: [
-            {
-                ...TOKEN_CONTRACT_CONFIT,
-                functionName: "totalSupply",
-            },
-            {
-                ...TOKEN_CONTRACT_CONFIT,
-                functionName: "balanceOf",
-                args: [useAccount()?.address],
-            },
-        ],
-    });
-
-    if (!result.data || !result.isSuccess) return {};
-
-    return {
-        totalSupply: result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
-        balanceOf: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
-    };
-}
-
 export function useGetActiveShares() {
     const { address } = useAccount();
     const result = useReadContracts({
         contracts: [
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getUserCurrentActiveShares",
                 args: [address],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getGlobalActiveShares", // get global active shares
             },
         ],
@@ -174,7 +155,7 @@ export function useGetActiveShares() {
 
 export function useGetUserStakes() {
     const { data: userStakes } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getUserStakes",
         args: [useAccount()?.address],
     });
@@ -184,7 +165,7 @@ export function useGetUserStakes() {
 
 export function useGetUserETHClaimableTotal() {
     const { data: userETHClaimableTotal } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getUserETHClaimableTotal",
         args: [useAccount()?.address],
     });
@@ -200,52 +181,52 @@ export function useGetPayoutCyclesData() {
     const result = useReadContracts({
         contracts: [
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCyclePayoutPool", // 获取不同周期的奖金池中ETH的数量
                 args: [8],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCyclePayoutPool",
                 args: [28],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCyclePayoutPool",
                 args: [90],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCyclePayoutPool",
                 args: [369],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCyclePayoutPool",
                 args: [888],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentCycleIndex", // 获取当前周期是第几轮
                 args: [8],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentCycleIndex",
                 args: [28],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentCycleIndex",
                 args: [90],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentCycleIndex",
                 args: [369],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getCurrentCycleIndex",
                 args: [888],
             },
@@ -280,7 +261,7 @@ export function useGetPayoutCyclesData() {
 
 export function useGetUndistributedEth() {
     const { data: undistributedEth } = useReadContract({
-        ...TOKEN_CONTRACT_CONFIT,
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
         functionName: "getUndistributedEth",
     });
 
@@ -299,11 +280,11 @@ export function useStatsSupply() {
                 functionName: "totalSupply",
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getTotalTitanStaked",
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getTotalPenalties",
             },
             {
@@ -326,27 +307,27 @@ export function useBurnPoolBonuses() {
     const result = useReadContracts({
         contracts: [
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getUserBurnPoolETHClaimableTotal",
                 args: [address],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getUserCycleBurnTotal", // get user current cycle total titan burned
                 args: [address],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getUserBurnTotal", // return user address total burned titan
                 args: [address],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getUserBurnAmplifierBonus", // The burn amplifier percentage is applied to all future mints. Capped at MAX_BURN_AMP_PERCENT (8%)
                 args: [address],
             },
             {
-                ...TOKEN_CONTRACT_CONFIT,
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getUserLastBurnClaimIndex", // Returns user's last claimed burn payout index for the specified cycle day
                 args: [address, 28],
             },
