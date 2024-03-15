@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ContentWrapper from "@/sections/ContentWrapper";
 // import type { TabsProps } from "antd";
 // import { Tabs } from "antd";
