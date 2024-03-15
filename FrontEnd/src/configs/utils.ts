@@ -71,7 +71,7 @@ export function formatPercentage(
     decimalPlaces: number = 2
 ): string {
     const numericValue = typeof value === "bigint" ? Number(value) : value;
-    const percentage = numericValue * 100;
+    const percentage = numericValue;
     if (needDivBps) {
         return `${(percentage / PERCENT_BPS).toFixed(decimalPlaces)}%`;
     }

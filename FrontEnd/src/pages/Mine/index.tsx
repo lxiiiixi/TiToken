@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ContentWrapper from "@/sections/ContentWrapper";
 // import type { TabsProps } from "antd";
 // import { Tabs } from "antd";
@@ -21,11 +21,12 @@ import useNotification from "@/hooks/useNotification";
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import { Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { formatEther } from "viem";
+import { formatEther, isAddress, zeroAddress } from "viem";
 import { useClaimMint, useStartMint } from "@/hooks/useWriteTokenContract";
 import { MintStatus, UserMint } from "@/configs/interfaces";
 import { calculateProgress, formatPercentage, formatPrice, timestampToDate } from "@/configs/utils";
 import TIPS from "@/configs/tips";
+import { useSearchParams } from "react-router-dom";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -34,7 +35,12 @@ function Index() {
         number: 1,
     });
 
-    const inviter = "0x0000000000000000000000000000000000000000";
+    const [searchParams] = useSearchParams();
+    const inviterAddress = searchParams.get("inviter");
+    const inviter =
+        typeof inviterAddress === "string" && isAddress(inviterAddress)
+            ? inviterAddress
+            : zeroAddress;
 
     const openNotification = useNotification();
     const { startMint, startBatchMint } = useStartMint();
@@ -49,11 +55,9 @@ function Index() {
         marketValue,
         roi,
         currentMintableTitan,
-        currentMintPowerBonus,
         userBurnAmplifierBonus,
         currentEAABonus,
     } = useMiningCalculator(minerData);
-
     const { currentMintCost } = useGetCurrentMintCost();
     const { globalTRank } = useGetGlobalTRank();
 
@@ -63,12 +67,10 @@ function Index() {
     const mineInfoDisplay = getMineInfoDisplay(
         mintRewardWithBonus,
         ethCost,
-        ethUsdPrice,
         tokenPrice || 0n,
         marketValue || 0n,
         globalTRank,
         currentMintableTitan,
-        currentMintPowerBonus,
         userBurnAmplifierBonus,
         currentEAABonus,
         roi,

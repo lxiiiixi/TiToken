@@ -8,6 +8,7 @@ import TInfoGroup from "@/components/TInfoGroup";
 import { formatPercentage, formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import { PERCENT_BPS } from "@/configs/constants";
+import { BASE_URL } from "@/configs/envs";
 
 export default function Index() {
     const { address } = useAccount();
@@ -16,8 +17,7 @@ export default function Index() {
     const { inviterBonusPercent } = useGetInvitaionInfo();
 
     const handleGenerateLink = () => {
-        const bastUrl = "https://ti-token.vercel.app/inviter?";
-        const link = `${bastUrl}${address}`;
+        const link = `${BASE_URL}?inviter=${address}`;
         navigator.clipboard.writeText(link);
         openNotification(
             "success",
@@ -39,12 +39,16 @@ export default function Index() {
                         {
                             key: "1",
                             label: "Global Active share",
-                            value: formatPrice(formatEther(userCurrentActiveShares)),
+                            value: userCurrentActiveShares
+                                ? formatPrice(formatEther(userCurrentActiveShares))
+                                : 0,
                         },
                         {
                             key: "2",
                             label: "My Active share",
-                            value: formatPrice(formatEther(globalActiveShares)),
+                            value: globalActiveShares
+                                ? formatPrice(formatEther(globalActiveShares))
+                                : 0,
                         },
                         {
                             key: "My current shareholding",

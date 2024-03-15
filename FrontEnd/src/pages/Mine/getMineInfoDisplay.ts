@@ -5,12 +5,10 @@ import TIPS from "@/configs/tips";
 export default function getMineInfoDisplay(
     mintRewardWithBonus: bigint,
     ethCost: bigint,
-    ethUsdPrice: number,
     tokenPrice: bigint,
     marketValue: bigint,
     globalTRank: bigint,
     currentMintableTitan: bigint,
-    currentMintPowerBonus: bigint,
     userBurnAmplifierBonus: bigint,
     currentEAABonus: bigint,
     roi: bigint,
@@ -23,8 +21,6 @@ export default function getMineInfoDisplay(
 
     // const roi = calculateROI(marketValue, ethUsdValue);
     const formatROI = `${Number(roi) / 100}%`;
-
-    console.log(ethUsdPrice, currentMintPowerBonus);
 
     return [
         {
@@ -90,13 +86,13 @@ export default function getMineInfoDisplay(
                 {
                     key: "3.3",
                     label: "🚀 Early Adoption Amplifier",
-                    value: `+${formatPercentage(currentEAABonus)}`,
+                    value: `+${formatPercentage(currentEAABonus / BigInt(1e6), false)}`, //EAA Bonus has 1e6 scaling, so here divide by 1e6
                     tips: TIPS.mine.eaa,
                 },
                 {
                     key: "3.4",
                     label: "🔥 Burn Bonus Amplifier",
-                    value: `+${formatPercentage(userBurnAmplifierBonus)}`,
+                    value: `+${formatPercentage(userBurnAmplifierBonus / BigInt(1e18))}`, //burnAmpBonus has 1e18 scaling
                     tips: TIPS.mine.burnAmp,
                 },
             ],
