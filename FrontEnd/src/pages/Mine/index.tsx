@@ -25,6 +25,7 @@ import { formatEther } from "viem";
 import { useClaimMint, useStartMint } from "@/hooks/useWriteTokenContract";
 import { MintStatus, UserMint } from "@/configs/interfaces";
 import { calculateProgress, formatPercentage, formatPrice, timestampToDate } from "@/configs/utils";
+import TIPS from "@/configs/tips";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -171,7 +172,7 @@ function Index() {
                     cost: formatPrice(formatEther(item.mintInfo.mintCost), 4),
                     value: formatPrice(rewardTokenValue),
                     roi: formatPercentage(roi, false),
-                    progress: progress, // 根据开始时间、当前时间、结束时间计算
+                    progress: progress * 100, // 根据开始时间、当前时间、结束时间计算
                     isClaimable: item.mintInfo.maturityTs < Date.now() / 1000,
                     mintInfo: item.mintInfo,
                     // share: item.tRank.toString(),
@@ -194,7 +195,11 @@ function Index() {
 
     return (
         <div>
-            <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
+            <ContentWrapper
+                title="Mine"
+                subTitle="Create your TITAN X virtual miners"
+                tips={TIPS.mine.pageHeadingTips}
+            >
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="w-full lg:w-1/2">
                         <TTabs>

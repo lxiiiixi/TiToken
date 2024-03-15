@@ -51,11 +51,11 @@ const menu: MenuItem[] = [
                 label: "Burn Pool",
                 route: "/burnpool",
             },
-            {
-                key: "4.2",
-                label: "Stats",
-                route: "/stats",
-            },
+            // {
+            //     key: "4.2",
+            //     label: "Stats",
+            //     route: "/stats",
+            // },
             {
                 key: "4.3",
                 label: "Docs",

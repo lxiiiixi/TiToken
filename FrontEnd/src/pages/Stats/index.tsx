@@ -13,6 +13,7 @@ import { formatPrice } from "@/configs/utils";
 import { Divider } from "antd";
 import TInfoGroup from "@/components/TInfoGroup";
 import { useTokenPrice } from "@/hooks/useTokenPrice";
+import TIPS from "@/configs/tips";
 
 export default function Index() {
     const { liquid, staked, penalties, buyAndBurn } = useStatsSupply();
@@ -115,7 +116,7 @@ export default function Index() {
     };
 
     return (
-        <ContentWrapper title="Stats" subTitle="">
+        <ContentWrapper title="Stats" subTitle="" tips={TIPS.stats.pageHeadingTips}>
             <div className="flex flex-col lg:flex-row gap-4">
                 <div className="w-full lg:w-1/2">
                     <CardBgWrapper number={1}>

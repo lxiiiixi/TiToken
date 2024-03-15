@@ -1,5 +1,6 @@
 import { formatEther } from "viem";
 import { formatPrice, formatPercentage } from "@/configs/utils";
+import TIPS from "@/configs/tips";
 
 export default function getMineInfoDisplay(
     mintRewardWithBonus: bigint,
@@ -34,7 +35,7 @@ export default function getMineInfoDisplay(
                     key: "1.1",
                     label: "Est. TITAN X at End of Miner",
                     value: `${formatPrice(formatEther(mintRewardWithBonus))}`,
-                    tips: "Est. TITAN X at End of Miner",
+                    tips: TIPS.mine.estEndOfMiner,
                 },
                 {
                     key: "1.2",
@@ -42,19 +43,19 @@ export default function getMineInfoDisplay(
                     value: `${formatPrice(formatEther(ethCost), 4)} ETH (~$${formatPrice(
                         formatEther(ethUsdValue)
                     )})`,
-                    tips: "ETH to Start Miner",
+                    tips: TIPS.mine.ethToStartMiner,
                 },
                 {
                     key: "1.3",
                     label: "$ Market Value of Miner",
                     value: `$${formatPrice(formatEther(marketValue), 4)}`,
-                    tips: "Market Value of Miner",
+                    tips: TIPS.mine.marketValue,
                 },
                 {
                     key: "1.4",
                     label: "Est. ROI % at End of Miner",
                     value: `${formatROI}`,
-                    tips: "Est. ROI % at End of Miner",
+                    tips: TIPS.mine.roi,
                 },
             ],
         },
@@ -66,7 +67,7 @@ export default function getMineInfoDisplay(
                     key: "2.1",
                     label: "TITAN X Market Price",
                     value: `$${formatEther(tokenPrice)}`,
-                    tips: "TITAN X Market Price",
+                    tips: TIPS.mine.marketPrice,
                 },
             ],
         },
@@ -78,25 +79,25 @@ export default function getMineInfoDisplay(
                     key: "3.1",
                     label: "Global TRank",
                     value: `${formatPrice(globalTRank)}`,
-                    tips: "Global TRank",
+                    tips: TIPS.mine.globalTRank,
                 },
                 {
                     key: "3.2",
                     label: "Current Titan Per Day of Mining",
                     value: `${formatPrice(formatEther(currentMintableTitan))}`,
-                    tips: "Current Titan Per Day of Mining",
+                    tips: TIPS.mine.currentTokenPerDay,
                 },
                 {
                     key: "3.3",
                     label: "🚀 Early Adoption Amplifier",
                     value: `+${formatPercentage(currentEAABonus)}`,
-                    tips: "🚀 Early Adoption Amplifier",
+                    tips: TIPS.mine.eaa,
                 },
                 {
                     key: "3.4",
                     label: "🔥 Burn Bonus Amplifier",
                     value: `+${formatPercentage(userBurnAmplifierBonus)}`,
-                    tips: "🔥 Burn Bonus Amplifier",
+                    tips: TIPS.mine.burnAmp,
                 },
             ],
         },

@@ -26,6 +26,7 @@ function Index() {
         <ContentWrapper
             title="Staker Payouts + Buy & Burn"
             subTitle="Decentralized functions to pay Stakers and Buy & Burn TITAN X"
+            tips={TIPS.buynburn.pageHeadingTips}
         >
             <div className="flex flex-col lg:flex-row gap-4">
                 <div className="w-full lg:w-1/2 flex-1">

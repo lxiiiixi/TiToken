@@ -3,6 +3,7 @@ import TButton from "@/components/TButton";
 import MaxInputRender from "@/components/MaxInputRender";
 import CardBgWrapper from "@/sections/CardBgWrapper";
 import ConnectWalletButton from "@/sections/ConnectWalletButton";
+import TIPS from "@/configs/tips";
 
 function CreateMiner({
     type,
@@ -38,6 +39,7 @@ function CreateMiner({
                         min={1}
                         max={100}
                         handleChangeValue={handleInput}
+                        tips={TIPS.mine.batchMinerNumber}
                     />
                 )}
                 <MaxInputRender
@@ -47,7 +49,9 @@ function CreateMiner({
                     min={0}
                     max={280}
                     handleChangeValue={handleInput}
-                    tips="Number of days you want your miner to run for before becoming claimable. This determines how much TITAN X you're getting, in general: longer is better, always."
+                    tips={
+                        type === "batch" ? TIPS.mine.batchMinerLength : TIPS.mine.singleMinerLength
+                    }
                 />
                 <MaxInputRender
                     index="power"
@@ -56,7 +60,7 @@ function CreateMiner({
                     min={0}
                     max={100}
                     handleChangeValue={handleInput}
-                    tips="Miner Powers"
+                    tips={type === "batch" ? TIPS.mine.batchMinerPower : TIPS.mine.singleMinerPower}
                 />
             </div>
             {isWalletConnected ? (

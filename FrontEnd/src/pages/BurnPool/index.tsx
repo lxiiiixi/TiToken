@@ -20,7 +20,11 @@ export default function Index() {
     const { userBurnPoolETHClaimableTotal, userCycleBurnTotal } = useBurnPoolBonuses();
 
     return (
-        <ContentWrapper title="Burn Pool Bonuses" subTitle="Earn ETH bonuses when you burn TITAN X">
+        <ContentWrapper
+            title="Burn Pool Bonuses"
+            subTitle="Earn ETH bonuses when you burn TITAN X"
+            tips={TIPS.burnPoolBonuses.pageHeadingTips}
+        >
             <CardBgWrapper number={3}>
                 <TInfoGroup
                     title={<h2 className="text-white text-base md:text-2xl">Your Burn Bonus</h2>}
@@ -71,7 +75,15 @@ export default function Index() {
                         },
                     ]}
                 />
-                {address ? (
+
+                {/* userBurnPoolETHClaimableTotal */}
+                {!address && <ConnectWalletButton text="Connect Wallet to Claim Bonus ETH" />}
+                {address && userBurnPoolETHClaimableTotal === 0n && (
+                    <TButton width="90%" className="mt-8" type="secondary">
+                        No Burn Pool ETH Bonus to Claim
+                    </TButton>
+                )}
+                {address && userBurnPoolETHClaimableTotal > 0n && (
                     <TButton
                         width="90%"
                         className="mt-8"
@@ -79,8 +91,6 @@ export default function Index() {
                     >
                         Claim Bonus ETH
                     </TButton>
-                ) : (
-                    <ConnectWalletButton text="Connect Wallet to Claim Bonus ETH" />
                 )}
                 <p className="text-center text-primary1 text-xs">burn pool not enabled yet</p>
             </CardBgWrapper>

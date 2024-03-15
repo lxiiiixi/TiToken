@@ -77,6 +77,7 @@ function Index() {
             <ContentWrapper
                 title="Stake"
                 subTitle="Earn ETH Passive Income by staking your TITAN X"
+                tips={TIPS.stake.pageHeadingTips}
             >
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="w-full lg:w-1/2">

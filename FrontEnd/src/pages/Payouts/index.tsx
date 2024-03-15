@@ -130,6 +130,7 @@ function Index() {
         <ContentWrapper
             title="Rolling Payout Cycles"
             subTitle="Earn ETH passively based on your % of the TITAN X staking pool"
+            tips={TIPS.payout.pageHeadingTips}
         >
             <CardBgWrapper number={3}>
                 <TInfoGroup

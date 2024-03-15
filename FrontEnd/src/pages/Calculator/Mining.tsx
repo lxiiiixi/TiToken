@@ -5,6 +5,7 @@ import { formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import useMiningCalculator from "@/hooks/useMiningCalculator";
 import TInfoGroup from "@/components/TInfoGroup";
+import TIPS from "@/configs/tips";
 
 export default function Mining() {
     const [miningData, setMiningData] = React.useState({
@@ -52,12 +53,13 @@ export default function Mining() {
                         {
                             key: "Est. TITAN X at End",
                             label: "Est. TITAN X at End",
-                            tips: "Est. TITAN X at End of Miner(s)",
+                            tips: TIPS.calculator.mining.estTokenAtEnd,
                             value: `${formatPrice(formatEther(mintRewardWithBonus))}`,
                         },
                         {
                             key: "ETH to Start Miner(s)",
                             label: "ETH to Start Miner(s)",
+                            tips: TIPS.calculator.mining.ethToStart,
                             value: `${formatPrice(formatEther(ethCost), 4)} ETH (~$${formatPrice(
                                 formatEther(ethUsdValue)
                             )})`,
@@ -65,6 +67,7 @@ export default function Mining() {
                         {
                             key: "$ Market Value of Miner(s)",
                             label: "$ Market Value of Miner(s)",
+                            tips: TIPS.calculator.mining.marketValue,
                             value: `$${formatPrice(formatEther(marketValue), 4)}`,
                         },
                     ]}
