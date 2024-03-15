@@ -1,26 +1,24 @@
 import buyandburn from "@/abis/buyandburn.json";
-import token from "@/abis/titanx.json";
-
-export const TOKEN_PRICE = 1;
-export const TOKEN_PRICE_PRECESION = 10000000000000000000000000;
+import tokenManager from "@/abis/tokenManager.json";
+import token from "@/abis/token.json";
 
 export const SUPPORTED_CHAINS = [1, 168587773];
 
 export const BUYANDBURN_CONTRACT_CONFIG = {
-    // address: "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8" as `0x${string}`,
-    address: "0x410e10C33a49279f78CB99c8d816F18D5e7D5404" as `0x${string}`,
+    address: "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8" as `0x${string}`,
+    // address: "0x410e10C33a49279f78CB99c8d816F18D5e7D5404" as `0x${string}`,
     abi: buyandburn,
 } as const;
 
 export const TOKEN_MANAGER_CONTRACT_CONFIT = {
-    // address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
-    address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,
-    abi: token,
+    address: "0x178Be338D891Ec2abb3381B2b252f90401A70430" as `0x${string}`,
+    // address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,
+    abi: tokenManager,
 } as const;
 
 export const TOKEN_CONTRACT_CONFIT = {
-    // address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
-    address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,
+    address: "0xA44473bbff67036d16D2B907e07d6cD49D547EF5" as `0x${string}`,
+    // address: "0xF19308F923582A6f7c465e5CE7a9Dc1BEC6665B1" as `0x${string}`,
     abi: token,
 } as const;
 

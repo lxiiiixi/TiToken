@@ -111,20 +111,26 @@ export function useGlobalInfoData() {
                 ...TOKEN_MANAGER_CONTRACT_CONFIT,
                 functionName: "getGlobalActiveShares", // get global active shares
             },
+            {
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
+                functionName: "token",
+            },
         ],
     });
 
     if (!result.data) return {};
 
-    return {
-        currentContractDay:
-            result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
-        genesisTs: result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
-        currentShareRate:
-            result.data[2].status === "success" ? (result.data[2].result as bigint) : 0n,
-        globalActiveShares:
-            result.data[3].status === "success" ? (result.data[3].result as bigint) : 0n,
-    };
+    const keys = [
+        "currentContractDay",
+        "genesisTs",
+        "currentShareRate",
+        "globalActiveShares",
+        "token",
+    ];
+    return result.data.reduce((acc: { [key: string]: bigint }, curr, index) => {
+        acc[keys[index]] = curr.status === "success" ? (curr.result as bigint) : 0n;
+        return acc;
+    }, {});
 }
 
 export function useGetActiveShares() {

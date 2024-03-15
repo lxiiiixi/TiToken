@@ -45,8 +45,23 @@ module.exports = {
     ]
   },
   allowUnlimitedContractSize: true,
+  etherscan: {
+    apiKey: {
+      blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder
+    },
+    customChains: [
+      {
+        network: "blast_sepolia",
+        chainId: 168587773,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/testnet/evm/168587773/etherscan",
+          browserURL: "https://testnet.blastscan.io"
+        }
+      }
+    ]
+  },
   networks: {
-    "blast-sepolia": {
+    "blast_sepolia": {
       url: `https://empty-sleek-energy.blast-sepolia.quiknode.pro/${process.env.QUICKNODE_API}/`,
       accounts: [`0x${process.env.PRIVATE_KEY}`], // 0x19759366933CaF4f4A0A6AEc01A4D6bFf3e520FE
       gasPrice: 1000000000,
@@ -58,19 +73,6 @@ module.exports = {
         url: "https://rpc.ankr.com/blast"
       },
     }
-  },
-  etherscan: {
-    apiKey: process.env.PRIVATE_KEY,
-    customChains: [
-      {
-        network: "blast-sepolia",
-        chainId: 168587773,
-        urls: {
-          apiURL: "https://sepolia.blast.io",
-          browserURL: "https://testnet.blastscan.io/"
-        }
-      }
-    ]
   },
   sourcify: {
     // Disabled by default

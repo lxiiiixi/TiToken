@@ -14,10 +14,10 @@ async function main() {
 
   // console.log(`BuyAndBurnV2 was deployed to ${buyAndBurnAddress}`);
 
-  const buyAndBurnAddress = "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8"
+  // const buyAndBurnAddress = "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8"
 
   const genesisAddress = "0x19759366933CaF4f4A0A6AEc01A4D6bFf3e520FE"
-  const token = await hre.ethers.deployContract("TITANX", [genesisAddress, buyAndBurnAddress, "0x4300000000000000000000000000000000000002"]);
+  const token = await hre.ethers.deployContract("GlobalManager", [genesisAddress, genesisAddress, genesisAddress]);
   await token.waitForDeployment();
 
   console.log(`TITANX was deployed to ${token.target}`);
@@ -29,3 +29,5 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+// npx hardhat run ./scripts/deploy.js --network blast-sepolia

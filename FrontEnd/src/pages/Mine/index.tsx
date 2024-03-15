@@ -156,14 +156,14 @@ function Index() {
                     <div className="w-full lg:w-1/2">
                         <CardBgWrapper number={2}>
                             {mineInfoDisplay.map((item, index) => (
-                                <>
+                                <div key={item.key}>
                                     <TInfoGroup
                                         key={item.key}
                                         title={item.label}
                                         data={item.content}
                                     />
                                     {index !== mineInfoDisplay.length - 1 && <Divider />}
-                                </>
+                                </div>
                             ))}
                             <NextDifficultIncrease />
                         </CardBgWrapper>

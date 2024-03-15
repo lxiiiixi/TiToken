@@ -1,5 +1,5 @@
 function index() {
-    return <div>404 This page could not be found.</div>;
+    return <div className="flex-center">Coming soon.....</div>;
 }
 
 export default index;

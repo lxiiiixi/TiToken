@@ -71,10 +71,12 @@ function Index() {
             acc[day] =
                 (currentCycleIndex &&
                     currentContractDay &&
-                    Math.round(((day - Number(nextDay[day] - currentContractDay)) / day) * 100)) ||
+                    Math.round(((day - Number(nextDay[day] - currentContractDay)) / day) * 1000)) ||
                 100;
             return acc;
         }, {});
+
+        console.log("some change");
 
         return (
             <CardBgWrapper number={`${dayNum}Day` as CardNumber}>
@@ -119,7 +121,7 @@ function Index() {
                 <Divider />
                 <div>
                     <p>Countdown</p>
-                    <Progress percent={countdownPercent[dayNum]} />
+                    <Progress percent={countdownPercent[dayNum] / 10} />
                     <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
                 </div>
             </CardBgWrapper>
