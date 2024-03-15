@@ -151,13 +151,11 @@ export function useGetActiveShares() {
     });
 
     if (!result.data || !result.isSuccess) return {};
-
-    return {
-        userCurrentActiveShares:
-            result.data[0].status === "success" ? (result.data[0].result as bigint) : 0n,
-        globalActiveShares:
-            result.data[1].status === "success" ? (result.data[1].result as bigint) : 0n,
-    };
+    const keys = ["userCurrentActiveShares", "globalActiveShares"];
+    return result.data.reduce((acc: { [key: string]: bigint }, curr, index) => {
+        acc[keys[index]] = curr.status === "success" ? (curr.result as bigint) : 0n;
+        return acc;
+    }, {});
 }
 
 export function useGetUserStakes() {
@@ -358,6 +356,25 @@ export function useBurnPoolBonuses() {
         "userBurnTotal",
         "userLastBurnClaimIndex",
     ];
+    return result.data.reduce((acc: { [key: string]: bigint }, curr, index) => {
+        acc[keys[index]] = curr.status === "success" ? (curr.result as bigint) : 0n;
+        return acc;
+    }, {});
+}
+
+export function useGetInvitaionInfo() {
+    const { address } = useAccount();
+    const result = useReadContracts({
+        contracts: [
+            {
+                ...TOKEN_MANAGER_CONTRACT_CONFIT,
+                functionName: "getInviterBonusPercent",
+                args: [address],
+            },
+        ],
+    });
+    if (!result.data || !result.isSuccess) return {};
+    const keys = ["inviterBonusPercent"];
     return result.data.reduce((acc: { [key: string]: bigint }, curr, index) => {
         acc[keys[index]] = curr.status === "success" ? (curr.result as bigint) : 0n;
         return acc;

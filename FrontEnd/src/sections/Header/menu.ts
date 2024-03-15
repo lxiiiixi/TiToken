@@ -67,10 +67,15 @@ const menu: MenuItem[] = [
         key: "5",
         label: "Tools",
         subMenu: [
+            // {
+            //     key: "5.1",
+            //     label: "Share",
+            //     route: "/share",
+            // },
             {
-                key: "5.1",
-                label: "Share",
-                route: "/share",
+                key: "invitation",
+                label: "Invitation",
+                route: "/invitation",
             },
             {
                 key: "5.2",

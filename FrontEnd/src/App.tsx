@@ -9,7 +9,7 @@ import BuyAndBurn from "@/pages/BuyAndBurn";
 import BurnPool from "@/pages/BurnPool";
 import Stats from "@/pages/Stats";
 import Calculator from "@/pages/Calculator";
-import Component from "@/pages/Component";
+import Invitation from "@/pages/Invitation";
 
 import { App as AntdApp } from "antd";
 
@@ -28,7 +28,7 @@ function App() {
                             <Route path="burnpool" element={<BurnPool />} />
                             <Route path="stats" element={<Stats />} />
                             <Route path="calculator" element={<Calculator />} />
-                            <Route path="component" element={<Component />} />
+                            <Route path="invitation" element={<Invitation />} />
                             <Route path="*" element={<NotFound />} />
                         </Routes>
                     </HomeLayout>
