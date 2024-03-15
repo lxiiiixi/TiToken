@@ -29,30 +29,32 @@ export const TTabs: React.FC<TabsProps> = ({ type = "primary", children }) => {
                 style={{ paddingInlineStart: 0 }}
             >
                 {tabsArray.map((child, index) => {
-                    const id = String("tab" + (index + 1));
-                    const box = document.querySelector(`#${id}`) as HTMLElement;
-                    let w = "80%";
-                    if (box) {
-                        const boxWidth = box.offsetWidth;
-                        w = String(boxWidth - 35) + "px";
+                    if (React.isValidElement(child)) {
+                        const id = String(child.props.title + (index + 1));
+                        const box = document.querySelector(`#${id}`) as HTMLElement;
+                        let w = "80%";
+                        if (box) {
+                            const boxWidth = box.offsetWidth;
+                            w = String(boxWidth - 35) + "px";
+                        }
+                        return (
+                            <li
+                                key={index}
+                                id={id}
+                                style={{
+                                    clipPath: `polygon(0 0, ${w} 0, 100% 100%, 0 100%)`,
+                                }}
+                                className={
+                                    index === activeTab
+                                        ? "cursor-pointer py-2 px-1 md:px-2 text-xs md:text-sm rounded-sm md:rounded pr-8 md:pr-10 bg-primary-400 text-black"
+                                        : "cursor-pointer py-2 px-1 md:px-2 text-xs md:text-sm rounded-sm md:rounded pr-8 md:pr-10 bg-primary2"
+                                }
+                                onClick={() => setActiveTab(index)}
+                            >
+                                {child.props.title}
+                            </li>
+                        );
                     }
-                    return (
-                        <li
-                            key={index}
-                            id={id}
-                            style={{
-                                clipPath: `polygon(0 0, ${w} 0, 100% 100%, 0 100%)`,
-                            }}
-                            className={
-                                index === activeTab
-                                    ? "cursor-pointer py-2 px-1 md:px-2 text-xs md:text-sm rounded-sm md:rounded pr-8 md:pr-10 bg-primary-400 text-black"
-                                    : "cursor-pointer py-2 px-1 md:px-2 text-xs md:text-sm rounded-sm md:rounded pr-8 md:pr-10 bg-primary2"
-                            }
-                            onClick={() => setActiveTab(index)}
-                        >
-                            {React.isValidElement(child) && child.props.title}
-                        </li>
-                    );
                 })}
             </ul>
             <div className="tab-content">{tabsArray[activeTab]}</div>

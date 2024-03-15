@@ -4,8 +4,7 @@ import ContentWrapper from "@/sections/ContentWrapper";
 // import { Tabs } from "antd";
 import CreateMiner from "./CreateMiner";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
-import { useWriteContract, useAccount, useBalance } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import { useAccount, useBalance } from "wagmi";
 import {
     useGetCurrentMintCost,
     useGetGlobalTRank,
@@ -23,7 +22,7 @@ import CardBgWrapper from "@/sections/CardBgWrapper";
 import { Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { formatEther } from "viem";
-import { useStartMint } from "@/hooks/useWriteTokenContract";
+import { useClaimMint, useStartMint } from "@/hooks/useWriteTokenContract";
 import { MintStatus, UserMint } from "@/configs/interfaces";
 import { calculateProgress, formatPercentage, formatPrice, timestampToDate } from "@/configs/utils";
 
@@ -38,6 +37,7 @@ function Index() {
 
     const openNotification = useNotification();
     const { startMint, startBatchMint } = useStartMint();
+    const { batchClaimMint } = useClaimMint();
 
     const {
         mintRewardWithBonus,
@@ -56,7 +56,6 @@ function Index() {
     const { currentMintCost } = useGetCurrentMintCost();
     const { globalTRank } = useGetGlobalTRank();
 
-    const { writeContractAsync } = useWriteContract();
     const { address } = useAccount();
     const { data: balance } = useBalance({ address });
 
@@ -126,11 +125,12 @@ function Index() {
     const handleBatchClaim = async () => {
         if (address) {
             try {
-                await writeContractAsync({
-                    ...TOKEN_CONTRACT_CONFIT,
-                    address,
-                    functionName: "batchClaimMint",
-                });
+                if (batchClaimMint) batchClaimMint();
+                // await writeContractAsync({
+                //     ...TOKEN_CONTRACT_CONFIT,
+                //     address,
+                //     functionName: "batchClaimMint",
+                // });
             } catch (err) {
                 console.log(err);
             }
@@ -144,22 +144,9 @@ function Index() {
     const { userMints } = useGetUserMints();
 
     const filterMints = (data: UserMint[], ethPrice: number, tokenPrice: bigint) => {
-        // const minerData = {
-        //     active: data.filter(i => i.mintInfo.status === MintStatus.ACTIVE),
-        //     claimed: data.filter(i => i.mintInfo.status === MintStatus.CLAIMED),
-        //     burned: data.filter(i => i.mintInfo.status === MintStatus.BURNED),
-        // };
-
-        console.log(ethPrice);
-
         const activeData = data
             .filter(i => i.mintInfo.status === MintStatus.ACTIVE)
             .map(item => {
-                console.log(item.mintInfo.mintableTitan);
-                console.log(tokenPrice);
-
-                console.log(item.mintInfo.mintableTitan * tokenPrice);
-
                 const rewardTokenValue = formatEther(
                     (item.mintInfo.mintableTitan * tokenPrice) / BigInt(1e18)
                 );
@@ -172,6 +159,7 @@ function Index() {
                 );
 
                 return {
+                    mid: item.mId.toString(),
                     key: item.tRank.toString(),
                     tRank: item.tRank.toString(),
                     length: item.mintInfo.numOfDays.toString(),
@@ -192,7 +180,7 @@ function Index() {
             });
 
         return {
-            activeData,
+            activeData: activeData.filter(item => !item.isClaimable),
             claimedData: activeData.filter(item => item.isClaimable),
             endedData: data.filter(
                 i =>
@@ -249,7 +237,7 @@ function Index() {
                 <div className="mt-20">
                     <TTabs>
                         <TabPanel title="Active Miners">
-                            <MinerTable data={activeData} />
+                            <MinerTable type="active" data={activeData} />
                         </TabPanel>
                         <TabPanel title="Claimable Miners">
                             <div>
@@ -264,15 +252,15 @@ function Index() {
                                     type="primary"
                                     className="mb-4"
                                     onClick={handleBatchClaim}
-                                    disabled={!address || [].length === 0}
+                                    disabled={!address || claimedData.length <= 1}
                                 >
                                     Batch Claim Finished Miners (Claims up to 100 at a time)
                                 </Button>
                             </div>
-                            <MinerTable data={claimedData} />
+                            <MinerTable type="claimable" data={claimedData} />
                         </TabPanel>
                         <TabPanel title="Ended Miners">
-                            <MinerTable data={[]} />
+                            <MinerTable type="ended" data={[]} />
                         </TabPanel>
                     </TTabs>
                 </div>

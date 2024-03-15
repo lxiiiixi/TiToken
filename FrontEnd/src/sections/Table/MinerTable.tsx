@@ -1,12 +1,14 @@
 import React from "react";
-import { Table, Progress } from "antd";
+import { Table, Progress, Button } from "antd";
 const { Column, ColumnGroup } = Table;
 import { UserMintInfo } from "@/configs/interfaces";
 import { formatPercentage, formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import { useTokenPrice, useETHPrice } from "@/hooks/useTokenPrice";
+import { useClaimMint } from "@/hooks/useWriteTokenContract";
 
 export interface MinerTableDataType {
+    mid: string;
     key: React.Key;
     tRank: string;
     length: string;
@@ -25,9 +27,16 @@ export interface MinerTableDataType {
     // action: string;
 }
 
-const MinerTable = ({ data }: { data: MinerTableDataType[] }) => {
+const MinerTable = ({
+    type,
+    data,
+}: {
+    type: "active" | "claimable" | "ended";
+    data: MinerTableDataType[];
+}) => {
     const tokenPrice = useTokenPrice();
     const ethPrice = useETHPrice();
+    const { claimMint } = useClaimMint();
     return (
         <div className="rounded-lg overflow-hidden text-xs">
             <Table
@@ -81,6 +90,9 @@ const MinerTable = ({ data }: { data: MinerTableDataType[] }) => {
                                     {formatPercentage(roi, false)}
                                 </Table.Summary.Cell>
                                 <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                {type === "claimable" && (
+                                    <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                )}
                             </Table.Summary.Row>
                         </>
                     );
@@ -118,12 +130,22 @@ const MinerTable = ({ data }: { data: MinerTableDataType[] }) => {
                 key="share"
                 render={(shareId: string) => <Button type="primary">{shareId}</Button>}
             /> */}
-                {/* <Column
-                title="Action"
-                dataIndex="action"
-                key="action"
-                render={(shareId: string) => <Button type="primary">{shareId}</Button>}
-            /> */}
+
+                {type === "claimable" && (
+                    <Column
+                        title="Action"
+                        dataIndex="mid"
+                        key="mid"
+                        render={(mid: string) => (
+                            <Button
+                                type="primary"
+                                onClick={() => claimMint && claimMint(Number(mid))}
+                            >
+                                {mid}
+                            </Button>
+                        )}
+                    />
+                )}
 
                 {/* <Column
             title="Tags"
