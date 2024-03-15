@@ -76,8 +76,6 @@ function Index() {
             return acc;
         }, {});
 
-        console.log("some change");
-
         return (
             <CardBgWrapper number={`${dayNum}Day` as CardNumber}>
                 {/* <h2>{`${dayNum}-Day Payout Cycles`}</h2>

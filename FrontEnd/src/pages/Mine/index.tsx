@@ -19,6 +19,7 @@ import CardBgWrapper from "@/sections/CardBgWrapper";
 import { Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { formatEther } from "viem";
+import { useStartMint } from "@/hooks/useWriteTokenContract";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -27,7 +28,10 @@ function Index() {
         number: 1,
     });
 
+    const inviter = "0x0000000000000000000000000000000000000000";
+
     const openNotification = useNotification();
+    const { startMint, startBatchMint } = useStartMint();
 
     const {
         mintRewardWithBonus,
@@ -83,28 +87,32 @@ function Index() {
         }
         if (type === "single" && address) {
             try {
-                await writeContractAsync({
-                    ...TOKEN_CONTRACT_CONFIT,
-                    address,
-                    functionName: "startMint",
-                    args: [data.power, data.length],
-                    value: ethCost,
-                });
+                if (startMint) startMint(data.power, data.length, inviter, ethCost);
+                // await writeContractAsync({
+                //     ...TOKEN_CONTRACT_CONFIT,
+                //     address,
+                //     functionName: "startMint",
+                //     args: [data.power, data.length, inviter],
+                //     value: ethCost,
+                // });
             } catch (err) {
-                console.log(err);
+                // console.log(err);
+                openNotification("error", "Error", err as string);
             }
         }
         if (type === "batch" && address) {
             try {
-                await writeContractAsync({
-                    ...TOKEN_CONTRACT_CONFIT,
-                    address,
-                    functionName: "batchMint",
-                    args: [data.power, data.length, data.number],
-                    value: ethCost,
-                });
+                if (startBatchMint)
+                    startBatchMint(data.power, data.length, data.number, inviter, ethCost);
+                // await writeContractAsync({
+                //     ...TOKEN_CONTRACT_CONFIT,
+                //     address,
+                //     functionName: "batchMint",
+                //     args: [data.power, data.length, data.number, inviter],
+                //     value: ethCost,
+                // });
             } catch (err) {
-                console.log(err);
+                openNotification("error", "Error", err as string);
             }
         }
     };

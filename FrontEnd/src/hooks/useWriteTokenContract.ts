@@ -1,5 +1,5 @@
 import { useWriteContract, useAccount } from "wagmi";
-import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
+import { TOKEN_MANAGER_CONTRACT_CONFIT } from "@/configs/constants";
 import { parseEther } from "viem";
 
 export function useManualDailyUpdate() {
@@ -10,12 +10,46 @@ export function useManualDailyUpdate() {
 
     const manualDailyUpdate = () => {
         writeContract({
-            ...TOKEN_CONTRACT_CONFIT,
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
             address,
             functionName: "manualDailyUpdate",
         });
     };
     return { manualDailyUpdate };
+}
+
+export function useStartMint() {
+    const { writeContract } = useWriteContract();
+    const { address } = useAccount();
+    if (!address) return {};
+
+    const startMint = (power: number, length: number, inviter: string, ethCost: bigint) => {
+        writeContract({
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
+            address,
+            functionName: "startMint",
+            args: [power, length, inviter],
+            value: ethCost,
+        });
+    };
+
+    const startBatchMint = (
+        power: number,
+        length: number,
+        number: number,
+        inviter: string,
+        ethCost: bigint
+    ) => {
+        writeContract({
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
+            address,
+            functionName: "batchMint",
+            args: [power, length, number, inviter],
+            value: ethCost,
+        });
+    };
+
+    return { startMint, startBatchMint };
 }
 
 /**
@@ -32,7 +66,7 @@ export function useStartStake() {
 
     const startStake = (amount: number, numOfDays: number) => {
         writeContract({
-            ...TOKEN_CONTRACT_CONFIT,
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
             address,
             functionName: "startStake",
             args: [parseEther(String(amount)), numOfDays],
@@ -49,7 +83,7 @@ export function useDistributeETH() {
 
     const distributeETH = () => {
         writeContract({
-            ...TOKEN_CONTRACT_CONFIT,
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
             address,
             functionName: "distributeETH",
         });
@@ -65,7 +99,7 @@ export function usePayouts() {
 
     const triggerPayouts = () => {
         writeContract({
-            ...TOKEN_CONTRACT_CONFIT,
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
             address,
             functionName: "triggerPayouts",
         });
@@ -73,14 +107,14 @@ export function usePayouts() {
 
     const claimUserAvailableETHPayouts = () => {
         writeContract({
-            ...TOKEN_CONTRACT_CONFIT,
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
             address,
             functionName: "claimUserAvailableETHPayouts",
         });
     };
     const claimUserAvailableETHBurnPool = () => {
         writeContract({
-            ...TOKEN_CONTRACT_CONFIT,
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
             address,
             functionName: "claimUserAvailableETHBurnPool",
         });
