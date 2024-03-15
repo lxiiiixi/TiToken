@@ -6,7 +6,11 @@ import CreateMiner from "./CreateMiner";
 import type { MinerInputData } from "@/hooks/useMiningCalculator";
 import { useWriteContract, useAccount, useBalance } from "wagmi";
 import { TOKEN_CONTRACT_CONFIT } from "@/configs/constants";
-import { useGetCurrentMintCost, useGetGlobalTRank } from "@/hooks/useReadTokenContract";
+import {
+    useGetCurrentMintCost,
+    useGetGlobalTRank,
+    useGetUserMints,
+} from "@/hooks/useReadTokenContract";
 import getMineInfoDisplay from "./getMineInfoDisplay";
 import NextDifficultIncrease from "@/sections/NextDifficultIncrease";
 import MinerTable from "@/sections/Table/MinerTable";
@@ -20,6 +24,8 @@ import { Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { formatEther } from "viem";
 import { useStartMint } from "@/hooks/useWriteTokenContract";
+import { MintStatus, UserMint } from "@/configs/interfaces";
+import { calculateProgress, formatPercentage, formatPrice, timestampToDate } from "@/configs/utils";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -135,6 +141,69 @@ function Index() {
         setMinerData(data);
     };
 
+    const { userMints } = useGetUserMints();
+
+    const filterMints = (data: UserMint[], ethPrice: number, tokenPrice: bigint) => {
+        // const minerData = {
+        //     active: data.filter(i => i.mintInfo.status === MintStatus.ACTIVE),
+        //     claimed: data.filter(i => i.mintInfo.status === MintStatus.CLAIMED),
+        //     burned: data.filter(i => i.mintInfo.status === MintStatus.BURNED),
+        // };
+
+        console.log(ethPrice);
+
+        const activeData = data
+            .filter(i => i.mintInfo.status === MintStatus.ACTIVE)
+            .map(item => {
+                console.log(item.mintInfo.mintableTitan);
+                console.log(tokenPrice);
+
+                console.log(item.mintInfo.mintableTitan * tokenPrice);
+
+                const rewardTokenValue = formatEther(
+                    (item.mintInfo.mintableTitan * tokenPrice) / BigInt(1e18)
+                );
+                const costEthValue = ethPrice * Number(formatEther(item.mintInfo.mintCost));
+                const roi = (Number(rewardTokenValue) - costEthValue) / costEthValue;
+
+                const progress = calculateProgress(
+                    Number(item.mintInfo.mintStartTs),
+                    Number(item.mintInfo.maturityTs)
+                );
+
+                return {
+                    key: item.tRank.toString(),
+                    tRank: item.tRank.toString(),
+                    length: item.mintInfo.numOfDays.toString(),
+                    startDay: timestampToDate(item.mintInfo.mintStartTs),
+                    endDay: timestampToDate(item.mintInfo.maturityTs),
+                    power: item.mintInfo.mintPower.toString(),
+                    estToken: formatPrice(formatEther(item.mintInfo.mintableTitan)),
+                    tRankBonus: formatPrice(item.mintInfo.mintPowerBonus), // contract
+                    cost: formatPrice(formatEther(item.mintInfo.mintCost), 4),
+                    value: formatPrice(rewardTokenValue),
+                    roi: formatPercentage(roi, false),
+                    progress: progress, // 根据开始时间、当前时间、结束时间计算
+                    isClaimable: item.mintInfo.maturityTs < Date.now() / 1000,
+                    mintInfo: item.mintInfo,
+                    // share: item.tRank.toString(),
+                    // action: item.mintInfo.mintableTitan.toString(), // Claim button
+                };
+            });
+
+        return {
+            activeData,
+            claimedData: activeData.filter(item => item.isClaimable),
+            endedData: data.filter(
+                i =>
+                    i.mintInfo.status === MintStatus.CLAIMED ||
+                    i.mintInfo.status === MintStatus.BURNED
+            ),
+        };
+    };
+
+    const { activeData, claimedData } = filterMints(userMints, ethUsdPrice, tokenPrice || 0n);
+
     return (
         <div>
             <ContentWrapper title="Mine" subTitle="Create your TITAN X virtual miners">
@@ -175,26 +244,12 @@ function Index() {
                             ))}
                             <NextDifficultIncrease />
                         </CardBgWrapper>
-                        {/* <TCard number={2} className="w-full" />
-                        <div className="absolute-top w-[88%] py-[5%]">
-                            {mineInfoDisplay.map((item, index) => (
-                                <>
-                                    <TInfoGroup
-                                        key={item.key}
-                                        title={item.label}
-                                        data={item.content}
-                                    />
-                                    {index !== mineInfoDisplay.length - 1 && <Divider />}
-                                </>
-                            ))}
-                            <NextDifficultIncrease />
-                        </div> */}
                     </div>
                 </div>
                 <div className="mt-20">
                     <TTabs>
                         <TabPanel title="Active Miners">
-                            <MinerTable data={[]} />
+                            <MinerTable data={activeData} />
                         </TabPanel>
                         <TabPanel title="Claimable Miners">
                             <div>
@@ -214,7 +269,7 @@ function Index() {
                                     Batch Claim Finished Miners (Claims up to 100 at a time)
                                 </Button>
                             </div>
-                            <MinerTable data={[]} />
+                            <MinerTable data={claimedData} />
                         </TabPanel>
                         <TabPanel title="Ended Miners">
                             <MinerTable data={[]} />

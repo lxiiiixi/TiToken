@@ -21,7 +21,7 @@ export function timestampToDate(timestampBigInt: bigint) {
     const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() 返回0-11
     const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}/${month}/${day}`;
+    return `${month}/${day}/${year}`;
 }
 
 export function formatPrice(price: number | bigint | string, decimalPlaces: number = 2) {
@@ -59,15 +59,37 @@ export function formatPrice(price: number | bigint | string, decimalPlaces: numb
     return formattedPrice;
 }
 
-export function formatPercentage(value: number | bigint) {
+/**
+ * 将数字转换为百分比形式字符串。
+ * @param {number} value 要转换的数字。
+ * @param {number} decimalPlaces 保留的小数位数，默认为2。
+ * @return {string} 转换后的百分比形式字符串。
+ */
+export function formatPercentage(
+    value: number | bigint,
+    needDivBps: boolean = true,
+    decimalPlaces: number = 2
+): string {
     const numericValue = typeof value === "bigint" ? Number(value) : value;
-
-    if (numericValue === 0) {
-        return "0.00 %";
+    const percentage = numericValue * 100;
+    if (needDivBps) {
+        return `${(percentage / PERCENT_BPS).toFixed(decimalPlaces)}%`;
     }
+    return `${percentage.toFixed(decimalPlaces)}%`;
+}
 
-    // 将值转换为基本的百分比形式
-    const percentage = numericValue / (PERCENT_BPS * 100);
-
-    return `${percentage.toFixed(2)} %`;
+/**
+ * 计算当前时间相对于开始和结束时间的进度。
+ *
+ * @param {number} mintStartTs 开始时间戳（秒级）。
+ * @param {number} maturityTs 结束时间戳（秒级）。
+ * @return {number} 当前进度，范围从0（未开始）到1（已结束），超出范围时按边界处理。
+ */
+export function calculateProgress(mintStartTs: number, maturityTs: number) {
+    const nowTs = Date.now() / 1000;
+    const totalDuration = maturityTs - mintStartTs;
+    const elapsedSinceStart = nowTs - mintStartTs;
+    let progress = elapsedSinceStart / totalDuration;
+    progress = Math.max(0, Math.min(1, progress));
+    return Math.round(progress * 100) / 100; // progress.toFixed(2);
 }

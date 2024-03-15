@@ -113,3 +113,27 @@ export function usePayouts() {
     };
     return { triggerPayouts, claimUserAvailableETHPayouts, claimUserAvailableETHBurnPool };
 }
+
+export function useClaimMint() {
+    const { writeContract } = useWriteContract();
+    const { address } = useAccount();
+
+    if (!address) return {};
+
+    const claimMint = (id: number) => {
+        writeContract({
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
+            functionName: "claimMint",
+            args: [id], // mint id
+        });
+    };
+
+    const batchClaimMint = () => {
+        writeContract({
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
+            functionName: "batchClaimMint",
+        });
+    };
+
+    return { claimMint, batchClaimMint };
+}

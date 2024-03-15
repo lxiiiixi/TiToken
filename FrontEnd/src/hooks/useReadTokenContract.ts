@@ -5,6 +5,7 @@ import {
     BUYANDBURN_CONTRACT_CONFIG,
 } from "@/configs/constants";
 import type { UserStakesInfo } from "@/pages/Stake";
+import { UserMint } from "@/configs/interfaces";
 
 export function useGetCurrentMintCost() {
     const { data: currentMintCost } = useReadContract({
@@ -167,6 +168,16 @@ export function useGetUserStakes() {
     });
 
     return { userStakes: userStakes as UserStakesInfo[] };
+}
+
+export function useGetUserMints() {
+    const { data: userMints } = useReadContract({
+        ...TOKEN_MANAGER_CONTRACT_CONFIT,
+        functionName: "getUserMints", // Return all mints info of an address
+        args: [useAccount()?.address],
+    });
+
+    return { userMints: userMints ? (userMints as UserMint[]) : [] };
 }
 
 export function useGetUserETHClaimableTotal() {

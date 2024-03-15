@@ -2,7 +2,8 @@ import buyandburn from "@/abis/buyandburn.json";
 import tokenManager from "@/abis/tokenManager.json";
 import token from "@/abis/token.json";
 
-export const SUPPORTED_CHAINS = [1, 168587773];
+// export const SUPPORTED_CHAINS = [1, 168587773];
+export const SUPPORTED_CHAINS = [168587773];
 
 export const BUYANDBURN_CONTRACT_CONFIG = {
     address: "0xD1Eb23B8a9AE7FE2426cf8093253fe17e4f604E8" as `0x${string}`,

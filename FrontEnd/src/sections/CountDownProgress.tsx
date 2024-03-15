@@ -10,5 +10,5 @@ export default function CountDownProgress() {
     const oneDay = Number(SECONDS_IN_DAY * 1000);
     const percent = Math.round(100 - (gap * 100) / oneDay);
 
-    return <Progress percent={percent} />;
+    return <Progress percent={percent} status="active" />;
 }

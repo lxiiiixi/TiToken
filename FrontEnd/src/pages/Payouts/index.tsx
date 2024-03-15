@@ -119,7 +119,7 @@ function Index() {
                 <Divider />
                 <div>
                     <p>Countdown</p>
-                    <Progress percent={countdownPercent[dayNum] / 10} />
+                    <Progress percent={countdownPercent[dayNum] / 10} status="active" />
                     <p>— Next Payout Day: {nextDay[dayNum].toString()}</p>
                 </div>
             </CardBgWrapper>
