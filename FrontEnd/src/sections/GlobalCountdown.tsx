@@ -11,11 +11,15 @@ function GlobalCountdown() {
     const CountDownDisplay = () => {
         if (!genesisTs) return <>00h:00m:00s</>;
 
+        // console.log("genesisTs", new Date(Number(genesisTs * 1000n)).toLocaleString());
+
         const deadline = genesisTs + currentContractDay * BigInt(SECONDS_IN_DAY);
 
         const onFinish: CountdownProps["onFinish"] = () => {
             console.log("finished!");
         };
+
+        // console.log("deadline", new Date(Number(deadline * 1000n)).toLocaleString());
 
         return (
             <Countdown

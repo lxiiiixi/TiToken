@@ -28,26 +28,26 @@ const menu: MenuItem[] = [
         route: "/",
     },
     {
-        key: "1",
+        key: "stake",
         label: "Stake",
         route: "/stake",
     },
     {
-        key: "2",
+        key: "payouts",
         label: "Payouts",
         route: "/payouts",
     },
     {
-        key: "3",
+        key: "buyandburn",
         label: "Buy & Burn",
         route: "/buyandburn",
     },
     {
-        key: "4",
+        key: "more",
         label: "More",
         subMenu: [
             {
-                key: "4.1",
+                key: "burnpool",
                 label: "Burn Pool",
                 route: "/burnpool",
             },
@@ -57,7 +57,7 @@ const menu: MenuItem[] = [
             //     route: "/stats",
             // },
             {
-                key: "4.3",
+                key: "docs",
                 label: "Docs",
                 link: "#",
             },
@@ -78,17 +78,17 @@ const menu: MenuItem[] = [
                 route: "/invitation",
             },
             {
-                key: "5.2",
+                key: "calculator",
                 label: "Calculator",
                 route: "/calculator",
             },
             {
-                key: "5.3",
+                key: "buy",
                 label: "Buy",
                 route: "/buy",
             },
             {
-                key: "5.4",
+                key: "portfolio",
                 label: "Portfolio",
                 route: "/portfolio",
             },

@@ -51,6 +51,7 @@ export default function NavDrawer() {
                                     "route" in subItem && location.pathname === subItem.route;
                                 return (
                                     <div
+                                        key={subItem.key}
                                         className={`text-nowrap p-2 border-0 border-b border-solid h-[60px] flex justify-start items-center px-10 ${
                                             isActive ? " border-primary-400" : "border-white/20"
                                         }`}

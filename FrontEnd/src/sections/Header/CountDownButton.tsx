@@ -1,14 +1,27 @@
 import { useGlobalInfoData } from "@/hooks/useReadTokenContract";
 import { useManualDailyUpdate } from "@/hooks/useWriteTokenContract";
 import GlobalCountdown from "../GlobalCountdown";
+import { useEffect } from "react";
+import useNotification from "@/hooks/useNotification";
 
 export default function CountDownButton() {
     const { currentContractDay } = useGlobalInfoData();
-    const { manualDailyUpdate } = useManualDailyUpdate();
+    const { manualDailyUpdateHash, manualDailyUpdatePending, manualDailyUpdate } =
+        useManualDailyUpdate();
+    const openNotification = useNotification();
 
     const handleOnClick = () => {
         if (manualDailyUpdate) manualDailyUpdate();
     };
+
+    useEffect(() => {
+        // after pending
+        if (manualDailyUpdateHash && !manualDailyUpdatePending)
+            openNotification("success", "", manualDailyUpdateHash);
+    }, [manualDailyUpdatePending, manualDailyUpdateHash, openNotification]);
+
+    console.log("manualDailyUpdatePending", manualDailyUpdatePending);
+    console.log("manualDailyUpdateHash", manualDailyUpdateHash);
 
     return (
         <div

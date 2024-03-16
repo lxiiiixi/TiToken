@@ -3,7 +3,11 @@ import { TOKEN_MANAGER_CONTRACT_CONFIT } from "@/configs/constants";
 import { parseEther } from "viem";
 
 export function useManualDailyUpdate() {
-    const { writeContract } = useWriteContract();
+    const {
+        data: manualDailyUpdateHash,
+        isPending: manualDailyUpdatePending,
+        writeContract,
+    } = useWriteContract();
     const { address } = useAccount();
 
     if (!address) return {};
@@ -14,11 +18,11 @@ export function useManualDailyUpdate() {
             functionName: "manualDailyUpdate",
         });
     };
-    return { manualDailyUpdate };
+    return { manualDailyUpdate, manualDailyUpdateHash, manualDailyUpdatePending };
 }
 
 export function useStartMint() {
-    const { writeContract } = useWriteContract();
+    const { data: startMintHash, isPending: startMintPending, writeContract } = useWriteContract();
     const { address } = useAccount();
     if (!address) return {};
 
@@ -46,7 +50,7 @@ export function useStartMint() {
         });
     };
 
-    return { startMint, startBatchMint };
+    return { startMint, startBatchMint, startMintHash, startMintPending };
 }
 
 /**
@@ -56,7 +60,11 @@ export function useStartMint() {
  * @returns
  */
 export function useStartStake() {
-    const { writeContract } = useWriteContract();
+    const {
+        writeContract,
+        data: startStakeHash,
+        isPending: startStakePending,
+    } = useWriteContract();
     const { address } = useAccount();
 
     if (!address) return {};
@@ -68,11 +76,15 @@ export function useStartStake() {
             args: [parseEther(String(amount)), numOfDays],
         });
     };
-    return { startStake };
+    return { startStake, startStakeHash, startStakePending };
 }
 
 export function useDistributeETH() {
-    const { writeContract } = useWriteContract();
+    const {
+        writeContract,
+        data: distributeETHHash,
+        isPending: distributeETHPending,
+    } = useWriteContract();
     const { address } = useAccount();
 
     if (!address) return {};
@@ -83,11 +95,11 @@ export function useDistributeETH() {
             functionName: "distributeETH",
         });
     };
-    return { distributeETH };
+    return { distributeETH, distributeETHHash, distributeETHPending };
 }
 
 export function usePayouts() {
-    const { writeContract } = useWriteContract();
+    const { writeContract, data: payoutsHash, isPending: payoutsPending } = useWriteContract();
     const { address } = useAccount();
 
     if (!address) return {};
@@ -111,11 +123,17 @@ export function usePayouts() {
             functionName: "claimUserAvailableETHBurnPool",
         });
     };
-    return { triggerPayouts, claimUserAvailableETHPayouts, claimUserAvailableETHBurnPool };
+    return {
+        triggerPayouts,
+        claimUserAvailableETHPayouts,
+        claimUserAvailableETHBurnPool,
+        payoutsHash,
+        payoutsPending,
+    };
 }
 
 export function useClaimMint() {
-    const { writeContract } = useWriteContract();
+    const { writeContract, data: claimMintHash, isPending: claimMintPending } = useWriteContract();
     const { address } = useAccount();
 
     if (!address) return {};
@@ -135,5 +153,5 @@ export function useClaimMint() {
         });
     };
 
-    return { claimMint, batchClaimMint };
+    return { claimMint, batchClaimMint, claimMintHash, claimMintPending };
 }
