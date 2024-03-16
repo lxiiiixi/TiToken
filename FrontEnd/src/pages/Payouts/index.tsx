@@ -19,12 +19,16 @@ import ConnectWalletButton from "@/sections/ConnectWalletButton";
 import TIPS from "@/configs/tips";
 import { PERCENT_BPS } from "@/configs/constants";
 import { calculateUserPayoutByShares } from "@/configs/calculate";
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 
 function Index() {
     const { userETHClaimableTotal } = useGetUserETHClaimableTotal();
     const { currentContractDay } = useGlobalInfoData();
     const { address } = useAccount();
-    const { triggerPayouts, claimUserAvailableETHPayouts } = usePayouts();
+    const { triggerPayouts, claimUserAvailableETHPayouts, payoutsHash, payoutsPending } =
+        usePayouts();
+
+    useContractHashNotification(payoutsPending, payoutsHash);
 
     const ethUsdPrice = useETHPrice();
     const { globalCyclePayout, currentCycleIndex } = useGetPayoutCyclesData();

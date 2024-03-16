@@ -12,15 +12,18 @@ import { useAccount } from "wagmi";
 import ConnectWalletButton from "@/sections/ConnectWalletButton";
 import TIPS from "@/configs/tips";
 import { parseEther } from "viem";
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 
 function Index() {
     const { wethBalance } = useWethBalance();
     const { address } = useAccount();
     const ethUsdPrice = useETHPrice();
     const { undistributedEth } = useGetUndistributedEth();
-    const { distributeETH } = useDistributeETH();
+    const { distributeETH, distributeETHPending, distributeETHHash } = useDistributeETH();
     const { buynBurn } = useBuynBurn();
     const perSwapCap = parseEther("3.33");
+
+    useContractHashNotification(distributeETHPending, distributeETHHash);
 
     return (
         <ContentWrapper

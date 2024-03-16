@@ -6,7 +6,7 @@ import { formatPercentage, formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
 import { useTokenPrice, useETHPrice } from "@/hooks/useTokenPrice";
 import { useClaimMint } from "@/hooks/useWriteTokenContract";
-
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 export interface MinerTableDataType {
     mid: string;
     key: React.Key;
@@ -36,7 +36,8 @@ const MinerTable = ({
 }) => {
     const tokenPrice = useTokenPrice();
     const ethPrice = useETHPrice();
-    const { claimMint } = useClaimMint();
+    const { claimMint, claimMintHash, claimMintPending } = useClaimMint();
+    useContractHashNotification(claimMintPending, claimMintHash);
     return (
         <div className="rounded-lg overflow-hidden text-xs">
             <Table

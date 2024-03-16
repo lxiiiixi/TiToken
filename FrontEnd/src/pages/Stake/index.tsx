@@ -14,8 +14,8 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import useStakingCalculator from "@/hooks/useStakingCalculator";
 import TIPS from "@/configs/tips";
 import { formatPrice } from "@/configs/utils";
-
 import SingleMiner from "./SingleMiner";
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 
 export type StakeData = {
     amount: number;
@@ -52,7 +52,8 @@ function Index() {
     const { address } = useAccount();
 
     // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
-    const { startStake } = useStartStake();
+    const { startStake, startStakeHash, startStakePending } = useStartStake();
+    useContractHashNotification(startStakePending, startStakeHash);
     // const { userStakes } = useGetUserStakes();
     // const stakeAmount = userStakes
     //     ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)

@@ -27,6 +27,7 @@ import { MintStatus, UserMint } from "@/configs/interfaces";
 import { calculateProgress, formatPercentage, formatPrice, timestampToDate } from "@/configs/utils";
 import TIPS from "@/configs/tips";
 import { useSearchParams } from "react-router-dom";
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 
 function Index() {
     const [minerData, setMinerData] = useState<MinerInputData>({
@@ -43,8 +44,11 @@ function Index() {
             : zeroAddress;
 
     const openNotification = useNotification();
-    const { startMint, startBatchMint } = useStartMint();
-    const { batchClaimMint } = useClaimMint();
+    const { startMint, startMintHash, startMintPending, startBatchMint } = useStartMint();
+    const { batchClaimMint, claimMintHash, claimMintPending } = useClaimMint();
+
+    useContractHashNotification(startMintPending, startMintHash);
+    useContractHashNotification(claimMintPending, claimMintHash);
 
     const {
         mintRewardWithBonus,

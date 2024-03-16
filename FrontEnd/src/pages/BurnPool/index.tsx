@@ -11,13 +11,14 @@ import TIPS from "@/configs/tips";
 import EthAndUsdDisplay from "@/sections/EthAndUsdDisplay";
 import { useETHPrice } from "@/hooks/useTokenPrice";
 import { formatEther } from "viem";
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 
 export default function Index() {
     const { address } = useAccount();
-    const { claimUserAvailableETHBurnPool } = usePayouts();
+    const { claimUserAvailableETHBurnPool, payoutsHash, payoutsPending } = usePayouts();
     const ethUsdPrice = useETHPrice();
-
     const { userBurnPoolETHClaimableTotal, userCycleBurnTotal } = useBurnPoolBonuses();
+    useContractHashNotification(payoutsPending, payoutsHash);
 
     return (
         <ContentWrapper

@@ -5,18 +5,18 @@ const blockExplorerUrl =
         ? "https://testnet.blastscan.io/"
         : "https://blastscan.io/";
 
-const useContractHashNotification = (pending: boolean, hash: string | undefined) => {
+const useContractHashNotification = (pending: boolean | undefined, hash: string | undefined) => {
     const [isNotified, setIsNotified] = useState(false);
     const openNotification = useNotification();
 
     useEffect(() => {
         // Displays a notification when the operation is complete and the notification has not yet been displayed
-        if (hash && !pending && !isNotified) {
+        if (hash && pending === false && !isNotified) {
             openNotification(
                 "success",
                 "",
                 <a href={`${blockExplorerUrl}tx/${hash}`} target="_blank" rel="noopener noreferrer">
-                    Check on block explorer
+                    Check transaction on block explorer
                 </a>
             );
             // openNotification("success", "", `Transaction Hash: ${hash}`);
