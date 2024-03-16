@@ -17,7 +17,6 @@ import { useAccount } from "wagmi";
 import { usePayouts } from "@/hooks/useWriteTokenContract";
 import ConnectWalletButton from "@/sections/ConnectWalletButton";
 import TIPS from "@/configs/tips";
-import { PERCENT_BPS } from "@/configs/constants";
 import { calculateUserPayoutByShares } from "@/configs/calculate";
 import useContractHashNotification from "@/hooks/useContractHashNotification";
 

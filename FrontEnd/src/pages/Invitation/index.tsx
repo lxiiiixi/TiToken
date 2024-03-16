@@ -7,7 +7,6 @@ import CardBgWrapper from "@/sections/CardBgWrapper";
 import TInfoGroup from "@/components/TInfoGroup";
 import { formatPercentage, formatPrice } from "@/configs/utils";
 import { formatEther } from "viem";
-import { PERCENT_BPS } from "@/configs/constants";
 import { BASE_URL } from "@/configs/envs";
 
 export default function Index() {
