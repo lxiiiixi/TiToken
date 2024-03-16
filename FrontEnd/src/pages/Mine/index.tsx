@@ -151,45 +151,47 @@ function Index() {
     const { userMints } = useGetUserMints();
 
     const filterMints = (data: UserMint[], ethPrice: number, tokenPrice: bigint) => {
-        const activeData = data
-            .filter(i => i.mintInfo.status === MintStatus.ACTIVE)
-            .map(item => {
-                const rewardTokenValue = formatEther(
-                    (item.mintInfo.mintableTitan * tokenPrice) / BigInt(1e18)
-                );
-                const costEthValue = ethPrice * Number(formatEther(item.mintInfo.mintCost));
-                const roi = (Number(rewardTokenValue) - costEthValue) / costEthValue;
+        const activeData = data.map(item => {
+            const rewardTokenValue = formatEther(
+                (item.mintInfo.mintableTitan * tokenPrice) / BigInt(1e18)
+            );
+            const costEthValue = ethPrice * Number(formatEther(item.mintInfo.mintCost));
+            const roi = (Number(rewardTokenValue) - costEthValue) / costEthValue;
 
-                const progress = calculateProgress(
-                    Number(item.mintInfo.mintStartTs),
-                    Number(item.mintInfo.maturityTs)
-                );
+            const progress = calculateProgress(
+                Number(item.mintInfo.mintStartTs),
+                Number(item.mintInfo.maturityTs)
+            );
 
-                return {
-                    mid: item.mId.toString(),
-                    key: item.tRank.toString(),
-                    tRank: item.tRank.toString(),
-                    length: item.mintInfo.numOfDays.toString(),
-                    startDay: timestampToDate(item.mintInfo.mintStartTs),
-                    endDay: timestampToDate(item.mintInfo.maturityTs),
-                    power: item.mintInfo.mintPower.toString(),
-                    estToken: formatPrice(formatEther(item.mintInfo.mintableTitan)),
-                    tRankBonus: formatPrice(item.mintInfo.mintPowerBonus), // contract
-                    cost: formatPrice(formatEther(item.mintInfo.mintCost), 4),
-                    value: formatPrice(rewardTokenValue),
-                    roi: formatPercentage(roi, false),
-                    progress: progress * 100, // 根据开始时间、当前时间、结束时间计算
-                    isClaimable: item.mintInfo.maturityTs < Date.now() / 1000,
-                    mintInfo: item.mintInfo,
-                    // share: item.tRank.toString(),
-                    // action: item.mintInfo.mintableTitan.toString(), // Claim button
-                };
-            });
+            return {
+                mid: item.mId.toString(),
+                key: item.tRank.toString(),
+                tRank: item.tRank.toString(),
+                length: item.mintInfo.numOfDays.toString(),
+                startDay: timestampToDate(item.mintInfo.mintStartTs),
+                endDay: timestampToDate(item.mintInfo.maturityTs),
+                power: item.mintInfo.mintPower.toString(),
+                estToken: formatPrice(formatEther(item.mintInfo.mintableTitan)),
+                tRankBonus: formatPrice(item.mintInfo.mintPowerBonus), // contract
+                cost: formatPrice(formatEther(item.mintInfo.mintCost), 4),
+                value: formatPrice(rewardTokenValue),
+                roi: formatPercentage(roi, false),
+                progress: progress * 100, // 根据开始时间、当前时间、结束时间计算
+                isClaimable: item.mintInfo.maturityTs < Date.now() / 1000,
+                mintInfo: item.mintInfo,
+                // share: item.tRank.toString(),
+                // action: item.mintInfo.mintableTitan.toString(), // Claim button
+            };
+        });
 
         return {
-            activeData: activeData.filter(item => !item.isClaimable),
-            claimedData: activeData.filter(item => item.isClaimable),
-            endedData: data.filter(
+            activeData: activeData.filter(
+                i => i.mintInfo.status === MintStatus.ACTIVE && !i.isClaimable
+            ),
+            claimedData: activeData.filter(
+                i => i.mintInfo.status === MintStatus.ACTIVE && i.isClaimable
+            ),
+            endedData: activeData.filter(
                 i =>
                     i.mintInfo.status === MintStatus.CLAIMED ||
                     i.mintInfo.status === MintStatus.BURNED
@@ -202,8 +204,6 @@ function Index() {
         ethUsdPrice,
         tokenPrice || 0n
     );
-
-    console.log(endedData);
 
     return (
         <div>
@@ -277,7 +277,7 @@ function Index() {
                             <MinerTable type="claimable" data={claimedData} />
                         </TabPanel>
                         <TabPanel title="Ended Miners">
-                            <MinerTable type="ended" data={[]} />
+                            <MinerTable type="ended" data={endedData} />
                         </TabPanel>
                     </TTabs>
                 </div>
