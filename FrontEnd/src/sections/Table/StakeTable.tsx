@@ -24,7 +24,13 @@ export interface StakeTableDataType {
     stakeInfo: UserStakeInfo;
 }
 
-const StakeTable = ({ data }: { data: StakeTableDataType[] }) => {
+const StakeTable = ({
+    type,
+    data,
+}: {
+    type: "active" | "claimable" | "ended";
+    data: StakeTableDataType[];
+}) => {
     const tokenPrice = useTokenPrice();
     const { endStake, endStakeHash, endStakePending } = useEndStake();
     useContractHashNotification(endStakePending, endStakeHash);
@@ -76,7 +82,9 @@ const StakeTable = ({ data }: { data: StakeTableDataType[] }) => {
                                     {formatPrice(formatEther(value * (tokenPrice || 0n)))}{" "}
                                 </Table.Summary.Cell>
                                 <Table.Summary.Cell index={0}></Table.Summary.Cell>
-                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                {type !== "ended" && (
+                                    <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                )}
                             </Table.Summary.Row>
                         </>
                     );
@@ -143,20 +151,22 @@ const StakeTable = ({ data }: { data: StakeTableDataType[] }) => {
                         />
                     )}
                 />
-                <Column
-                    title="Action"
-                    dataIndex="action"
-                    key="action"
-                    render={(mid: string) => (
-                        <Button
-                            type="primary"
-                            size="small"
-                            onClick={() => endStake && endStake(Number(mid))}
-                        >
-                            End Stake
-                        </Button>
-                    )}
-                />
+                {type !== "ended" && (
+                    <Column
+                        title="Action"
+                        dataIndex="action"
+                        key="action"
+                        render={(mid: string) => (
+                            <Button
+                                type="primary"
+                                size="small"
+                                onClick={() => endStake && endStake(Number(mid))}
+                            >
+                                End Stake
+                            </Button>
+                        )}
+                    />
+                )}
 
                 {/* <Column
             title="Tags"

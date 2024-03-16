@@ -52,8 +52,6 @@ function Index() {
     //     ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)
     //     : 0n;
 
-    console.log(userStakes);
-
     const handleOnclickStake = () => {
         if (newShareWithBonus < 1n) {
             //  if (shares / SCALING_FACTOR_1e18 < 1) revert TitanXErrors.TitanX_RequireOneMinimumShare();
@@ -99,7 +97,7 @@ function Index() {
                 item => item.stakeInfo.status === StakeStatus.ACTIVE && !item.isClaimable
             ),
             claimableStakers: newData.filter(
-                item => item.stakeInfo.status === StakeStatus.ACTIVE && !item.isClaimable
+                item => item.stakeInfo.status === StakeStatus.ACTIVE && item.isClaimable
             ),
             endedStakers: newData.filter(item => item.stakeInfo.status === StakeStatus.ENDED),
         };
@@ -221,13 +219,13 @@ function Index() {
                 <div className="mt-20">
                     <TTabs>
                         <TabPanel title="Active Stakers">
-                            <StakeTable data={activeStakers} />
+                            <StakeTable type="active" data={activeStakers} />
                         </TabPanel>
                         <TabPanel title="Claimable Stakers">
-                            <StakeTable data={claimableStakers} />
+                            <StakeTable type="claimable" data={claimableStakers} />
                         </TabPanel>
                         <TabPanel title="Ended Stakers">
-                            <StakeTable data={endedStakers} />
+                            <StakeTable type="ended" data={endedStakers} />
                         </TabPanel>
                     </TTabs>
                 </div>
