@@ -4,8 +4,8 @@ import {
     TOKEN_MANAGER_CONTRACT_CONFIT,
     BUYANDBURN_CONTRACT_CONFIG,
 } from "@/configs/constants";
-import type { UserStakesInfo } from "@/pages/Stake";
 import { UserMint } from "@/configs/interfaces";
+import { UserStake } from "@/configs/interfaces";
 
 export function useGetCurrentMintCost() {
     const { data: currentMintCost } = useReadContract({
@@ -165,7 +165,7 @@ export function useGetUserStakes() {
         args: [useAccount()?.address],
     });
 
-    return { userStakes: userStakes as UserStakesInfo[] };
+    return { userStakes: userStakes as UserStake[] };
 }
 
 export function useGetUserMints() {

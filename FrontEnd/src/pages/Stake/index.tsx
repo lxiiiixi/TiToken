@@ -13,22 +13,15 @@ import useNotification from "@/hooks/useNotification";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import useStakingCalculator from "@/hooks/useStakingCalculator";
 import TIPS from "@/configs/tips";
-import { formatPrice } from "@/configs/utils";
+import { calculateProgress, formatPrice } from "@/configs/utils";
 import SingleMiner from "./SingleMiner";
 import useContractHashNotification from "@/hooks/useContractHashNotification";
+import { useGetUserStakes } from "@/hooks/useReadTokenContract";
+import { UserStake, StakeStatus } from "@/configs/interfaces";
 
 export type StakeData = {
     amount: number;
     length: number;
-};
-
-export type UserStakesInfo = {
-    titanAmount: bigint;
-    shares: bigint;
-    numOfDays: bigint;
-    stakeStartTs: bigint;
-    maturityTs: bigint;
-    // StakeStatus status;
 };
 
 function Index() {
@@ -54,10 +47,12 @@ function Index() {
     // const { userCurrentActiveShares } = useGetUserCurrentActiveShares();
     const { startStake, startStakeHash, startStakePending } = useStartStake();
     useContractHashNotification(startStakePending, startStakeHash);
-    // const { userStakes } = useGetUserStakes();
+    const { userStakes } = useGetUserStakes();
     // const stakeAmount = userStakes
     //     ? userStakes.reduce((acc, cur) => acc + Number(cur.titanAmount), 0)
     //     : 0n;
+
+    console.log(userStakes);
 
     const handleOnclickStake = () => {
         if (newShareWithBonus < 1n) {
@@ -73,6 +68,46 @@ function Index() {
     const changeStakeData = (data: StakeData) => {
         setStakeData(data);
     };
+
+    const filterStakesTableData = (data: UserStake[]) => {
+        const newData = data.map(item => {
+            const shareRate = item.stakeInfo.titanAmount / item.stakeInfo.shares;
+            const progress = calculateProgress(
+                Number(item.stakeInfo.stakeStartTs),
+                Number(item.stakeInfo.maturityTs)
+            );
+
+            return {
+                key: item.globalStakeId,
+                stakeID: item.sId,
+                length: item.stakeInfo.numOfDays,
+                startDay: item.stakeInfo.stakeStartTs,
+                endDay: item.stakeInfo.maturityTs,
+                tokenStaked: item.stakeInfo.titanAmount,
+                shareRate: shareRate,
+                shares: item.stakeInfo.shares,
+                value: item.stakeInfo.titanAmount,
+                progress: progress,
+                isClaimable: item.stakeInfo.maturityTs < Date.now() / 1000,
+                actionId: item.sId,
+                stakeInfo: item.stakeInfo,
+            };
+        });
+
+        return {
+            activeStakers: newData.filter(
+                item => item.stakeInfo.status === StakeStatus.ACTIVE && !item.isClaimable
+            ),
+            claimableStakers: newData.filter(
+                item => item.stakeInfo.status === StakeStatus.ACTIVE && !item.isClaimable
+            ),
+            endedStakers: newData.filter(item => item.stakeInfo.status === StakeStatus.ENDED),
+        };
+    };
+
+    const { activeStakers, claimableStakers, endedStakers } = filterStakesTableData(
+        userStakes || []
+    );
 
     return (
         <div>
@@ -186,13 +221,13 @@ function Index() {
                 <div className="mt-20">
                     <TTabs>
                         <TabPanel title="Active Stakers">
-                            <StakeTable />
+                            <StakeTable data={activeStakers} />
                         </TabPanel>
                         <TabPanel title="Claimable Stakers">
-                            <StakeTable />
+                            <StakeTable data={claimableStakers} />
                         </TabPanel>
                         <TabPanel title="Ended Stakers">
-                            <StakeTable />
+                            <StakeTable data={endedStakers} />
                         </TabPanel>
                     </TTabs>
                 </div>

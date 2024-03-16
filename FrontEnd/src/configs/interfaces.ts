@@ -23,3 +23,24 @@ export interface UserMintInfo {
     mintCost: bigint;
     status: MintStatus;
 }
+
+// ——————————————————————————————————————
+export interface UserStake {
+    globalStakeId: bigint;
+    sId: bigint;
+    stakeInfo: UserStakeInfo;
+}
+
+export enum StakeStatus {
+    ACTIVE,
+    ENDED,
+    BURNED,
+}
+export interface UserStakeInfo {
+    titanAmount: bigint;
+    shares: bigint;
+    numOfDays: number;
+    stakeStartTs: number;
+    maturityTs: number;
+    status: StakeStatus;
+}

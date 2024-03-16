@@ -1,79 +1,160 @@
-import React from "react";
-import { Table } from "antd";
+import { Table, Progress, Button } from "antd";
+import { UserStakeInfo } from "@/configs/interfaces";
+import { formatPrice, timestampToDate } from "@/configs/utils";
+import { formatEther } from "viem";
+import { useTokenPrice } from "@/hooks/useTokenPrice";
 
 const { Column, ColumnGroup } = Table;
 
-export interface StakeDataType {
-    key: React.Key;
-    stakeID: string;
+export interface StakeTableDataType {
+    key: bigint;
+    stakeID: bigint;
     length: number;
     startDay: number;
     endDay: number;
-    tokenStaked: number;
-    shareRate: number;
-    shares: number;
-    value: number;
+    tokenStaked: bigint;
+    shareRate: bigint;
+    shares: bigint;
+    value: bigint;
     progress: number;
+    isClaimable: boolean;
+    actionId: bigint;
+    stakeInfo: UserStakeInfo;
 }
 
-const data: StakeDataType[] = [];
+const StakeTable = ({ data }: { data: StakeTableDataType[] }) => {
+    const tokenPrice = useTokenPrice();
 
-const StakeTable: React.FC = () => (
-    <div className="rounded-lg overflow-hidden text-xs">
-        <Table
-            dataSource={data}
-            scroll={{ x: 1200 }}
-            bordered
-            pagination={false}
-            className="antd-costom"
-            summary={data => {
-                let estTokenAmount = 0;
-                let shareRate = 0;
-                let shares = 0;
-                let value = 0;
+    return (
+        <div className="rounded-lg overflow-hidden text-xs">
+            <Table
+                dataSource={data}
+                scroll={{ x: 1200 }}
+                bordered
+                pagination={false}
+                className="antd-costom"
+                summary={data => {
+                    let estTokenAmount = 0n;
+                    let shareRate = 0n;
+                    let shares = 0n;
+                    let value = 0n;
 
-                data.forEach(
-                    ({ tokenStaked, shareRate: _shareRate, shares: _shares, value: _value }) => {
-                        estTokenAmount += tokenStaked;
-                        shareRate += _shareRate;
-                        shares += _shares;
-                        value += _value;
-                    }
-                );
-                return (
-                    <>
-                        <Table.Summary.Row>
-                            <Table.Summary.Cell index={0}>Total</Table.Summary.Cell>
-                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
-                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
-                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
-                            <Table.Summary.Cell index={1}>{estTokenAmount}</Table.Summary.Cell>
-                            <Table.Summary.Cell index={1}>{shareRate}</Table.Summary.Cell>
-                            <Table.Summary.Cell index={3}> {shares} </Table.Summary.Cell>
-                            <Table.Summary.Cell index={4}> {value} </Table.Summary.Cell>
-                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
-                            <Table.Summary.Cell index={0}></Table.Summary.Cell>
-                        </Table.Summary.Row>
-                    </>
-                );
-            }}
-        >
-            <Column title="stakeID" dataIndex="stakeID" key="stakeID" />
-            <ColumnGroup title="Stake Details">
-                <Column title="Length" dataIndex="length" key="length" />
-                <Column title="Start Day" dataIndex="startDay" key="startDay" />
-                <Column title="End Day" dataIndex="endDay" key="endDay" />
-            </ColumnGroup>
-            <Column title="TITANX Staked" dataIndex="tokenStaked" key="tokenStaked" />
-            <ColumnGroup title="Stake Shares">
-                <Column title="Eff. Share Rate" dataIndex="shareRate" key="shareRate" />
-                <Column title="Shares" dataIndex="shares" key="shares" />
-                <Column title="Value" dataIndex="value" key="value" />
-            </ColumnGroup>
-            <Column title="Progress" dataIndex="progress" key="progress" />
-            <Column title="Action" dataIndex="action" key="action" />
+                    data.forEach(
+                        ({
+                            tokenStaked,
+                            shareRate: _shareRate,
+                            shares: _shares,
+                            value: _value,
+                        }) => {
+                            estTokenAmount += tokenStaked;
+                            shareRate += _shareRate;
+                            shares += _shares;
+                            value += _value;
+                        }
+                    );
+                    return (
+                        <>
+                            <Table.Summary.Row>
+                                <Table.Summary.Cell index={0}>Total</Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                <Table.Summary.Cell index={1}>
+                                    {formatPrice(formatEther(estTokenAmount))}
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={10}>
+                                    {formatPrice(Number(shareRate))}
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={3}>
+                                    {formatPrice(formatEther(shares))}{" "}
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={4}>
+                                    {formatPrice(formatEther(value * (tokenPrice || 0n)))}{" "}
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                            </Table.Summary.Row>
+                        </>
+                    );
+                }}
+            >
+                <Column
+                    title="stakeID"
+                    dataIndex="stakeID"
+                    key="stakeID"
+                    render={(stakeID: bigint) => stakeID.toString()}
+                />
+                <ColumnGroup title="Stake Details">
+                    <Column title="Length" dataIndex="length" key="length" />
+                    <Column
+                        title="Start Day"
+                        dataIndex="startDay"
+                        key="startDay"
+                        render={(value: number) => timestampToDate(BigInt(value))}
+                    />
+                    <Column
+                        title="End Day"
+                        dataIndex="endDay"
+                        key="endDay"
+                        render={(value: number) => timestampToDate(BigInt(value))}
+                    />
+                </ColumnGroup>
+                <Column
+                    title="TITANX Staked"
+                    dataIndex="tokenStaked"
+                    key="tokenStaked"
+                    render={(value: bigint) => formatPrice(formatEther(value))}
+                />
+                <ColumnGroup title="Stake Shares">
+                    <Column
+                        title="Eff. Share Rate"
+                        dataIndex="shareRate"
+                        key="shareRate"
+                        render={(value: bigint) => formatPrice(Number(value))}
+                    />
+                    <Column
+                        title="Shares"
+                        dataIndex="shares"
+                        key="shares"
+                        render={(value: bigint) => formatPrice(formatEther(value))}
+                    />
+                    <Column
+                        title="Value"
+                        dataIndex="value"
+                        key="value"
+                        render={(value: bigint) =>
+                            formatPrice(formatEther(value * (tokenPrice || 0n)))
+                        }
+                    />
+                </ColumnGroup>
+                <Column
+                    title="Progress"
+                    dataIndex="progress"
+                    key="progress"
+                    render={(progress: number) => (
+                        <Progress
+                            percent={progress}
+                            className="w-[100px] text-[10px] m-0 mr-2"
+                            status="active"
+                        />
+                    )}
+                />
+                <Column
+                    title="Action"
+                    dataIndex="action"
+                    key="action"
+                    render={(mid: string) => (
+                        <Button
+                            type="primary"
+                            size="small"
+                            onClick={() => claimMint && claimMint(Number(mid))}
+                        >
+                            End Stake
+                        </Button>
+                    )}
+                />
 
-            {/* <Column
+                {/* <Column
             title="Tags"
             title="Tags"
             dataIndex="tags"
@@ -88,8 +169,9 @@ const StakeTable: React.FC = () => (
                 </>
             )}
         /> */}
-        </Table>
-    </div>
-);
+            </Table>
+        </div>
+    );
+};
 
 export default StakeTable;
