@@ -79,6 +79,22 @@ export function useStartStake() {
     return { startStake, startStakeHash, startStakePending };
 }
 
+export function useEndStake() {
+    const { writeContract, data: endStakeHash, isPending: endStakePending } = useWriteContract();
+    const { address } = useAccount();
+
+    if (!address) return {};
+
+    const endStake = (id: number) => {
+        writeContract({
+            ...TOKEN_MANAGER_CONTRACT_CONFIT,
+            functionName: "endStake",
+            args: [id],
+        });
+    };
+    return { endStake, endStakeHash, endStakePending };
+}
+
 export function useDistributeETH() {
     const {
         writeContract,

@@ -3,6 +3,8 @@ import { UserStakeInfo } from "@/configs/interfaces";
 import { formatPrice, timestampToDate } from "@/configs/utils";
 import { formatEther } from "viem";
 import { useTokenPrice } from "@/hooks/useTokenPrice";
+import { useEndStake } from "@/hooks/useWriteTokenContract";
+import useContractHashNotification from "@/hooks/useContractHashNotification";
 
 const { Column, ColumnGroup } = Table;
 
@@ -24,6 +26,8 @@ export interface StakeTableDataType {
 
 const StakeTable = ({ data }: { data: StakeTableDataType[] }) => {
     const tokenPrice = useTokenPrice();
+    const { endStake, endStakeHash, endStakePending } = useEndStake();
+    useContractHashNotification(endStakePending, endStakeHash);
 
     return (
         <div className="rounded-lg overflow-hidden text-xs">
@@ -147,7 +151,7 @@ const StakeTable = ({ data }: { data: StakeTableDataType[] }) => {
                         <Button
                             type="primary"
                             size="small"
-                            onClick={() => claimMint && claimMint(Number(mid))}
+                            onClick={() => endStake && endStake(Number(mid))}
                         >
                             End Stake
                         </Button>
