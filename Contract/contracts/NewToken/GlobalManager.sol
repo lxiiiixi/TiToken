@@ -69,13 +69,14 @@ contract GlobalManager is ReentrancyGuard, Ownable, GlobalInfo, MintInfo, StakeI
         
 		// s_blastYieldAddress.configureClaimableYield();
         s_blastYieldAddress.configureClaimableGas();
-        s_blastYieldAddress.configureGovernor(address(this)); // only this address can claim
+        // s_blastYieldAddress.configureGovernor(address(this)); // only this address can claim
+        s_blastYieldAddress.configureGovernor(initialOwner); // only this address can claim
     }
 
-    function claimAllYieldAndGas() external {
-		IBlast(s_blastYieldAddress).claimAllYield(address(this), s_genesisAddress);
-        IBlast(s_blastYieldAddress).claimAllGas(address(this), s_genesisAddress);
-    }
+    // function claimAllYieldAndGas() external {
+	// 	IBlast(s_blastYieldAddress).claimAllYield(address(this), s_genesisAddress);
+    //     IBlast(s_blastYieldAddress).claimAllGas(address(this), s_genesisAddress);
+    // }
 
     /**** Mint Functions *****/
     /** @notice create a new mint

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useNotification from "@/hooks/useNotification";
+import { ExportOutlined } from "@ant-design/icons";
 const blockExplorerUrl =
     process.env.NODE_ENV === "development"
         ? "https://testnet.blastscan.io/"
@@ -15,8 +16,13 @@ const useContractHashNotification = (pending: boolean | undefined, hash: string 
             openNotification(
                 "success",
                 "",
-                <a href={`${blockExplorerUrl}tx/${hash}`} target="_blank" rel="noopener noreferrer">
-                    Check transaction on block explorer
+                <a
+                    href={`${blockExplorerUrl}tx/${hash}`}
+                    className="underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Check transaction on block explorer <ExportOutlined />
                 </a>
             );
             // openNotification("success", "", `Transaction Hash: ${hash}`);

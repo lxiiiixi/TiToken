@@ -56,8 +56,7 @@ export default function Index() {
                             value:
                                 globalActiveShares && userCurrentActiveShares
                                     ? formatPercentage(
-                                          (userCurrentActiveShares * BigInt(PERCENT_BPS)) /
-                                              globalActiveShares,
+                                          userCurrentActiveShares / globalActiveShares,
                                           true
                                       )
                                     : 0,

@@ -3,6 +3,7 @@ import MaxInputRender from "@/components/MaxInputRender";
 import type { StakeData } from "./index";
 import TIPS from "@/configs/tips";
 import { useErc20MetaData } from "@/hooks/useERC20";
+import { formatEther } from "viem";
 
 const SingleMiner = ({
     stakeData,
@@ -34,7 +35,7 @@ const SingleMiner = ({
                     label="Stake Amount"
                     value={stakeData.amount}
                     min={0}
-                    max={balanceOf ? Number(balanceOf) : 0}
+                    max={balanceOf ? Number(formatEther(balanceOf)) : 0}
                     handleChangeValue={handleInput}
                     format
                     tips={TIPS.stake.amount}

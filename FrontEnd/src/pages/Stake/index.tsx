@@ -65,8 +65,9 @@ function Index() {
             openNotification("warning", "", "Your stake should have at least 1 share");
         }
 
-        if (startStake && stakeData.amount && stakeData.length)
+        if (startStake && stakeData.amount && stakeData.length) {
             startStake(stakeData.amount, stakeData.length);
+        }
     };
 
     const changeStakeData = (data: StakeData) => {

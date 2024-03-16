@@ -197,7 +197,13 @@ function Index() {
         };
     };
 
-    const { activeData, claimedData } = filterMints(userMints, ethUsdPrice, tokenPrice || 0n);
+    const { activeData, claimedData, endedData } = filterMints(
+        userMints,
+        ethUsdPrice,
+        tokenPrice || 0n
+    );
+
+    console.log(endedData);
 
     return (
         <div>

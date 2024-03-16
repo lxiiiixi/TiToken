@@ -43,7 +43,7 @@ function Index() {
     const { userCurrentActiveShares, globalActiveShares } = useGetActiveShares();
     const percentOfUserShare =
         userCurrentActiveShares && globalActiveShares
-            ? (userCurrentActiveShares * BigInt(PERCENT_BPS)) / globalActiveShares
+            ? userCurrentActiveShares / globalActiveShares
             : 0n;
 
     const ethPriceBigInt = BigInt(Math.round(ethUsdPrice));
@@ -143,7 +143,11 @@ function Index() {
                             key: "1",
                             label: "Your Active Shares",
                             value: `${userCurrentActiveShares?.toString()}`,
-                            subValue: `≈ ${formatPercentage(percentOfUserShare)} of global shares`,
+                            subValue: `≈ ${formatPercentage(
+                                percentOfUserShare,
+                                false,
+                                6
+                            )} of global shares`,
                             tips: TIPS.payout.yourActiveShares,
                         },
                         {

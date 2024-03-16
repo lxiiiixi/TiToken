@@ -71,7 +71,7 @@ export function formatPercentage(
     decimalPlaces: number = 2
 ): string {
     const numericValue = typeof value === "bigint" ? Number(value) : value;
-    const percentage = numericValue;
+    const percentage = numericValue * 100;
     if (needDivBps) {
         return `${(percentage / PERCENT_BPS).toFixed(decimalPlaces)}%`;
     }
@@ -80,7 +80,6 @@ export function formatPercentage(
 
 /**
  * 计算当前时间相对于开始和结束时间的进度。
- *
  * @param {number} mintStartTs 开始时间戳（秒级）。
  * @param {number} maturityTs 结束时间戳（秒级）。
  * @return {number} 当前进度，范围从0（未开始）到1（已结束），超出范围时按边界处理。
@@ -91,5 +90,5 @@ export function calculateProgress(mintStartTs: number, maturityTs: number) {
     const elapsedSinceStart = nowTs - mintStartTs;
     let progress = elapsedSinceStart / totalDuration;
     progress = Math.max(0, Math.min(1, progress));
-    return Math.round(progress * 100) / 100; // progress.toFixed(2);
+    return Math.floor(progress * 100) / 100; // progress.toFixed(2);
 }

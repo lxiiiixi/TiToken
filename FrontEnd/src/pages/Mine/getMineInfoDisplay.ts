@@ -86,7 +86,7 @@ export default function getMineInfoDisplay(
                 {
                     key: "3.3",
                     label: "🚀 Early Adoption Amplifier",
-                    value: `+${formatPercentage(currentEAABonus / BigInt(1e6), false)}`, //EAA Bonus has 1e6 scaling, so here divide by 1e6
+                    value: `+${formatPercentage(Number(currentEAABonus) / 1e6 / 100, false)}`, //EAA Bonus has 1e6 scaling, so here divide by 1e6
                     tips: TIPS.mine.eaa,
                 },
                 {

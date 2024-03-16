@@ -20,8 +20,8 @@ export default function CountDownButton() {
             openNotification("success", "", manualDailyUpdateHash);
     }, [manualDailyUpdatePending, manualDailyUpdateHash, openNotification]);
 
-    console.log("manualDailyUpdatePending", manualDailyUpdatePending);
-    console.log("manualDailyUpdateHash", manualDailyUpdateHash);
+    // console.log("manualDailyUpdatePending", manualDailyUpdatePending);
+    // console.log("manualDailyUpdateHash", manualDailyUpdateHash);
 
     return (
         <div

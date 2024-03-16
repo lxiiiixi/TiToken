@@ -90,7 +90,9 @@ const MinerTable = ({
                                 <Table.Summary.Cell index={4}>
                                     {formatPercentage(roi, false)}
                                 </Table.Summary.Cell>
-                                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                {type !== "ended" && (
+                                    <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                                )}
                                 {type === "claimable" && (
                                     <Table.Summary.Cell index={0}></Table.Summary.Cell>
                                 )}
@@ -113,25 +115,20 @@ const MinerTable = ({
                     <Column title="$ Value" dataIndex="value" key="value" />
                     <Column title="% ROI" dataIndex="roi" key="roi" />
                 </ColumnGroup>
-                <Column
-                    title="Progress"
-                    dataIndex="progress"
-                    key="progress"
-                    render={(progress: number) => (
-                        <Progress
-                            percent={progress}
-                            className="w-[100px] text-[10px] m-0 mr-2"
-                            status="active"
-                        />
-                    )}
-                />
-                {/* <Column
-                title="Share"
-                dataIndex="share"
-                key="share"
-                render={(shareId: string) => <Button type="primary">{shareId}</Button>}
-            /> */}
-
+                {(type === "active" || type === "claimable") && (
+                    <Column
+                        title="Progress"
+                        dataIndex="progress"
+                        key="progress"
+                        render={(progress: number) => (
+                            <Progress
+                                percent={progress}
+                                className="w-[100px] text-[10px] m-0 mr-2"
+                                status="active"
+                            />
+                        )}
+                    />
+                )}
                 {type === "claimable" && (
                     <Column
                         title="Action"
@@ -140,9 +137,10 @@ const MinerTable = ({
                         render={(mid: string) => (
                             <Button
                                 type="primary"
+                                size="small"
                                 onClick={() => claimMint && claimMint(Number(mid))}
                             >
-                                {mid}
+                                Claim
                             </Button>
                         )}
                     />
