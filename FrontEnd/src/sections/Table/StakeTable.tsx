@@ -76,10 +76,10 @@ const StakeTable = ({
                                     {formatPrice(Number(shareRate))}
                                 </Table.Summary.Cell>
                                 <Table.Summary.Cell index={3}>
-                                    {formatPrice(formatEther(shares))}{" "}
+                                    {formatPrice(formatEther(shares))}
                                 </Table.Summary.Cell>
                                 <Table.Summary.Cell index={4}>
-                                    {formatPrice(formatEther(value * (tokenPrice || 0n)))}{" "}
+                                    {formatPrice(formatEther(value * (tokenPrice || 0n)))}
                                 </Table.Summary.Cell>
                                 <Table.Summary.Cell index={0}></Table.Summary.Cell>
                                 {type !== "ended" && (
